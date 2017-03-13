@@ -31,7 +31,7 @@ RSpec.describe 'Unconfirmed access', type: :request do
   end
 
   describe 'after 24 hours' do
-    before(:each) { Timecop.freeze(Time.now + 25.hours) }
+    before(:each) { Timecop.freeze(Time.current + 25.hours) }
     after(:each) { Timecop.return }
 
     it 'cannot login' do
