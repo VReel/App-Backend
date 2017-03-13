@@ -1,5 +1,9 @@
 # VREEL API
 
+REST API backend for VReel.
+
+API docs are located at /swagger/dist
+
 Ruby on Rails
 -------------
 
@@ -56,6 +60,11 @@ Tests
 -----
 
 - To run the full test suite execute `bin/ci`
+
+Documetnation
+-----
+
+- Uses Swagger (http://swagger.io/) located in /swagger/dist 
 
 Add remotes:
 
