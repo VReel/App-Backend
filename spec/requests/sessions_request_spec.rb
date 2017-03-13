@@ -9,9 +9,6 @@ RSpec.describe 'Session requests', type: :request do
     user
   end
 
-  let(:unconfirmed_user) { Fabricate(:user, password: password, password_confirmation: password) }
-  # let(:old_unconfirmed_user) { Fabricate(:user, email: email) }
-  #
   let(:data) { JSON.parse(response.body) if response.body.present? }
 
   describe 'login with email' do
@@ -83,25 +80,6 @@ RSpec.describe 'Session requests', type: :request do
       expect(response.headers['uid']).not_to be_present
       expect(response.headers['access-token']).not_to be_present
       expect(response.headers['expiry']).not_to be_present
-    end
-  end
-
-  describe 'unconfirmed user failure' do
-    before(:each) do
-      post '/v1/users/sign_in', params: {
-        login: unconfirmed_user.email,
-        password: password
-      }, xhr: true
-    end
-
-    it 'should fail' do
-      expect(response.status).to eq 401
-    end
-
-    it 'should error' do
-      expect(data['errors'].first['detail']).to eq(
-        I18n.t('devise_token_auth.sessions.not_confirmed', email: unconfirmed_user.email)
-      )
     end
   end
 
