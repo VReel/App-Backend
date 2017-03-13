@@ -61,7 +61,7 @@ Tests
 
 - To run the full test suite execute `bin/ci`
 
-Documetnation
+Documentation
 -----
 
 - Uses Swagger (http://swagger.io/) located in /swagger/dist 
