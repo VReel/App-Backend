@@ -15,5 +15,9 @@ Rails.application.routes.draw do
 
   resources :apidocs, only: [:index]
 
+  namespace :v1, defaults: { format: 'json' } do
+    resources :s3_presigned_post, only: [:index]
+  end
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
