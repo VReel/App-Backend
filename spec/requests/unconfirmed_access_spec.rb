@@ -23,7 +23,7 @@ RSpec.describe 'Unconfirmed access', type: :request do
     }, xhr: true
   end
 
-  describe 'within 24 hourss' do
+  describe 'within 24 hours' do
     it 'can login' do
       post_sign_in
       expect(response.status).to eq 200
