@@ -1,0 +1,44 @@
+AllCops:
+  Exclude:
+    - db/*
+    - db/migrate/*
+    - bin/*
+    - Rakefile
+    - config/initializers/*
+
+Rails:
+  Enabled: true
+
+Documentation:
+  Enabled: false
+
+# Commonly used screens these days easily fit more than 80 characters.
+Metrics/LineLength:
+  Max: 128
+
+# Too short methods lead to extraction of single-use methods, which can make
+# the code easier to read (by naming things), but can also clutter the class
+Metrics/MethodLength:
+  Max: 26
+
+Metrics/AbcSize:
+  Max: 16
+
+# The guiding principle of classes is SRP, SRP can't be accurately measured by LoC
+Metrics/ClassLength:
+  Max: 160
+
+Metrics/BlockLength:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/BlockComments:
+  Enabled: false
+
+Style/PredicateName:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
