@@ -1,0 +1,3 @@
+#!/bin/sh
+brakeman
+bundle exec rake ci
