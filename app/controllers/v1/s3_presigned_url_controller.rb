@@ -5,8 +5,8 @@ class V1::S3PresignedUrlController < ApplicationController
         data: {
           type: 'S3 presigned urls',
           attributes: {
-            original: s3_upload_service.original_image_presigned_url.as_json,
-            thumbnail: s3_upload_service.thumbnail_image_presigned_url.as_json
+            original: s3_upload_service.original_image_presigned_url,
+            thumbnail: s3_upload_service.thumbnail_image_presigned_url
           }
         }
       }
