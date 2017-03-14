@@ -7,8 +7,8 @@ class S3Service
     @user = user
   end
 
-  def full_image_presigned_post_fields
-    post = presigned_post('full')
+  def original_image_presigned_post_fields
+    post = presigned_post('original')
     {
       url: post.url,
       fields: post.fields
@@ -22,6 +22,8 @@ class S3Service
       fields: post.fields
     }
   end
+
+  protected
 
   def presigned_post(filename)
     S3_BUCKET.presigned_post(

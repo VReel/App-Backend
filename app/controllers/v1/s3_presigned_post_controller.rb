@@ -5,7 +5,7 @@ class V1::S3PresignedPostController < ApplicationController
         data: {
           type: 'S3 Credentials',
           attributes: {
-            full: s3_service.full_image_presigned_post_fields.as_json,
+            original: s3_service.original_image_presigned_post_fields.as_json,
             thumbnail: s3_service.thumbnail_presigned_post_fields.as_json
           }
         }
