@@ -77,21 +77,11 @@ RSpec.describe 'Authenticated requests', type: :request do
         password: password
       }, xhr: true
 
-      get '/', headers: {
-        client: response.headers['client'],
-        uid: response.headers['uid'],
-        'access-token': response.headers['access-token'],
-        'token-type' => 'bearer'
-      }
+      get '/', headers: auth_headers_from_response
 
       @first_response = response
 
-      get '/', headers: {
-        client: response.headers['client'],
-        uid: response.headers['uid'],
-        'access-token': response.headers['access-token'],
-        'token-type' => 'bearer'
-      }
+      get '/', headers: auth_headers_from_response
 
       @second_response = response
     end
@@ -139,6 +129,7 @@ RSpec.describe 'Authenticated requests', type: :request do
     before(:each) do
       # Disable batch processing for the purpose of this test.
       DeviseTokenAuth.batch_request_buffer_throttle = 5.seconds
+      ENV['ACCESS_TOKEN_LIFETIME'] = '0'
 
       post '/v1/users/sign_in', params: {
         login: confirmed_user.email,
@@ -184,16 +175,16 @@ RSpec.describe 'Authenticated requests', type: :request do
     end
 
     # Uncomment if config.change_headers_on_each_request = true
-    # it "should not return auth headers for other requests" do
-    #   expect(@first_response.headers['client']).to be_nil
-    #   expect(@first_response.headers['uid']).to be_nil
-    #   expect(@first_response.headers['access-token']).to be_nil
-    #   expect(@first_response.headers['expiry']).to be_nil
+    it "should not return auth headers for other requests" do
+      expect(@first_response.headers['client']).to be_nil
+      expect(@first_response.headers['uid']).to be_nil
+      expect(@first_response.headers['access-token']).to be_nil
+      expect(@first_response.headers['expiry']).to be_nil
 
-    #   expect(@first_response.headers['client']).to be_nil
-    #   expect(@first_response.headers['uid']).to be_nil
-    #   expect(@first_response.headers['access-token']).to be_nil
-    #   expect(@first_response.headers['expiry']).to be_nil
-    # end
+      expect(@first_response.headers['client']).to be_nil
+      expect(@first_response.headers['uid']).to be_nil
+      expect(@first_response.headers['access-token']).to be_nil
+      expect(@first_response.headers['expiry']).to be_nil
+    end
   end
 end

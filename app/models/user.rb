@@ -55,6 +55,13 @@ class User < ApplicationRecord
     base_url
   end
 
+  def token_created_at(client)
+    return unless tokens[client].present?
+    # In case we change the value of DeviseTokenAuth.token_lifespan,
+    # never let the token be older than the last update of the user.
+    [Time.at(tokens[client]['expiry']) - DeviseTokenAuth.token_lifespan, updated_at].min
+  end
+
   protected
 
   # Override email as uid.
