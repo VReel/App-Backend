@@ -46,7 +46,6 @@ class ApidocsController < ActionController::Base
         key :url, 'https://swagger.io'
       end
     end
-    key :host, 'localhost:3000'
     key :basePath, '/v1/'
     key :consumes, ['application/json']
     key :produces, ['application/json']
@@ -64,6 +63,8 @@ class ApidocsController < ActionController::Base
   ].freeze
 
   def index
-    render json: Swagger::Blocks.build_root_json(SWAGGERED_CLASSES)
+    render json: Swagger::Blocks.build_root_json(SWAGGERED_CLASSES).merge(
+      host: Rails.env.development? ? "#{request.host}:#{request.port}" : request.host
+    )
   end
 end
