@@ -77,7 +77,8 @@ CREATE TABLE users (
     email character varying,
     tokens json,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    unique_id character varying
 );
 
 
@@ -174,12 +175,20 @@ CREATE UNIQUE INDEX index_users_on_uid_and_provider ON users USING btree (uid, p
 
 
 --
+-- Name: index_users_on_unique_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_users_on_unique_id ON users USING btree (unique_id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user",public;
 
 INSERT INTO schema_migrations (version) VALUES
-('20170228160520');
+('20170228160520'),
+('20170313170707');
 
 

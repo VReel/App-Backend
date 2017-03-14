@@ -18,6 +18,8 @@ class User < ApplicationRecord
   # Use this if we want to require a password confirmation at the model level.
   validates :password_confirmation, presence: true, if: :password_required?
 
+  before_create { self.unique_id = SecureRandom.random_number(36**12).to_s(36) }
+
   def self.hash_to_uid(email)
     Digest::SHA256.hexdigest(email)
   end
