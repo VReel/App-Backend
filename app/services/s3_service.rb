@@ -9,19 +9,27 @@ class S3Service
 
   def full_image_presigned_post_fields
     post = presigned_post('full')
-    post.fields.merge(url: post.url)
+    {
+      url: post.url,
+      fields: post.fields
+    }
   end
 
   def thumbnail_presigned_post_fields
     post = presigned_post('thumbnail')
-    post.fields.merge(url: post.url)
+    {
+      url: post.url,
+      fields: post.fields
+    }
   end
 
   def presigned_post(filename)
     S3_BUCKET.presigned_post(
       key: "/#{user.unique_id}/#{date_string}/#{uuid}-#{filename}",
-      success_action_status: '201',
-      acl: 'public-read'
+      success_action_status: '200',
+      content_type_starts_with: 'image/',
+      acl: 'authenticated-read',
+      expires: 10.minutes.from_now
     )
   end
 end
