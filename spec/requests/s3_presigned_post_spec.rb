@@ -14,6 +14,6 @@ RSpec.describe 'S3 presigned post', type: :request do
 
   it 'presigned post details are returned' do
     expect(data['data']['attributes']['thumbnail']).to be_present
-    expect(data['data']['attributes']['full']).to be_present
+    expect(data['data']['attributes']['original']).to be_present
   end
 end
