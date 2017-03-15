@@ -34,7 +34,7 @@ class ApplicationController < ActionController::API
       # cleared by sign out in the meantime.
       return if @resource.reload.tokens[@client_id].nil?
 
-      if @request_started_at < @resource.token_created_at(@client_id) + Integer(ENV['ACCESS_TOKEN_LIFETIME'])
+      if @request_started_at < Time.zone.at(@resource.tokens[@client_id]['created_at'])+ Integer(ENV['ACCESS_TOKEN_LIFETIME'])
         return response.headers.merge!(@resource.build_auth_header(@token, @client_id))
       end
     end

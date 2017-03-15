@@ -25,7 +25,7 @@ gem 'puma', '~> 3.0'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
-gem 'devise_token_auth', github: 'dansingerman/devise_token_auth', ref: '90b0817625dce5e37ff878895b9826e15c55d373'
+gem 'devise_token_auth'
 
 gem 'delayed_job_active_record'
 

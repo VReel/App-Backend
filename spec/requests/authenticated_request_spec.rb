@@ -129,7 +129,6 @@ RSpec.describe 'Authenticated requests', type: :request do
   describe 'multiple requests with ACCESS_TOKEN_LIFETIME set' do
     before(:each) do
       # Disable batch processing for the purpose of this test.
-      DeviseTokenAuth.batch_request_buffer_throttle = 0
       ENV['ACCESS_TOKEN_LIFETIME'] = '300' # 5 Minutes
 
       post '/v1/users/sign_in', params: {
@@ -170,7 +169,6 @@ RSpec.describe 'Authenticated requests', type: :request do
       expect(@second_response.headers['expiry']).to be_present
     end
 
-    # if config.change_headers_on_each_request == true
     it 'should not change access-token for each request' do
       expect(@first_response.headers['access-token']).to eq @second_response.headers['access-token']
     end
@@ -195,7 +193,7 @@ RSpec.describe 'Authenticated requests', type: :request do
 
       it 'should change the access token' do
         expect(@third_response.headers['access-token']).to be_present
-         expect(@third_response.headers['access-token']).not_to eq(@auth_headers['access-token'])
+        expect(@third_response.headers['access-token']).not_to eq(@auth_headers['access-token'])
       end
 
       it 'next request with new access token should succeed' do
