@@ -2,7 +2,7 @@ class Users::SessionsController < DeviseTokenAuth::SessionsController
   include ErrorResource
   skip_before_action :authenticate_user!, only: [:create]
 
-  # Overriding https://github.com/lynndylanhurley/devise_token_auth/blob/master/app/controllers/devise_token_auth/sessions_controller.rb
+  # Overriding https://github.com/lynndylanhurley/devise_token_auth/blob/v0.1.40/app/controllers/devise_token_auth/sessions_controller.rb
   # rubocop:disable all
   def create
     field = (resource_params.keys.map(&:to_sym) & resource_class.authentication_keys).first
