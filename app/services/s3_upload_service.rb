@@ -26,7 +26,7 @@ class S3UploadService
   protected
 
   def key_for(filename)
-    "/#{user.unique_id}/#{date_string}/#{uuid}-#{filename}"
+    "#{user.unique_id}/#{date_string}/#{uuid}-#{filename}"
   end
 
   def url_for_key(key, method)
