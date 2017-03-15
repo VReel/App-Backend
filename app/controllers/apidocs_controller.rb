@@ -10,6 +10,12 @@ class ApidocsController < ActionController::Base
       key :client, []
       key 'access-token', []
       key :uid, []
+      key 'vreel-application-id', []
+    end
+    security_definition 'vreel-application-id' do
+      key :type, 'apiKey'
+      key :name, 'vreel-application-id'
+      key :in, 'header'
     end
     security_definition :client do
       key :type, 'apiKey'

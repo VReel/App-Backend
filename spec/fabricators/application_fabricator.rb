@@ -1,0 +1,2 @@
+Fabricator(:application) do
+end
