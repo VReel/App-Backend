@@ -8,7 +8,7 @@ RSpec.describe 'Update profile requests', type: :request do
     user.save
     user
   end
-  let(:auth_headers) { response.headers.slice('access-token', 'client', 'uid') }
+  let(:auth_headers) { response.headers.slice('access-token', 'client', 'uid').merge(client_application_header) }
   let(:data) { JSON.parse(response.body) if response.body.present? }
 
   before(:each) do

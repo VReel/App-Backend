@@ -8,8 +8,6 @@ class ApplicationController < ActionController::API
   protected
 
   def authenticate_application!
-    # We don't need to authenticate the application if there is a user authenticated by token.
-    return if current_user.present?
     return if ClientApplication.request_valid?(request)
 
     render json: {
