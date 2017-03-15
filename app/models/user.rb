@@ -55,6 +55,33 @@ class User < ApplicationRecord
     base_url
   end
 
+  # Override to ensure tokens keep created_at time.
+  # rubocop:disable all
+  def create_new_auth_token(client_id=nil)
+    client_id  ||= SecureRandom.urlsafe_base64(nil, false)
+    last_token ||= nil
+    token        = SecureRandom.urlsafe_base64(nil, false)
+    token_hash   = ::BCrypt::Password.create(token)
+    expiry       = (Time.zone.now + DeviseTokenAuth.token_lifespan).to_i
+
+    if self.tokens[client_id] && self.tokens[client_id]['token']
+      last_token = self.tokens[client_id]['token']
+    end
+
+    now = Time.zone.now
+
+    self.tokens[client_id] = {
+      token:      token_hash,
+      expiry:     expiry,
+      last_token: last_token,
+      updated_at: now,
+      created_at: now.to_i
+    }
+
+    return build_auth_header(token, client_id)
+  end
+  # rubocop:enable all
+
   protected
 
   # Override email as uid.
