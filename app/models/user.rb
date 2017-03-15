@@ -59,7 +59,7 @@ class User < ApplicationRecord
     return unless tokens[client].present?
     # In case we change the value of DeviseTokenAuth.token_lifespan,
     # never let the token be older than the last update of the user.
-    [Time.at(tokens[client]['expiry']) - DeviseTokenAuth.token_lifespan, updated_at].min
+    Time.at(tokens[client]['expiry']) - DeviseTokenAuth.token_lifespan
   end
 
   protected

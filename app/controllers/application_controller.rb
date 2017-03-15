@@ -13,6 +13,9 @@ class ApplicationController < ActionController::API
   end
 
   # This overrides https://github.com/dansingerman/devise_token_auth/blob/master/app/controllers/devise_token_auth/concerns/set_user_by_token.rb
+  # This is so we can set the lifetime of the access token, and not have to change it on every single request.
+  # This is good for performance, and makes the API much easier to use via swagger.
+  # Changing on every request seems like an unnecessary overhead.
   # rubocop:disable all
   def update_auth_header
     # cannot save object if model has invalid params
@@ -24,7 +27,8 @@ class ApplicationController < ActionController::API
 
     if @used_auth_by_token &&
        @resource.try(:tokens).present? &&
-       ENV['ACCESS_TOKEN_LIFETIME'].present?
+       ENV['ACCESS_TOKEN_LIFETIME'].present? &&
+       Integer(ENV['ACCESS_TOKEN_LIFETIME']).to_i > 0
 
       # should not append auth header if @resource related token was
       # cleared by sign out in the meantime.

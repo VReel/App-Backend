@@ -71,6 +71,7 @@ RSpec.describe 'Authenticated requests', type: :request do
     before(:each) do
       # Disable batch processing for the purpose of this test.
       DeviseTokenAuth.batch_request_buffer_throttle = 0
+      ENV['ACCESS_TOKEN_LIFETIME'] = '0'
 
       post '/v1/users/sign_in', params: {
         login: confirmed_user.email,
@@ -125,9 +126,88 @@ RSpec.describe 'Authenticated requests', type: :request do
     end
   end
 
-  describe 'multiple requests in single batch' do
+  describe 'multiple requests with ACCESS_TOKEN_LIFETIME set' do
     before(:each) do
       # Disable batch processing for the purpose of this test.
+      DeviseTokenAuth.batch_request_buffer_throttle = 0
+      ENV['ACCESS_TOKEN_LIFETIME'] = '300' # 5 Minutes
+
+      post '/v1/users/sign_in', params: {
+        login: confirmed_user.email,
+        password: password
+      }, xhr: true
+
+      @auth_headers = auth_headers_from_response
+
+      get '/', headers: @auth_headers
+
+      @first_response = response
+
+      get '/', headers: @auth_headers
+
+      @second_response = response
+    end
+
+    it 'should succeed' do
+      expect(@first_response.status).to eq 200
+      expect(@second_response.status).to eq 200
+    end
+
+    it 'should return data' do
+      expect(data).to be_present
+      expect(data['errors']).to be_nil
+    end
+
+    it 'should return auth headers for each request' do
+      expect(@first_response.headers['client']).to be_present
+      expect(@first_response.headers['uid']).to be_present
+      expect(@first_response.headers['access-token']).to be_present
+      expect(@first_response.headers['expiry']).to be_present
+
+      expect(@second_response.headers['client']).to be_present
+      expect(@second_response.headers['uid']).to be_present
+      expect(@second_response.headers['access-token']).to be_present
+      expect(@second_response.headers['expiry']).to be_present
+    end
+
+    # if config.change_headers_on_each_request == true
+    it 'should not change access-token for each request' do
+      expect(@first_response.headers['access-token']).to eq @second_response.headers['access-token']
+    end
+
+    describe 'Subsequent request with stale headers should fail' do
+      before(:each) do
+        Timecop.freeze(Time.current + 320)
+
+        get '/', headers: @auth_headers
+
+        @third_response = response
+
+        get '/', headers: @auth_headers
+
+        @fourth_response = response
+      end
+      after(:each) { Timecop.return }
+
+      it 'request should fail' do
+        expect(@fourth_response.status).to eq 401
+      end
+
+      it 'should change the access token' do
+        expect(@third_response.headers['access-token']).to be_present
+         expect(@third_response.headers['access-token']).not_to eq(@auth_headers['access-token'])
+      end
+
+      it 'next request with new access token should succeed' do
+        get '/', headers: @auth_headers.merge('access-token' => @third_response.headers['access-token'])
+
+        expect(response.status).to eq 200
+      end
+    end
+  end
+
+  describe 'multiple requests in single batch' do
+    before(:each) do
       DeviseTokenAuth.batch_request_buffer_throttle = 5.seconds
       ENV['ACCESS_TOKEN_LIFETIME'] = '0'
 
