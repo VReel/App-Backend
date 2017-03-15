@@ -1,2 +1,0 @@
-Fabricator(:application) do
-end

@@ -15,7 +15,7 @@ RSpec.describe 'Update profile requests', type: :request do
     post '/v1/users/sign_in', params: {
       login: confirmed_user.email,
       password: password
-    }, xhr: true
+    }, headers: client_application_header
   end
 
   describe 'Update profile attributes' do

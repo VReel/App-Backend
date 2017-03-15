@@ -12,7 +12,7 @@ RSpec.describe 'Email confirmation requests', type: :request do
       handle: handle,
       password: 'secret123',
       password_confirmation: 'secret123'
-    }
+    }, headers: client_application_header
   end
 
   describe 'confirmation email' do
@@ -50,13 +50,13 @@ RSpec.describe 'Email confirmation requests', type: :request do
     def request_confirmation_email
       post '/v1/users/confirmation', params: {
         email: email
-      }
+      }, headers: client_application_header
     end
 
     def request_confirmation_email_invalid
       post '/v1/users/confirmation', params: {
         email: Faker::Internet.email
-      }
+      }, headers: client_application_header
     end
 
     it 'will resend a confirmation email for a valid email' do

@@ -7,7 +7,7 @@ RSpec.describe 'Registration requests', type: :request do
 
   describe 'Validate non-empty body' do
     before(:each) do
-      post '/v1/users', params: {}
+      post '/v1/users', params: {}, headers: client_application_header
     end
 
     let(:data) { JSON.parse(response.body) }
@@ -33,7 +33,7 @@ RSpec.describe 'Registration requests', type: :request do
         password: 'secret123',
         password_confirmation: 'a different password',
         unpermitted_param: '(x_x)'
-      }
+      }, headers: client_application_header
     end
 
     it 'request should fail' do
@@ -62,7 +62,7 @@ RSpec.describe 'Registration requests', type: :request do
         handle: handle,
         password: 'secret123',
         password_confirmation: 'secret123'
-      }
+      }, headers: client_application_header
     end
 
     it 'request should fail' do
@@ -92,7 +92,7 @@ RSpec.describe 'Registration requests', type: :request do
         password: 'secret123',
         password_confirmation: 'secret123',
         unpermitted_param: '(x_x)'
-      }
+      }, headers: client_application_header
     end
 
     it 'request should fail' do
@@ -119,7 +119,7 @@ RSpec.describe 'Registration requests', type: :request do
         handle: handle,
         password: 'secret123',
         unpermitted_param: '(x_x)'
-      }
+      }, headers: client_application_header
     end
 
     it 'request should fail' do
@@ -149,7 +149,7 @@ RSpec.describe 'Registration requests', type: :request do
         password: 'secret123',
         password_confirmation: 'different',
         unpermitted_param: '(x_x)'
-      }
+      }, headers: client_application_header
     end
 
     it 'it should return all validation errors' do
@@ -167,7 +167,7 @@ RSpec.describe 'Registration requests', type: :request do
         password: 'secret123',
         password_confirmation: 'secret123',
         unpermitted_param: '(x_x)'
-      }
+      }, headers: client_application_header
     end
 
     it 'user should have been created' do

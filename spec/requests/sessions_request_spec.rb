@@ -16,7 +16,7 @@ RSpec.describe 'Session requests', type: :request do
       post '/v1/users/sign_in', params: {
         login: confirmed_user.email,
         password: password
-      }, xhr: true
+      }, headers: client_application_header
     end
 
     it 'should succeed' do
@@ -40,7 +40,7 @@ RSpec.describe 'Session requests', type: :request do
       post '/v1/users/sign_in', params: {
         login: confirmed_user.handle,
         password: password
-      }, xhr: true
+      }, headers: client_application_header
     end
 
     it 'should succeed' do
@@ -64,7 +64,7 @@ RSpec.describe 'Session requests', type: :request do
       post '/v1/users/sign_in', params: {
         login: confirmed_user.email,
         password: 'some other password'
-      }, xhr: true
+      }, headers: client_application_header
     end
 
     it 'should fail' do
@@ -88,7 +88,7 @@ RSpec.describe 'Session requests', type: :request do
       post '/v1/users/sign_in', params: {
         login: confirmed_user.email,
         password: password
-      }, xhr: true
+      }, headers: client_application_header
 
       @auth_response = response
 
@@ -97,7 +97,7 @@ RSpec.describe 'Session requests', type: :request do
         uid: @auth_response.headers['uid'],
         'access-token': @auth_response.headers['access-token'],
         'token-type' => 'bearer'
-      }, xhr: true
+      }.merge(client_application_header)
     end
 
     it 'should succeed' do
@@ -110,7 +110,7 @@ RSpec.describe 'Session requests', type: :request do
         uid: @auth_response.headers['uid'],
         'access-token': @auth_response.headers['access-token'],
         'token-type' => 'bearer'
-      }
+      }.merge(client_application_header)
       expect(response.status).to eq 401
     end
   end

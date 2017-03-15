@@ -13,7 +13,7 @@ RSpec.describe 'Authenticated requests', type: :request do
 
   describe 'auth failure without authentication' do
     before(:each) do
-      get '/'
+      get '/', headers: client_application_header
     end
 
     it 'should fail' do
@@ -40,14 +40,14 @@ RSpec.describe 'Authenticated requests', type: :request do
       post '/v1/users/sign_in', params: {
         login: confirmed_user.email,
         password: password
-      }, xhr: true
+      }, headers: client_application_header
 
       get '/', headers: {
         client: response.headers['client'],
         uid: response.headers['uid'],
         'access-token': response.headers['access-token'],
         'token-type' => 'bearer'
-      }
+      }.merge(client_application_header)
     end
 
     it 'should succeed' do
@@ -76,13 +76,13 @@ RSpec.describe 'Authenticated requests', type: :request do
       post '/v1/users/sign_in', params: {
         login: confirmed_user.email,
         password: password
-      }, xhr: true
+      }, headers: client_application_header
 
-      get '/', headers: auth_headers_from_response
+      get '/', headers: auth_headers_from_response.merge(client_application_header)
 
       @first_response = response
 
-      get '/', headers: auth_headers_from_response
+      get '/', headers: auth_headers_from_response.merge(client_application_header)
 
       @second_response = response
     end
@@ -134,9 +134,9 @@ RSpec.describe 'Authenticated requests', type: :request do
       post '/v1/users/sign_in', params: {
         login: confirmed_user.email,
         password: password
-      }, xhr: true
+      }, headers: client_application_header
 
-      @auth_headers = auth_headers_from_response
+      @auth_headers = auth_headers_from_response.merge(client_application_header)
 
       get '/', headers: @auth_headers
 
@@ -212,7 +212,7 @@ RSpec.describe 'Authenticated requests', type: :request do
       post '/v1/users/sign_in', params: {
         login: confirmed_user.email,
         password: password
-      }, xhr: true
+      }, headers: client_application_header
 
       @auth_response = response
 
@@ -221,7 +221,7 @@ RSpec.describe 'Authenticated requests', type: :request do
         uid: @auth_response.headers['uid'],
         'access-token': @auth_response.headers['access-token'],
         'token-type' => 'bearer'
-      }
+      }.merge(client_application_header)
 
       @first_response = response
 
@@ -230,7 +230,7 @@ RSpec.describe 'Authenticated requests', type: :request do
         uid: @auth_response.headers['uid'],
         'access-token': @auth_response.headers['access-token'],
         'token-type' => 'bearer'
-      }
+      }.merge(client_application_header)
 
       @second_response = response
     end

@@ -8,14 +8,13 @@ class ApplicationController < ActionController::API
   protected
 
   def authenticate_application!
-    # We don't need to authenticate the application if there is auser authenticated by token.
+    # We don't need to authenticate the application if there is a user authenticated by token.
     return if current_user.present?
+    return if ClientApplication.request_valid?(request)
 
-    unless ClientApplication.request_valid?(request)
-      return render json: {
-        errors: ["Authorized applications only."]
-      }, status: 401
-    end
+    render json: {
+      errors: ['Authorized applications only.']
+    }, status: 401
   end
 
   def configure_permitted_parameters
