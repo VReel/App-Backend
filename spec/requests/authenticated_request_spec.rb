@@ -253,7 +253,7 @@ RSpec.describe 'Authenticated requests', type: :request do
     end
 
     # Uncomment if config.change_headers_on_each_request = true
-    it "should not return auth headers for other requests" do
+    it 'should not return auth headers for other requests' do
       expect(@first_response.headers['client']).to be_nil
       expect(@first_response.headers['uid']).to be_nil
       expect(@first_response.headers['access-token']).to be_nil

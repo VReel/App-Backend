@@ -2,7 +2,8 @@ class Users::SessionsController < DeviseTokenAuth::SessionsController
   include ErrorResource
   skip_before_action :authenticate_user!, only: [:create]
 
-  # Overriding
+  # Overriding https://github.com/lynndylanhurley/devise_token_auth/blob/master/app/controllers/devise_token_auth/sessions_controller.rb
+  # rubocop:disable all
   def create
     field = (resource_params.keys.map(&:to_sym) & resource_class.authentication_keys).first
 
@@ -14,7 +15,7 @@ class Users::SessionsController < DeviseTokenAuth::SessionsController
         q_value.downcase!
       end
 
-      # Overrdining here so we can login with handles.
+      # Overriding here so we can login with handles.
       @resource = resource_class.find_for_database_authentication(field => q_value)
     end
 
@@ -28,7 +29,7 @@ class Users::SessionsController < DeviseTokenAuth::SessionsController
       @client_id = SecureRandom.urlsafe_base64(nil, false)
       @token     = SecureRandom.urlsafe_base64(nil, false)
 
-      # Overriding here to set create token time.
+      # Overriding here to set created_at token time.
       now = Time.zone.now
       @resource.tokens[@client_id] = {
         token: BCrypt::Password.create(@token),
@@ -48,6 +49,7 @@ class Users::SessionsController < DeviseTokenAuth::SessionsController
       render_create_error_bad_credentials
     end
   end
+  # rubocop:enable all
 
   protected
 
