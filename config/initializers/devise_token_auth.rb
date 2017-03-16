@@ -47,4 +47,5 @@ DeviseTokenAuth.setup do |config|
   # config.enable_standard_devise_support = false
   #
   config.default_confirm_success_url = ENV['CONFIRM_SUCCESS_URL']
+  config.default_password_reset_url = ENV['PASSWORD_RESET_REQUEST_URL']
 end
