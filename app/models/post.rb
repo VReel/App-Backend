@@ -1,6 +1,6 @@
 class Post < ApplicationRecord
   belongs_to :user
-  validates :url, presence: true
+  validates :original_key, presence: true
   validates :thumbnail_key, presence: true
   validates :original_key, presence: true
   validates :user_id, presence: true

@@ -1,4 +1,8 @@
 class V1::PostsController < ApplicationController
+  def index
+    render json: current_user.posts, each_serializer: PostListSerializer
+  end
+
   def show
     return render json: post, status: 200 if post.present?
 

@@ -18,10 +18,17 @@ class PostDoc
   end
 
   swagger_path '/posts' do
+    operation :get do
+      key :summary, 'Get all posts by user'
+      key :operationId, 'get_posts'
+      key :produces, [
+        'application/json'
+      ]
+      key :tags, [
+        'Post'
+      ]
+    end
     operation :post do
-      security do
-        key 'vreel-application-id', []
-      end
       key :summary, 'Create new post'
       key :operationId, 'create_post'
       key :produces, [
@@ -43,6 +50,24 @@ class PostDoc
   end
 
   swagger_path '/posts/{postId}' do
+    operation :get do
+      key :summary, 'Show a post'
+      key :description, 'Shows the full post data'
+      key :operationId, 'get_post'
+      key :produces, [
+        'application/json'
+      ]
+      key :tags, [
+        'Post'
+      ]
+      parameter do
+        key :name, :postId
+        key :in, :path
+        key :description, 'ID of post to update'
+        key :required, true
+        key :type, :string
+      end
+    end
     operation :put do
       key :summary, 'Update a post'
       key :description, 'Only captions can be updated'
