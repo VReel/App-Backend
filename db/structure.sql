@@ -138,7 +138,8 @@ CREATE TABLE posts (
     caption text,
     user_id uuid NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    edited boolean DEFAULT false
 );
 
 
@@ -350,6 +351,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170315112501'),
 ('20170315152810'),
 ('20170316132901'),
-('20170316145912');
+('20170316145912'),
+('20170316182551');
 
 

@@ -5,6 +5,8 @@ class Post < ApplicationRecord
   validates :original_key, presence: true
   validates :user_id, presence: true
 
+  before_update { self.edited = true if caption_changed? }
+
   def original_url
     S3_BUCKET.object(original_key).presigned_url(:get, expires_in: 120)
   end
