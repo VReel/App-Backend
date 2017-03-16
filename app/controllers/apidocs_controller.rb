@@ -65,6 +65,7 @@ class ApidocsController < ActionController::Base
     PasswordDoc,
     SessionDoc,
     S3PresignedUrl,
+    PostDoc,
     HelloWorldDoc,
     self
   ].freeze
