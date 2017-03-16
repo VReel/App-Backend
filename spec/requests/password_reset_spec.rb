@@ -52,6 +52,12 @@ RSpec.describe 'Password reset requests', type: :request do
       }, headers: client_application_header
     end
 
+    let(:mail) { ActionMailer::Base.deliveries.last }
+    let(:new_password) do
+      match = mail.body.to_s[/<strong id='new-password'>([^<]*)/]
+      $1
+    end
+
     describe 'after click' do
       before(:each) do
         get(password_reset_path)
@@ -67,7 +73,14 @@ RSpec.describe 'Password reset requests', type: :request do
       end
 
       it 'sends the new password by email' do
+        expect(mail['to'].to_s).to eq user.email
+        expect(mail['subject'].to_s).to eq 'Your new password'
+        expect(new_password).to be_present
+      end
 
+      it 'password in email is valid' do
+        user.reload
+        expect(user.valid_password?(new_password)).to be true
       end
 
       it 'confirms a user who was not already confirmed' do

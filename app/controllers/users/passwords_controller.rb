@@ -16,6 +16,8 @@ class Users::PasswordsController < DeviseTokenAuth::PasswordsController
       @resource.update(password: password, password_confirmation: password)
       @resource.confirm unless @resource.confirmed?
 
+      NewPasswordMailer.new_password(@resource, password).deliver_later
+
       redirect_to(@resource.build_auth_url(params[:redirect_url], {}))
     else
       render_edit_error
@@ -56,6 +58,6 @@ class Users::PasswordsController < DeviseTokenAuth::PasswordsController
   end
 
   def generate_reset_password
-    SecureRandom.random_number(36**12).to_s(36)
+    SecureRandom.random_number(36**8).to_s(36).upcase
   end
 end
