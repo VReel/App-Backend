@@ -43,13 +43,15 @@ namespace :applications do
   task list: :environment do
     applications = ClientApplication.all
 
+    max_name_length = applications.map { |app| app.name.size }.max
+
     if applications.empty?
       puts 'No applications found'
     else
-      puts 'name' + (' ' * 15) + '| application_id ' + ' ' * 50 + '| created_at'
-      puts '-' * 111
+      puts 'name' + (' ' * (max_name_length - 3)) + '| application_id ' + ' ' * 50 + '| created_at'
+      puts '-' * (max_name_length + 93)
       applications.each do |application|
-        puts application.name + (' ' * (19 - application.name.size)) + '| ' +
+        puts application.name + ' ' + (' ' * (max_name_length - application.name.size)) + '| ' +
              application.application_id + ' | ' + application.created_at.to_s
       end
     end
