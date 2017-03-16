@@ -27,6 +27,14 @@ class PostDoc
       key :tags, [
         'Post'
       ]
+      parameter do
+        key :in, :query
+        key :name, :created_before
+        key :description, 'Get posts created before this timestamp. Used for pagination. ISO8601 format
+          (but actually any sensible timeformat should work)'
+        key :required, false
+        key :type, :string
+      end
     end
     operation :post do
       key :summary, 'Create new post'

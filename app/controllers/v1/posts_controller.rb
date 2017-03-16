@@ -1,6 +1,8 @@
 class V1::PostsController < ApplicationController
+  WINDOW_SIZE = 20
+
   def index
-    render json: current_user.posts, each_serializer: PostListSerializer
+    render json: posts.first(WINDOW_SIZE), each_serializer: PostListSerializer, links: posts_links
   end
 
   def show
@@ -52,5 +54,25 @@ class V1::PostsController < ApplicationController
 
   def post
     @post ||= current_user.posts.find(params[:id])
+  end
+
+  def posts
+    return @posts if @posts.present?
+
+    # We try to get one more than the window size, to tell us if we need a next page link.
+    @posts = current_user.posts.limit(WINDOW_SIZE + 1)
+    @posts.where!('created_at < ?', Time.zone.parse(params[:created_before])) if params[:created_before].present?
+    @posts.to_a
+  end
+
+  def pagination_needed?
+    posts.size > WINDOW_SIZE
+  end
+
+  def posts_links
+    return nil unless pagination_needed?
+    {
+      next: v1_posts_url(created_before: posts[WINDOW_SIZE - 1].created_at.xmlschema(6))
+    }
   end
 end

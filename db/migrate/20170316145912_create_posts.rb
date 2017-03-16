@@ -9,5 +9,10 @@ class CreatePosts < ActiveRecord::Migration[5.0]
     end
     add_foreign_key :posts, :users
     add_index :posts, :user_id
+    connection.execute('
+      CREATE INDEX postd_created_at_index ON posts(created_at DESC NULLS LAST);
+    ')
   end
 end
+
+

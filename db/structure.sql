@@ -324,6 +324,13 @@ CREATE INDEX index_users_on_unique_id ON users USING btree (unique_id);
 
 
 --
+-- Name: postd_created_at_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX postd_created_at_index ON posts USING btree (created_at DESC NULLS LAST);
+
+
+--
 -- Name: fk_rails_5b5ddfd518; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
