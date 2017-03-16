@@ -1,6 +1,7 @@
 class Users::ConfirmationsController < DeviseTokenAuth::ConfirmationsController
   include ErrorResource
   skip_before_action :authenticate_user!, only: [:create, :show]
+  skip_before_action :authenticate_application!, only: :show
 
   def create
     user = User.find_for_database_authentication(email: params[:email])

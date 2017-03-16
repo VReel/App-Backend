@@ -13,14 +13,14 @@ RSpec.describe 'Unconfirmed access', type: :request do
       handle: handle,
       password: password,
       password_confirmation: password
-    }
+    }, headers: client_application_header
   end
 
   def post_sign_in
     post '/v1/users/sign_in', params: {
       login: email,
       password: password
-    }, xhr: true
+    }, headers: client_application_header
   end
 
   describe 'within 24 hours' do

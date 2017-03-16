@@ -17,7 +17,9 @@ class UserDoc
 
   swagger_path '/users' do
     operation :post do
-      security nil
+      security do
+        key 'vreel-application-id', []
+      end
       key :summary, 'Create new user'
       key :operationId, 'register'
       key :produces, [

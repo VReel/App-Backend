@@ -3,7 +3,9 @@ class SessionDoc
 
   swagger_path '/users/sign_in' do
     operation :post do
-      security nil
+      security do
+        key 'vreel-application-id', []
+      end
       key :summary, 'Sign in'
       key :description, 'Creates a new session. Login should be handle or email'
       key :operationId, 'sign_in'

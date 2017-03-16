@@ -3,7 +3,9 @@ class ConfirmationDoc
 
   swagger_path '/users/confirmation' do
     operation :post do
-      security nil
+      security do
+        key 'vreel-application-id', []
+      end
       key :summary, 'Request a new confirmation email'
       key :operationId, 'request_confirmation'
       key :produces, [

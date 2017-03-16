@@ -2,9 +2,18 @@ class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
 
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :authenticate_application!
   before_action :authenticate_user!
 
   protected
+
+  def authenticate_application!
+    return if ClientApplication.request_valid?(request)
+
+    render json: {
+      errors: ['Authorized applications only.']
+    }, status: 401
+  end
 
   def configure_permitted_parameters
     added_attrs = [:handle, :email, :password, :password_confirmation]
@@ -27,8 +36,7 @@ class ApplicationController < ActionController::API
 
     if @used_auth_by_token &&
        @resource.try(:tokens).present? &&
-       ENV['ACCESS_TOKEN_LIFETIME'].present? &&
-       Integer(ENV['ACCESS_TOKEN_LIFETIME']).to_i > 0
+       ENV['ACCESS_TOKEN_LIFETIME'].to_i > 0
 
       # should not append auth header if @resource related token was
       # cleared by sign out in the meantime.

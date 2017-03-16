@@ -13,7 +13,7 @@ RSpec.describe 'Delete account requests', type: :request do
 
   describe 'failure without authentication' do
     before(:each) do
-      delete '/v1/users'
+      delete '/v1/users', headers: client_application_header
     end
 
     it 'should fail' do
@@ -34,14 +34,9 @@ RSpec.describe 'Delete account requests', type: :request do
       post '/v1/users/sign_in', params: {
         login: confirmed_user.email,
         password: password
-      }, xhr: true
+      }, headers: client_application_header
 
-      delete '/v1/users', headers: {
-        client: response.headers['client'],
-        uid: response.headers['uid'],
-        'access-token': response.headers['access-token'],
-        'token-type' => 'bearer'
-      }
+      delete '/v1/users', headers: auth_headers_from_response
     end
 
     it 'should succeed' do
