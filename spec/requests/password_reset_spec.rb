@@ -54,8 +54,8 @@ RSpec.describe 'Password reset requests', type: :request do
 
     let(:mail) { ActionMailer::Base.deliveries.last }
     let(:new_password) do
-      match = mail.body.to_s[/<strong id='new-password'>([^<]*)/]
-      $1
+      mail.body.to_s[/<strong id='new-password'>([^<]*)/]
+      Regexp.last_match[1]
     end
 
     describe 'after click' do
@@ -88,7 +88,6 @@ RSpec.describe 'Password reset requests', type: :request do
         expect(user.reload.confirmed?).to be true
       end
     end
-
 
     it 'redirects the user to the thank you page' do
       expect(get(password_reset_path)).to redirect_to ENV['PASSWORD_RESET_REQUEST_URL']

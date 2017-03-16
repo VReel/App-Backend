@@ -5,6 +5,7 @@ class Users::PasswordsController < DeviseTokenAuth::PasswordsController
   before_action :hash_email, only: [:create]
 
   # Overriding as we will create a new password and send it by email.
+  # rubocop:disable all
   def edit
     @resource = resource_class.reset_password_by_token({
       reset_password_token: resource_params[:reset_password_token]
@@ -23,11 +24,12 @@ class Users::PasswordsController < DeviseTokenAuth::PasswordsController
       render_edit_error
     end
   end
+  # rubocop:enable all
 
   protected
 
   def render_create_error_missing_email
-
+    render_error(I18n.t('devise_token_auth.passwords.missing_email'), 401)
   end
 
   def render_create_success
@@ -35,14 +37,10 @@ class Users::PasswordsController < DeviseTokenAuth::PasswordsController
       data: {
         type: 'message',
         attributes: {
-          content: I18n.t("devise_token_auth.passwords.sended", email: @original_email)
+          content: I18n.t('devise_token_auth.passwords.sended', email: @original_email)
         }
       }
     }
-  end
-
-  def render_edit_error
-
   end
 
   # https://github.com/lynndylanhurley/devise_token_auth/blob/master/app/controllers/devise_token_auth/passwords_controller.rb
