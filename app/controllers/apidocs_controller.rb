@@ -62,6 +62,7 @@ class ApidocsController < ActionController::Base
     ErrorDoc,
     UserDoc,
     ConfirmationDoc,
+    PasswordDoc,
     SessionDoc,
     S3PresignedUrl,
     HelloWorldDoc,
