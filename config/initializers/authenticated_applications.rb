@@ -3,7 +3,7 @@ if Rails.env.test?
 else
   begin
     AUTHORIZED_APPLICATION_IDS = ClientApplication.all.map(&:application_id)
-  rescue ActiveRecord => e
+  rescue StandardError => e
     puts e.message
   end
 end
