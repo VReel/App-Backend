@@ -9,6 +9,8 @@ RSpec.describe 'Update profile requests', type: :request do
     user
   end
   let(:auth_headers) { response.headers.slice('access-token', 'client', 'uid').merge(client_application_header) }
+  let(:name) { Faker::Name.name }
+  let(:profile) { Faker::Lorem.sentence }
   let(:data) { JSON.parse(response.body) if response.body.present? }
 
   before(:each) do
@@ -24,6 +26,45 @@ RSpec.describe 'Update profile requests', type: :request do
       expect(response.status).to eq 200
       confirmed_user.reload
       expect(confirmed_user.handle).to eq 'a_new_handle'
+    end
+
+    it 'can update profile and name' do
+      patch '/v1/users', headers: auth_headers, params: {
+        profile: profile,
+        name: name
+      }
+
+      expect(response.status).to eq 200
+      confirmed_user.reload
+
+      expect(confirmed_user.profile).to eq profile
+      expect(confirmed_user.name).to eq name
+    end
+
+    it 'cannot update email' do
+      old_email = confirmed_user.email
+
+      patch '/v1/users', headers: auth_headers, params: {
+        email: Faker::Internet.email,
+        name: name
+      }
+
+      confirmed_user.reload
+
+      # Email is unchanged.
+      expect(confirmed_user.email).to eq old_email
+      # Other fields are changed.
+      expect(confirmed_user.name).to eq name
+    end
+
+    it 'All attributes are returned' do
+      patch '/v1/users', headers: auth_headers, params: {
+        profile: profile,
+        name: name
+      }
+
+      expect(data['data']['attributes']['name']).to be_present
+      expect(data['data']['attributes']['profile']).to be_present
     end
   end
 

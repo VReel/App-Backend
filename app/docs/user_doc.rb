@@ -89,6 +89,12 @@ class UserDoc
         property :password_confirmation do
           key :type, :string
         end
+        property :name do
+          key :type, :string
+        end
+        property :profile do
+          key :type, :string
+        end
       end
     end
   end
@@ -99,9 +105,6 @@ class UserDoc
         property :handle do
           key :type, :string
         end
-        property :email do
-          key :type, :string
-        end
         property :password do
           key :type, :string
         end
@@ -109,6 +112,12 @@ class UserDoc
           key :type, :string
         end
         property :current_password do
+          key :type, :string
+        end
+        property :name do
+          key :type, :string
+        end
+        property :profile do
           key :type, :string
         end
       end
