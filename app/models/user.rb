@@ -11,9 +11,12 @@ class User < ApplicationRecord
 
   include DeviseTokenAuth::Concerns::User
 
+  validates :email, presence: true
   validates :handle, presence: true
   validates :handle, presence: true, uniqueness: { case_sensitive: false }, if: :handle_changed?
   validates :handle, format: { with: /\A[a-z0-9_]{3,}\z/i, message: '%{value} - is invalid' }
+  validates :profile, length: { maximum: 500 }
+  validates :name, length: { maximum: 100 }
 
   # Use this if we want to require a password confirmation at the model level.
   validates :password_confirmation, presence: true, if: :password_required?

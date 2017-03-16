@@ -75,7 +75,6 @@ ALTER SEQUENCE client_applications_id_seq OWNED BY client_applications.id;
 
 
 --
-
 -- Name: delayed_jobs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -151,7 +150,8 @@ CREATE TABLE users (
     tokens json,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    unique_id character varying
+    unique_id character varying,
+    profile text
 );
 
 
@@ -185,14 +185,12 @@ ALTER TABLE ONLY client_applications ALTER COLUMN id SET DEFAULT nextval('client
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-
 ALTER TABLE ONLY delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
-
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
@@ -317,6 +315,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170228160520'),
 ('20170313170707'),
 ('20170315112501'),
-('20170315152810');
+('20170315152810'),
+('20170316132901');
 
 
