@@ -27,5 +27,6 @@ module VReelApi
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     config.active_record.schema_format = :sql
+    config.active_job.queue_adapter = :delayed_job
   end
 end

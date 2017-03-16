@@ -50,6 +50,11 @@ class User < ApplicationRecord
   # rubocop:enable Metrics/AbcSize
   # rubocop:enable Rails/FindBy
 
+  # Ovverride to send emails async via delayed job.
+  def send_devise_notification(notification, *args)
+    devise_mailer.send(notification, self, *args).deliver_later
+  end
+
   # Override this as we don't need to expose auth tokens in URLs right now.
   def build_auth_url(base_url, _args)
     base_url
