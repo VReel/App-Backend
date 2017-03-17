@@ -54,7 +54,7 @@ class V1::PostsController < ApplicationController
   end
 
   def post
-    @post ||= current_user.posts.find_by_id(params[:id])
+    @post ||= current_user.posts.find_by(id: params[:id])
   end
 
   def posts
@@ -73,7 +73,7 @@ class V1::PostsController < ApplicationController
   def posts_links
     return nil unless pagination_needed?
     {
-      next: v1_posts_url(page:  Base64.urlsafe_encode64(posts[WINDOW_SIZE - 1].created_at.xmlschema(6)))
+      next: v1_posts_url(page: Base64.urlsafe_encode64(posts[WINDOW_SIZE - 1].created_at.xmlschema(6)))
     }
   end
 end

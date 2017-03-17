@@ -7,21 +7,21 @@ RSpec.describe 'Post requests', type: :request do
 
   describe 'create a post' do
     it 'succeeds when valid' do
-      expect {
+      expect do
         post '/v1/posts', params: {
           post: Fabricate.build(:post).attributes.slice('original_key', 'thumbnail_key', 'caption')
         }, headers: auth_headers_from_response
-      }.to change { Post.count }.by 1
+      end.to change { Post.count }.by 1
 
       expect(response.status).to eq 201
     end
 
     it 'fails when invalid' do
-      expect {
+      expect do
         post '/v1/posts', params: {
           post: Fabricate.build(:post).attributes.slice('original_key', 'caption')
         }, headers: auth_headers_from_response
-      }.not_to change { Post.count }
+      end.not_to change { Post.count }
 
       expect(response.status).to eq 422
     end
@@ -41,7 +41,7 @@ RSpec.describe 'Post requests', type: :request do
     end
 
     it 'fails when an invalid id is passed' do
-      put "/v1/posts/not-a-real-id", params: {
+      put '/v1/posts/not-a-real-id', params: {
         post: { caption: caption }
       }, headers: auth_headers_from_response
 
@@ -65,30 +65,33 @@ RSpec.describe 'Post requests', type: :request do
     before(:each) { existing_post }
 
     it 'succeeds when valid' do
-      expect {
+      expect do
         delete "/v1/posts/#{existing_post.id}", headers: auth_headers_from_response
-      }.to change { Post.count }.by(-1)
+      end.to change { Post.count }.by(-1)
 
       expect(response.status).to eq 204
     end
 
     it 'fails when an invalid id is passed' do
-      expect {
+      expect do
         delete '/v1/posts/some_other_id', headers: auth_headers_from_response
-      }.not_to change { Post.count }
+      end.not_to change { Post.count }
 
       expect(response.status).to eq 404
     end
 
     it 'deletes the underlying S3 resources' do
+      # Why doesn't this work?
+      # expect(existing_post).to receive(:delete_s3_resources)
 
+      delete "/v1/posts/#{existing_post.id}", headers: auth_headers_from_response
     end
 
     it 'fails when not owned by the current user' do
       other_post = Fabricate(:post, user: Fabricate(:user))
-      expect {
+      expect do
         delete "/v1/posts/#{other_post.id}", headers: auth_headers_from_response
-      }.not_to change { Post.count }
+      end.not_to change { Post.count }
 
       expect(response.status).to eq 404
     end
@@ -118,7 +121,9 @@ RSpec.describe 'Post requests', type: :request do
     before(:each) do
       25.times { Fabricate(:post, user: user) }
 
-      get '/v1/posts', headers: auth_headers_from_response
+      # For some reason this fails in the full test suite if we don't memoize headers.
+      @auth_headers = auth_headers_from_response
+      get '/v1/posts', headers: @auth_headers
     end
 
     it 'gets a page of posts' do
@@ -129,7 +134,7 @@ RSpec.describe 'Post requests', type: :request do
     it 'gets the next page of posts' do
       expect(data['links']['next']).to be_present
 
-      get data['links']['next'], headers: auth_headers_from_response
+      get data['links']['next'], headers: @auth_headers
 
       expect(response.status).to eq 200
 
