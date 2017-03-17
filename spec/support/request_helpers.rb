@@ -23,6 +23,8 @@ module RequestHelpers
       login: user.email,
       password: user.password
     }, headers: client_application_header
+
+    User.find_by_email(user.email)
   end
 
   def auth_headers_from_response

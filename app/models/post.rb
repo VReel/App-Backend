@@ -2,7 +2,6 @@ class Post < ApplicationRecord
   belongs_to :user
   validates :original_key, presence: true
   validates :thumbnail_key, presence: true
-  validates :original_key, presence: true
   validates :user_id, presence: true
 
   before_update { self.edited = true if caption_changed? }

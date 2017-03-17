@@ -1,4 +1,5 @@
 class V1::PostsController < ApplicationController
+  include ErrorResource
   WINDOW_SIZE = 20
 
   def index
@@ -16,7 +17,7 @@ class V1::PostsController < ApplicationController
 
     return render json: new_post, status: 201 if new_post.persisted?
 
-    render_validation_error
+    render_validation_error(new_post)
   end
 
   def update
@@ -38,8 +39,8 @@ class V1::PostsController < ApplicationController
 
   protected
 
-  def render_validation_error
-    render json: post, serializer: ActiveModel::Serializer::ErrorSerializer, status: 422
+  def render_validation_error(error_post = post)
+    render json: error_post, serializer: ActiveModel::Serializer::ErrorSerializer, status: 422
   end
 
   def create_permitted_params
@@ -53,7 +54,7 @@ class V1::PostsController < ApplicationController
   end
 
   def post
-    @post ||= current_user.posts.find(params[:id])
+    @post ||= current_user.posts.find_by_id(params[:id])
   end
 
   def posts
