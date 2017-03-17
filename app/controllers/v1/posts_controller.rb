@@ -61,7 +61,7 @@ class V1::PostsController < ApplicationController
 
     # We try to get one more than the window size, to tell us if we need a next page link.
     @posts = current_user.posts.limit(WINDOW_SIZE + 1)
-    @posts.where!('created_at < ?', Time.zone.parse(params[:created_before])) if params[:created_before].present?
+    @posts.where!('created_at < ?', Time.zone.parse(Base64.urlsafe_decode64(params[:page]))) if params[:page].present?
     @posts.to_a
   end
 
@@ -72,7 +72,7 @@ class V1::PostsController < ApplicationController
   def posts_links
     return nil unless pagination_needed?
     {
-      next: v1_posts_url(created_before: posts[WINDOW_SIZE - 1].created_at.xmlschema(6))
+      next: v1_posts_url(page:  Base64.urlsafe_encode64(posts[WINDOW_SIZE - 1].created_at.xmlschema(6)))
     }
   end
 end
