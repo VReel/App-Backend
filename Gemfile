@@ -64,6 +64,7 @@ end
 
 group :production, :staging do
   gem 'letsencrypt-rails-heroku'
+  gem 'newrelic_rpm'
   gem 'platform-api', github: 'jalada/platform-api', branch: 'master'
   gem 'rails_12factor'
 end
