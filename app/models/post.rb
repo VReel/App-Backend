@@ -17,8 +17,8 @@ class Post < ApplicationRecord
 
   # This is a class method so doesn't rely on existence of record.
   def self.delete_s3_resources(keys)
-    return if Rails.env.test?
-    # This seem to respond the same way whether the key exists or not.
-    keys.each { |key| S3_BUCKET.object(key).delete }
+    s3_deletion_service = S3DeletionService.new
+
+    keys.each { |key| s3_deletion_service.delete(key) }
   end
 end

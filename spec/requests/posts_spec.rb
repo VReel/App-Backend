@@ -81,7 +81,8 @@ RSpec.describe 'Post requests', type: :request do
     end
 
     it 'deletes the underlying S3 resources' do
-      expect(Post).to receive(:delete_s3_resources)
+      expect_any_instance_of(S3DeletionService).to receive(:delete).with(existing_post.thumbnail_key)
+      expect_any_instance_of(S3DeletionService).to receive(:delete).with(existing_post.original_key)
 
       delete "/v1/posts/#{existing_post.id}", headers: auth_headers_from_response
     end

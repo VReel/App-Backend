@@ -22,6 +22,10 @@ class User < ApplicationRecord
   validates :password_confirmation, presence: true, if: :password_required?
 
   before_create { self.unique_id = SecureRandom.random_number(36**12).to_s(36) }
+  before_destroy do
+    S3DeletionService.new.delay.delete(unique_id)
+    posts.delete_all
+  end
 
   has_many :posts, -> { order('created_at DESC') }, dependent: :destroy
 
