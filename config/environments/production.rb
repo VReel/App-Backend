@@ -85,5 +85,5 @@ Rails.application.configure do
     authentication: :plain
   }
 
-  config.middleware.insert_before ActionDispatch::SSL, Letsencrypt::Middleware
+  # config.middleware.insert_before ActionDispatch::SSL, Letsencrypt::Middleware
 end
