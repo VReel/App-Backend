@@ -130,6 +130,7 @@ GEM
     minitest (5.10.1)
     multi_json (1.12.1)
     multipart-post (2.0.0)
+    newrelic_rpm (4.0.0.332)
     nio4r (1.2.1)
     nokogiri (1.7.0.1)
       mini_portile2 (~> 2.1.0)
@@ -250,6 +251,7 @@ DEPENDENCIES
   foreman
   letsencrypt-rails-heroku
   listen (~> 3.0.5)
+  newrelic_rpm
   paranoia (~> 2.2)
   pg (~> 0.18)
   platform-api!
