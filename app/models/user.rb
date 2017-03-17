@@ -23,7 +23,7 @@ class User < ApplicationRecord
 
   before_create { self.unique_id = SecureRandom.random_number(36**12).to_s(36) }
   before_destroy do
-    S3DeletionService.new.delay.delete(unique_id)
+    S3DeletionService.new.delay.delete_folder(unique_id)
     posts.delete_all
   end
 

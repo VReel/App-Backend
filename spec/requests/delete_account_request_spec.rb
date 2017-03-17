@@ -64,7 +64,7 @@ RSpec.describe 'Delete account requests', type: :request do
     end
 
     it 'deletes the S3 folder' do
-      expect_any_instance_of(S3DeletionService).to receive(:delete).with(user.unique_id)
+      expect_any_instance_of(S3DeletionService).to receive(:delete_folder).with(user.unique_id)
 
       delete '/v1/users', headers: auth_headers_from_response
     end
