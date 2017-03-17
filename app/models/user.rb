@@ -23,6 +23,8 @@ class User < ApplicationRecord
 
   before_create { self.unique_id = SecureRandom.random_number(36**12).to_s(36) }
 
+  has_many :posts, -> { order('created_at DESC') }, dependent: :destroy
+
   def self.hash_to_uid(email)
     Digest::SHA256.hexdigest(email)
   end

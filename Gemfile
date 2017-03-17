@@ -58,6 +58,10 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
+group :test do
+  gem 'webmock'
+end
+
 group :production, :staging do
   gem 'letsencrypt-rails-heroku'
   gem 'platform-api', github: 'jalada/platform-api', branch: 'master'
