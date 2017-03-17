@@ -84,4 +84,6 @@ Rails.application.configure do
     password: ENV['MAILGUN_SMTP_PASSWORD'],
     authentication: :plain
   }
+
+  config.middleware.insert_before ActionDispatch::SSL, Letsencrypt::Middleware
 end
