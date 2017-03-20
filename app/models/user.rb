@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  acts_as_paranoid
+
   # Virtual attribute for authenticating by either username or email
   # This is in addition to a real persisted field like 'username'
   attr_accessor :login
@@ -23,11 +25,10 @@ class User < ApplicationRecord
 
   before_create { self.unique_id = SecureRandom.random_number(36**12).to_s(36) }
   before_destroy do
-    S3DeletionService.new.delay.delete_folder(unique_id)
-    posts.delete_all
+    UserDeletionService.new(id).delay.delete!
   end
 
-  has_many :posts, -> { order('created_at DESC') }, dependent: :destroy
+  has_many :posts, -> { order('created_at DESC') }
 
   def self.hash_to_uid(email)
     Digest::SHA256.hexdigest(email)

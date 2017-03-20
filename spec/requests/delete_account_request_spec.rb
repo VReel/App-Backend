@@ -48,23 +48,20 @@ RSpec.describe 'Delete account requests', type: :request do
         login: user.email,
         password: password
       }, headers: client_application_header
+
+      25.times { fabricate_post_for(user) }
     end
 
     it 'deletes the posts' do
-      post '/v1/users/sign_in', params: {
-        login: user.email,
-        password: password
-      }, headers: client_application_header
-
-      25.times { fabricate_post_for(user) }
-
       expect do
         delete '/v1/users', headers: auth_headers_from_response
       end.to change { Post.where(user_id: user.id).count }.from(25).to(0)
     end
 
-    it 'deletes the S3 folder' do
-      expect_any_instance_of(S3DeletionService).to receive(:delete_folder).with(user.unique_id)
+    it 'deletes the S3 assets' do
+      all_keys = user.posts.map(&:original_key) + user.posts.map(&:thumbnail_key)
+
+      expect_any_instance_of(S3DeletionService).to receive(:bulk_delete).with(all_keys.sort)
 
       delete '/v1/users', headers: auth_headers_from_response
     end
