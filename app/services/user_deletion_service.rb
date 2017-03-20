@@ -1,9 +1,13 @@
 class UserDeletionService
   attr_reader :user
 
-  # Initialize with a user_id as the user will no longer exist.
   def initialize(user_id)
-    @user = User.with_deleted.find(user_id)
+    # Don't instantiate here as you will confuse delayed job with a deleted model.
+    @user_id = user_id
+  end
+
+  def user
+    @user ||= User.with_deleted.find(@user_id)
   end
 
   def delete!
