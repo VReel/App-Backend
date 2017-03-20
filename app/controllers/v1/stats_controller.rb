@@ -40,7 +40,12 @@ class V1::StatsController < ApplicationController
   end
 
   def top_users
-    posts.group(:user_id).order('count_all DESC').count.first(20).map { |k, v| [User.find(k).handle, v] }.to_h
+    posts.group(:user_id).order('count_all DESC').count.first(20).map do |k, v|
+      {
+        user: ActiveModelSerializers::SerializableResource.new(User.find(k)),
+        post_count: v
+      }
+    end
   end
 
   def filters(query)
