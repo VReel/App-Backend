@@ -7,6 +7,14 @@ class ApplicationController < ActionController::API
 
   protected
 
+  def authenticate_chief!
+    return if current_user.try(:is_chief?)
+
+    render json: {
+      errors: ['Chiefs only.']
+    }, status: 401
+  end
+
   def authenticate_application!
     return if ClientApplication.request_valid?(request)
 

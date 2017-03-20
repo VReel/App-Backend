@@ -16,8 +16,9 @@ module RequestHelpers
               original_key: "#{user.unique_id}/#{SecureRandom.random_number(36**12).to_s(36)}")
   end
 
-  def create_user_and_sign_in
+  def create_user_and_sign_in(email = nil)
     user = Fabricate.build(:user)
+    user.email = email if email.present?
 
     post '/v1/users', params: {
       email: user.email,
