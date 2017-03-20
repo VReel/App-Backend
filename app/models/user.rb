@@ -97,6 +97,10 @@ class User < ApplicationRecord
   end
   # rubocop:enable all
 
+  def is_chief?
+    CHIEF_EMAIL_DOMAINS.include? email.split('@').last
+  end
+
   protected
 
   # Override email as uid.
