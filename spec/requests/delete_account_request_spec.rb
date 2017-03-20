@@ -56,7 +56,7 @@ RSpec.describe 'Delete account requests', type: :request do
         password: password
       }, headers: client_application_header
 
-      25.times { Fabricate(:post, user: user) }
+      25.times { fabricate_post_for(user) }
 
       expect do
         delete '/v1/users', headers: auth_headers_from_response
