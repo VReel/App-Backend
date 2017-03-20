@@ -3,13 +3,15 @@ require 'rails_helper'
 RSpec.describe 'Post requests', type: :request do
   let!(:user) { create_user_and_sign_in }
   let(:data) { JSON.parse(response.body) }
-  let(:existing_post) { Fabricate(:post, user: user) }
+  let(:existing_post) { fabricate_post_for(user) }
 
   describe 'create a post' do
+    let!(:new_post) { fabricate_post_for(user) }
+
     it 'succeeds when valid' do
       expect do
         post '/v1/posts', params: {
-          post: Fabricate.build(:post).attributes.slice('original_key', 'thumbnail_key', 'caption')
+          post: new_post.attributes.slice('original_key', 'thumbnail_key', 'caption')
         }, headers: auth_headers_from_response
       end.to change { Post.count }.by 1
 
@@ -19,11 +21,23 @@ RSpec.describe 'Post requests', type: :request do
     it 'fails when invalid' do
       expect do
         post '/v1/posts', params: {
-          post: Fabricate.build(:post).attributes.slice('original_key', 'caption')
+          post: new_post.attributes.slice('original_key', 'caption')
         }, headers: auth_headers_from_response
       end.not_to change { Post.count }
 
       expect(response.status).to eq 422
+    end
+
+    it 'fails with invalid keys' do
+      expect do
+        post '/v1/posts', params: {
+          post: new_post.attributes.slice('original_key', 'caption').merge(thumbnail_key: 'invalid_key')
+        }, headers: auth_headers_from_response
+      end.not_to change { Post.count }
+
+      expect(response.status).to eq 422
+      # Error references correct field.
+      expect(data['errors'].first['source']['pointer']).to eq '/data/attributes/thumbnail-key'
     end
   end
 
@@ -50,7 +64,7 @@ RSpec.describe 'Post requests', type: :request do
     end
 
     it 'fails when not owned by the current user' do
-      other_post = Fabricate(:post, user: Fabricate(:user))
+      other_post = fabricate_post_for(Fabricate(:user))
 
       put "/v1/posts/#{other_post.id}", params: {
         post: { caption: caption }
@@ -81,13 +95,14 @@ RSpec.describe 'Post requests', type: :request do
     end
 
     it 'deletes the underlying S3 resources' do
-      expect(Post).to receive(:delete_s3_resources)
+      expect_any_instance_of(S3DeletionService).to receive(:delete).with(existing_post.thumbnail_key)
+      expect_any_instance_of(S3DeletionService).to receive(:delete).with(existing_post.original_key)
 
       delete "/v1/posts/#{existing_post.id}", headers: auth_headers_from_response
     end
 
     it 'fails when not owned by the current user' do
-      other_post = Fabricate(:post, user: Fabricate(:user))
+      other_post = fabricate_post_for(Fabricate(:user))
       expect do
         delete "/v1/posts/#{other_post.id}", headers: auth_headers_from_response
       end.not_to change { Post.count }
@@ -118,7 +133,7 @@ RSpec.describe 'Post requests', type: :request do
 
   describe 'list posts' do
     before(:each) do
-      25.times { Fabricate(:post, user: user) }
+      25.times { fabricate_post_for(user) }
 
       # For some reason this fails in the full test suite if we don't memoize headers.
       @auth_headers = auth_headers_from_response

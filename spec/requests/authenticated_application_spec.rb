@@ -29,7 +29,7 @@ RSpec.describe 'Authenticated application requests', type: :request do
       }, headers: client_application_header
     end
 
-    it 'should fail' do
+    it 'should succeed' do
       expect(response.status).to eq 200
     end
   end

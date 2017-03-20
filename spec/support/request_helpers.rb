@@ -9,6 +9,13 @@ module RequestHelpers
     }
   end
 
+  def fabricate_post_for(user)
+    Fabricate(:post,
+              user: user,
+              thumbnail_key: "#{user.unique_id}/#{SecureRandom.random_number(36**12).to_s(36)}",
+              original_key: "#{user.unique_id}/#{SecureRandom.random_number(36**12).to_s(36)}")
+  end
+
   def create_user_and_sign_in
     user = Fabricate.build(:user)
 

@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  acts_as_paranoid
+
   # Virtual attribute for authenticating by either username or email
   # This is in addition to a real persisted field like 'username'
   attr_accessor :login
@@ -22,8 +24,11 @@ class User < ApplicationRecord
   validates :password_confirmation, presence: true, if: :password_required?
 
   before_create { self.unique_id = SecureRandom.random_number(36**12).to_s(36) }
+  before_destroy do
+    UserDeletionService.new(id).delay.delete!
+  end
 
-  has_many :posts, -> { order('created_at DESC') }, dependent: :destroy
+  has_many :posts, -> { order('created_at DESC') }
 
   def self.hash_to_uid(email)
     Digest::SHA256.hexdigest(email)
