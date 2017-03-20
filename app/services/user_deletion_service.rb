@@ -14,7 +14,7 @@ class UserDeletionService
   end
 
   def posts
-    Post.where(user_id: @user.id)
+    Post.where(user_id: user.id)
   end
 
   def delete_s3_assets
@@ -37,7 +37,7 @@ class UserDeletionService
     # remain unique.
     # As far as rails is concerned, these records will not longer exist.
     user.email = "#{user.email}.#{rand(999_999_999_999_999)}.deleted"
-    user.uid = rand(999_999_999_999_999)
+    user.uid = rand(999_999_999_999_999).to_s
     # Blank any fields with security issues
     user.password = nil
     user.tokens = nil
