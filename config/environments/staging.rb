@@ -84,4 +84,11 @@ Rails.application.configure do
     password: ENV['MAILGUN_SMTP_PASSWORD'],
     authentication: :plain
   }
+
+  config.middleware.use ExceptionNotification::Rack,
+                        email: {
+                          email_prefix: '[VReel][STAGING] ',
+                          sender_address: %("vreel-exception" <vreel-exceptions@staging.reasonfactory.com>),
+                          exception_recipients: %w(dan+vreel@reasonfactory.com)
+                        }
 end

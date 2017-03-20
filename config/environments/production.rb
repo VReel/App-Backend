@@ -86,4 +86,11 @@ Rails.application.configure do
   }
 
   config.middleware.insert_before ActionDispatch::SSL, Letsencrypt::Middleware
+
+  config.middleware.use ExceptionNotification::Rack,
+                        email: {
+                          email_prefix: '[VReel][PRODUCTION] ',
+                          sender_address: %("vreel-exception" <exceptions@vreel.io>),
+                          exception_recipients: %w(dan+vreel@reasonfactory.com)
+                        }
 end
