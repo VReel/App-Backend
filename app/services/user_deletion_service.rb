@@ -41,7 +41,6 @@ class UserDeletionService
     # remain unique.
     # As far as rails is concerned, these records will not longer exist.
     user.email = "#{user.email}.#{rand(999_999_999_999_999)}.deleted"
-    user.uid = rand(999_999_999_999_999).to_s
     # Blank any fields with security issues
     user.password = nil
     user.tokens = nil
