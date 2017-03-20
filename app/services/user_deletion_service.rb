@@ -36,8 +36,8 @@ class UserDeletionService
     # We are putting dummy values in these fields so the unique indexes
     # remain unique.
     # As far as rails is concerned, these records will not longer exist.
-    user.email = "#{user.email}.#{rand(99999999999)}.deleted"
-    user.uid = rand(99999999999)
+    user.email = "#{user.email}.#{rand(999_999_999_999_999)}.deleted"
+    user.uid = rand(999_999_999_999_999)
     # Blank any fields with security issues
     user.password = nil
     user.tokens = nil

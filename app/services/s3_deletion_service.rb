@@ -12,9 +12,11 @@ class S3DeletionService
     return if Rails.env.test?
     return unless keys.any?
 
-    S3_BUCKET.delete_objects(delete: {
-      objects: keys.map { |key| { key: key } }
-    })
+    key_objects = keys.map do |key|
+      { key: key }
+    end
+
+    S3_BUCKET.delete_objects(delete: { objects: key_objects })
 
     Rails.logger.info "Deleted #{keys.size} objects"
   end

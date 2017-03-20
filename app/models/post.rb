@@ -26,7 +26,7 @@ class Post < ApplicationRecord
   protected
 
   def valid_keys
-    errors.add(:original_key, 'invalid path') unless original_key.present? && original_key.start_with?(user.unique_id)
-    errors.add(:thumbnail_key, 'invalid path') unless thumbnail_key.present? && thumbnail_key.start_with?(user.unique_id)
+    errors.add(:original_key, 'invalid path') unless original_key.try(:start_with?, user.unique_id)
+    errors.add(:thumbnail_key, 'invalid path') unless thumbnail_key.try(:start_with?, user.unique_id)
   end
 end
