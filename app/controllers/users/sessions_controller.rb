@@ -1,5 +1,6 @@
 class Users::SessionsController < DeviseTokenAuth::SessionsController
   include ErrorResource
+  include TokenAuth
   skip_before_action :authenticate_user!, only: [:create]
 
   # Overriding https://github.com/lynndylanhurley/devise_token_auth/blob/v0.1.40/app/controllers/devise_token_auth/sessions_controller.rb
@@ -25,18 +26,9 @@ class Users::SessionsController < DeviseTokenAuth::SessionsController
         render_create_error_bad_credentials
         return
       end
-      # create client id
-      @client_id = SecureRandom.urlsafe_base64(nil, false)
-      @token     = SecureRandom.urlsafe_base64(nil, false)
 
       # Overriding here to set created_at token time.
-      now = Time.zone.now
-      @resource.tokens[@client_id] = {
-        token: BCrypt::Password.create(@token),
-        expiry: (now + DeviseTokenAuth.token_lifespan).to_i,
-        created_at: now.to_i
-      }
-      @resource.save
+      create_auth(@resource)
 
       sign_in(:user, @resource, store: false, bypass: false)
 

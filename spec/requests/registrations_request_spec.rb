@@ -200,6 +200,13 @@ RSpec.describe 'Registration requests', type: :request do
       it 'new user password should not be returned' do
         expect(data['data']['attributes']['password']).to be nil
       end
+
+      it 'should return authentication headers' do
+        expect(response.headers['client']).to be_present
+        expect(response.headers['uid']).to be_present
+        expect(response.headers['access-token']).to be_present
+        expect(response.headers['expiry']).to be_present
+      end
     end
   end
 end
