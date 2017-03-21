@@ -36,11 +36,12 @@ class Users::RegistrationsController < DeviseTokenAuth::RegistrationsController
             client_config: params[:config_name],
             redirect_url: @redirect_url
           })
-
         end
 
         # Overridden - always authenticate user.
         create_auth(@resource)
+
+        sign_in(:user, @resource, store: false, bypass: false)
 
         update_auth_header
 
