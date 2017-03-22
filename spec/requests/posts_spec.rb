@@ -37,7 +37,7 @@ RSpec.describe 'Post requests', type: :request do
 
       expect(response.status).to eq 422
       # Error references correct field.
-      expect(data['errors'].first['source']['pointer']).to eq '/data/attributes/thumbnailKey'
+      expect(data['errors'].first['source']['pointer']).to eq '/data/attributes/thumbnail_key'
     end
   end
 
@@ -120,7 +120,7 @@ RSpec.describe 'Post requests', type: :request do
 
     it 'has the full details' do
       get "/v1/posts/#{existing_post.id}", headers: auth_headers_from_response
-      %w(thumbnailUrl originalUrl caption edited createdAt).each do |key|
+      %w(thumbnail_url original_url caption edited created_at).each do |key|
         expect(data['data']['attributes'][key]).not_to be_nil
       end
     end
