@@ -1,1 +1,1 @@
-ActiveModel::Serializer.config.key_transform = :unaltered
+ActiveModel::Serializer.config.key_transform = :camel_lower
