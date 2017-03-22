@@ -49,7 +49,7 @@ RSpec.describe 'Registration requests', type: :request do
     it 'it should return an errors packet with a source record pointing to password_confirmation' do
       post_user
 
-      expect(data['errors'].first['source']['pointer']).to eq '/data/attributes/password_confirmation'
+      expect(data['errors'].first['source']['pointer']).to eq '/data/attributes/passwordConfirmation'
     end
   end
 
@@ -135,7 +135,7 @@ RSpec.describe 'Registration requests', type: :request do
     it 'it should return an errors packet with a source record pointing to handle' do
       post_user
 
-      expect(data['errors'].first['source']['pointer']).to eq '/data/attributes/password_confirmation'
+      expect(data['errors'].first['source']['pointer']).to eq '/data/attributes/passwordConfirmation'
     end
   end
 
