@@ -89,6 +89,6 @@ Rails.application.configure do
                         email: {
                           email_prefix: '[VReel][STAGING] ',
                           sender_address: %("vreel-exception" <vreel-exceptions@staging.reasonfactory.com>),
-                          exception_recipients: %w(dan+vreel@reasonfactory.com)
+                          exception_recipients: ENV['EXCEPTION_RECIPIENTS'] || %w(dan+vreel@reasonfactory.com)
                         }
 end
