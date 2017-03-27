@@ -147,6 +147,8 @@ RSpec.describe 'Post requests', type: :request do
 
     it 'gets the next page of posts' do
       expect(data['links']['next']).to be_present
+      expect(data['meta']['next_page']).to be true
+      expect(data['meta']['next_page_id']).to be_present
 
       get data['links']['next'], headers: @auth_headers
 
@@ -157,6 +159,7 @@ RSpec.describe 'Post requests', type: :request do
       expect(new_data['data'].size).to eq 5
 
       expect(new_data['links']).to be_nil
+      expect(new_data['meta']['next_page']).to be false
     end
   end
 end

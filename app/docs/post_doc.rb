@@ -19,7 +19,7 @@ class PostDoc
 
   swagger_path '/posts' do
     operation :get do
-      key :summary, 'Get all posts by user'
+      key :summary, 'Get page of posts by user'
       key :operationId, 'get_posts'
       key :produces, [
         'application/json'
