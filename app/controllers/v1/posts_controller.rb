@@ -3,7 +3,7 @@ class V1::PostsController < ApplicationController
   WINDOW_SIZE = 20
 
   def index
-    render json: posts.first(WINDOW_SIZE), each_serializer: PostListSerializer, links: posts_links
+    render json: posts.first(WINDOW_SIZE), each_serializer: PostListSerializer, links: posts_links, meta: meta
   end
 
   def show
@@ -70,10 +70,20 @@ class V1::PostsController < ApplicationController
     posts.size > WINDOW_SIZE
   end
 
+  def next_page_id
+    @next_page_id ||= Base64.urlsafe_encode64(posts[WINDOW_SIZE - 1].created_at.xmlschema(6))
+  end
+
   def posts_links
     return nil unless pagination_needed?
     {
-      next: v1_posts_url(page: Base64.urlsafe_encode64(posts[WINDOW_SIZE - 1].created_at.xmlschema(6)))
+      next: v1_posts_url(page: next_page_id)
     }
+  end
+
+  def meta
+    meta = { next_page: pagination_needed? }
+    meta[:next_page_id] = next_page_id if pagination_needed?
+    meta
   end
 end
