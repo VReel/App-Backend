@@ -89,6 +89,17 @@ RSpec.describe 'Update profile requests', type: :request do
       expect(confirmed_user.valid_password?('a_new_password_2')).to be false
     end
 
+    it 'Cannot update password without a correct current_password' do
+      patch '/v1/users', headers: auth_headers, params: {
+        password: 'a_new_password_2',
+        password_confirmation: 'a_new_password_2',
+        current_password: 'not_the_original_password'
+      }
+      expect(response.status).to eq 422
+      confirmed_user.reload
+      expect(confirmed_user.valid_password?('a_new_password_2')).to be false
+    end
+
     it 'Can update password with a confirmation and a current password' do
       patch '/v1/users', headers: auth_headers, params: {
         password: 'a_new_password_3',
