@@ -39,6 +39,17 @@ class UserDoc
       end
     end
 
+    operation :get do
+      key :summary, 'Get user details'
+      key :operationId, 'get_user'
+      key :produces, [
+        'application/json'
+      ]
+      key :tags, [
+        'Registration'
+      ]
+    end
+
     operation :put do
       key :summary, 'Update a user'
       key :description, 'If the password is to be updated, then all of password, password_confirmation

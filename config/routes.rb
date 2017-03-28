@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   resources :apidocs, only: [:index]
 
   namespace :v1, defaults: { format: 'json' } do
+    resources :users, only: :index
     resources :s3_presigned_url, only: [:index]
     resources :posts
     resources :stats, only: :index
