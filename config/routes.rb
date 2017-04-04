@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     resources :s3_presigned_url, only: [:index]
     resources :posts
     resources :stats, only: :index
+    get 'users/search/:term', to: 'search#users'
   end
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

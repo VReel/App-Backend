@@ -1,0 +1,1 @@
+API_PAGE_SIZE = Integer(ENV['API_PAGE_SIZE'] || 20)
