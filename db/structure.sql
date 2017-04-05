@@ -198,7 +198,10 @@ CREATE TABLE users (
     profile text,
     deleted_at timestamp without time zone,
     original_key character varying,
-    thumbnail_key character varying
+    thumbnail_key character varying,
+    follower_count integer DEFAULT 0 NOT NULL,
+    following_count integer DEFAULT 0 NOT NULL,
+    post_count integer DEFAULT 0 NOT NULL
 );
 
 
@@ -393,6 +396,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170316182551'),
 ('20170320095834'),
 ('20170404161623'),
-('20170405110635');
+('20170405110635'),
+('20170405145142');
 
 
