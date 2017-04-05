@@ -33,8 +33,8 @@ class User < ApplicationRecord
   def self.search(term, limit: 10)
     # Get handle matches - starting substring.
     matches = User.where('handle ilike ?', "#{term}%").limit(limit).to_a
-    # Get name matches - substring anywhere.
-    matches += User.where('name ilike ?', "%#{term}%").limit(limit - matches.size).to_a if matches.size < limit
+    # Get name matches - start of string, or string following space.
+    matches += User.where('name ilike ? or name ilike ?', "#{term}%", "% #{term}%").limit(limit - matches.size).to_a if matches.size < limit
 
     matches.uniq
   end
