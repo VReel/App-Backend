@@ -196,7 +196,9 @@ CREATE TABLE users (
     updated_at timestamp without time zone NOT NULL,
     unique_id character varying,
     profile text,
-    deleted_at timestamp without time zone
+    deleted_at timestamp without time zone,
+    original_key character varying,
+    thumbnail_key character varying
 );
 
 
@@ -390,6 +392,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170316145912'),
 ('20170316182551'),
 ('20170320095834'),
-('20170404161623');
+('20170404161623'),
+('20170405110635');
 
 

@@ -1,5 +1,5 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :handle, :name, :profile
+  attributes :id, :handle, :name, :profile, :thumbnail_url, :original_url
   # Private data.
   attribute :email, if: :is_current_user?
 

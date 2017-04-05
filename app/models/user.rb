@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  include S3Urls
   acts_as_paranoid
 
   # Virtual attribute for authenticating by either username or email

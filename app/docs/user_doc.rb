@@ -127,6 +127,12 @@ class UserDoc
         property :profile do
           key :type, :string
         end
+        property :thumbnail_key do
+          key :type, :string
+        end
+        property :original_key do
+          key :type, :string
+        end
       end
     end
   end
@@ -150,6 +156,12 @@ class UserDoc
           key :type, :string
         end
         property :profile do
+          key :type, :string
+        end
+        property :thumbnail_key do
+          key :type, :string
+        end
+        property :original_key do
           key :type, :string
         end
       end
