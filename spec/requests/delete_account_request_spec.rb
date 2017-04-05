@@ -61,7 +61,10 @@ RSpec.describe 'Delete account requests', type: :request do
     it 'deletes the S3 assets' do
       all_keys = user.posts.map(&:original_key) + user.posts.map(&:thumbnail_key)
 
+      # First we expect the database records to be deleted.
       expect_any_instance_of(S3DeletionService).to receive(:bulk_delete).with(all_keys.sort)
+      # Then we expect anything remaining in the foleder to be deleted.
+      expect_any_instance_of(S3DeletionService).to receive(:bulk_delete).with([])
 
       delete '/v1/users', headers: auth_headers_from_response
     end
