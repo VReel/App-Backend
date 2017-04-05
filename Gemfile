@@ -64,7 +64,7 @@ group :test do
   gem 'webmock'
 end
 
-group :production, :staging do
+group :production, :staging, :heroku_development do
   gem 'letsencrypt-rails-heroku'
   gem 'newrelic_rpm'
   gem 'platform-api', github: 'jalada/platform-api', branch: 'master'
