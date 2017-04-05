@@ -30,6 +30,19 @@ class User < ApplicationRecord
 
   has_many :posts, -> { order('created_at DESC') }
 
+  def self.search(term, limit: 10)
+    # Get handle matches - starting substring.
+    matches = User.where('handle ilike ?', "#{term}%").limit(limit).to_a
+    # Get name matches - start of string, or string following space.
+    if matches.size < limit
+      matches += User.where(
+        'name ilike ? or name ilike ?', "#{term}%", "% #{term}%"
+      ).limit(limit - matches.size).to_a
+    end
+
+    matches.uniq
+  end
+
   def self.hash_to_uid(email)
     Digest::SHA256.hexdigest(email)
   end

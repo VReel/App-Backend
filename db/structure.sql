@@ -24,6 +24,20 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
 --
+-- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+
+
+--
 -- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -340,6 +354,20 @@ CREATE INDEX postd_created_at_index ON posts USING btree (created_at DESC NULLS 
 
 
 --
+-- Name: users_handle_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX users_handle_gin_trgm_idx ON users USING gist (handle gist_trgm_ops);
+
+
+--
+-- Name: users_name_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX users_name_gin_trgm_idx ON users USING gist (name gist_trgm_ops);
+
+
+--
 -- Name: fk_rails_5b5ddfd518; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -361,6 +389,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170316132901'),
 ('20170316145912'),
 ('20170316182551'),
-('20170320095834');
+('20170320095834'),
+('20170404161623');
 
 

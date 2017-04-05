@@ -1,9 +1,8 @@
 class V1::PostsController < ApplicationController
   include ErrorResource
-  WINDOW_SIZE = 20
 
   def index
-    render json: posts.first(WINDOW_SIZE), each_serializer: PostListSerializer, links: posts_links, meta: meta
+    render json: posts.first(API_PAGE_SIZE), each_serializer: PostListSerializer, links: posts_links, meta: meta
   end
 
   def show
@@ -61,17 +60,17 @@ class V1::PostsController < ApplicationController
     return @posts if @posts.present?
 
     # We try to get one more than the window size, to tell us if we need a next page link.
-    @posts = current_user.posts.limit(WINDOW_SIZE + 1)
+    @posts = current_user.posts.limit(API_PAGE_SIZE + 1)
     @posts.where!('created_at < ?', Time.zone.parse(Base64.urlsafe_decode64(params[:page]))) if params[:page].present?
     @posts.to_a
   end
 
   def pagination_needed?
-    posts.size > WINDOW_SIZE
+    posts.size > API_PAGE_SIZE
   end
 
   def next_page_id
-    @next_page_id ||= Base64.urlsafe_encode64(posts[WINDOW_SIZE - 1].created_at.xmlschema(6))
+    @next_page_id ||= Base64.urlsafe_encode64(posts[API_PAGE_SIZE - 1].created_at.xmlschema(6))
   end
 
   def posts_links
