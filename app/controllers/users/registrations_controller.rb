@@ -60,7 +60,7 @@ class Users::RegistrationsController < DeviseTokenAuth::RegistrationsController
   protected
 
   def render_create_success
-    render json: @resource, status: 201
+    render json: @resource, serializer: UserFullSerializer, status: 201
   end
 
   def render_create_error
@@ -72,7 +72,7 @@ class Users::RegistrationsController < DeviseTokenAuth::RegistrationsController
   end
 
   def render_update_success
-    render json: @resource, status: 200
+    render json: @resource, serializer: UserFullSerializer, status: 200
   end
 
   def render_update_error

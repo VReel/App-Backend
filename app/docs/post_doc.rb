@@ -104,6 +104,33 @@ class PostDoc
     end
   end
 
+  swagger_path '/posts/hash_tags/{hash_tag}' do
+    operation :get do
+      key :summary, 'Search for posts by hash_tag'
+      key :operationId, 'search_post_hash_tags'
+      key :produces, [
+        'application/json'
+      ]
+      key :tags, [
+        'Post'
+      ]
+      parameter do
+        key :in, :path
+        key :name, :hash_tag
+        key :description, 'Hash tag (prefixed with #) or hash tag uuid to search for'
+        key :required, true
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :page
+        key :description, 'Gets next page of posts.'
+        key :required, false
+        key :type, :string
+      end
+    end
+  end
+
   swagger_path '/posts/{postId}' do
     operation :delete do
       key :summary, 'Delete a post'
