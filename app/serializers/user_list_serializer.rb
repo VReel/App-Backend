@@ -4,6 +4,8 @@ class UserListSerializer < ActiveModel::Serializer
   attribute :email, if: :is_current_user?
 
   def is_current_user?
+    return false unless defined? current_user
+
     object.id == current_user.id
   end
 end

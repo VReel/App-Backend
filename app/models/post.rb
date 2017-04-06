@@ -10,6 +10,7 @@ class Post < ApplicationRecord
   validates :original_key, presence: true
   validates :thumbnail_key, presence: true
   validates :user_id, presence: true
+  validates :caption, length: { maximum: 500 }
   validate :valid_keys
 
   before_update { self.edited = true if caption_changed? }

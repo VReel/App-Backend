@@ -11,7 +11,7 @@ class V1::PostHashTagsController < V1::PostsController
   def posts
     return @posts if @posts.present?
 
-    hash_tag_posts = HashTagPost.where(hash_tag_id: hash_tag_id).order('created_at DESC').includes(:post)
+    hash_tag_posts = HashTagPost.where(hash_tag_id: hash_tag_id).order('created_at DESC').includes(post: :user)
     hash_tag_posts.limit!(API_PAGE_SIZE + 1)
     hash_tag_posts.where!('created_at < ?', Time.zone.parse(Base64.urlsafe_decode64(params[:page]))) if params[:page].present?
 
