@@ -218,6 +218,7 @@ RSpec.describe 'Registration requests', type: :request do
 
       expect(data['data']['id']).to eq user.id
       expect(data['data']['attributes']['email']).to eq user.email
+      # Ensure we have the full packet details.
       expect(data['data']['attributes']['profile']).to be_present
     end
   end
