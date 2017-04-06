@@ -2,11 +2,13 @@ class V1::PostsController < ApplicationController
   include ErrorResource
 
   def index
-    render json: posts.first(API_PAGE_SIZE), each_serializer: PostListSerializer, links: posts_links, meta: meta
+    render json: posts.first(API_PAGE_SIZE), links: posts_links, meta: meta, include: :user
   end
 
   def show
-    return render json: post, status: 200 if post.present?
+    show_post = Post.find_by(id: params[:id])
+
+    return render json: show_post, serializer: PostFullSerializer, include: :user, status: 200 if show_post.present?
 
     render_error('Post not found', 404)
   end
@@ -14,14 +16,14 @@ class V1::PostsController < ApplicationController
   def create
     new_post = current_user.posts.create(create_permitted_params)
 
-    return render json: new_post, status: 201 if new_post.persisted?
+    return render json: new_post, serializer: PostFullSerializer, status: 201 if new_post.persisted?
 
     render_validation_error(new_post)
   end
 
   def update
     return render_error('Post not found', 404) unless post.present?
-    return render json: post, status: 200 if post.update(update_permitted_params)
+    return render json: post, serializer: PostFullSerializer, status: 200 if post.update(update_permitted_params)
 
     render_validation_error
   end
@@ -56,6 +58,7 @@ class V1::PostsController < ApplicationController
     @post ||= current_user.posts.find_by(id: params[:id])
   end
 
+  # rubocop:disable Metrics/AbcSize
   def posts
     return @posts if @posts.present?
 
@@ -64,6 +67,7 @@ class V1::PostsController < ApplicationController
     @posts.where!('created_at < ?', Time.zone.parse(Base64.urlsafe_decode64(params[:page]))) if params[:page].present?
     @posts.to_a
   end
+  # rubocop:enable Metrics/AbcSize
 
   def pagination_needed?
     posts.size > API_PAGE_SIZE

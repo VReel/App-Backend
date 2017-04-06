@@ -2,7 +2,7 @@ class V1::PostHashTagsController < V1::PostsController
   def posts_with_hash_tag
     return render_error('Hash tag not found', 404) if hash_tag_id.blank?
     # We inherit pagination and meta links from posts controller.
-    render json: posts.first(API_PAGE_SIZE), each_serializer: PostListSerializer, links: posts_links, meta: meta
+    render json: posts.first(API_PAGE_SIZE), links: posts_links, meta: meta, include: :user
   end
 
   protected

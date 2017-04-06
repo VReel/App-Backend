@@ -2,7 +2,7 @@ class V1::UsersController < ApplicationController
   include ErrorResource
 
   def index
-    render json: current_user
+    render json: current_user, serializer: UserFullSerializer
   end
 
   def show

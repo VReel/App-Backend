@@ -35,6 +35,13 @@ RSpec.describe 'Hash tag search', type: :request do
       expect(data['data'].size).to eq 2
     end
 
+    it 'includes the user details of the post' do
+      get '/v1/posts/hash_tags/%23chocolate', headers: auth_headers
+
+      expect(data['data'].first['relationships']['user']['data']['id']).to eq user.id
+      expect(data['included'].first['id']).to eq user.id
+    end
+
     it 'finds posts with the hash_tag by hash_tag_id' do
       hash_tag_id = HashTag.find_with_tag('#chocolate').id
 
