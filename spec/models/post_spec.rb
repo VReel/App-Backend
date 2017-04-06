@@ -36,7 +36,7 @@ RSpec.describe Post, type: :model do
       end.to change { HashTag.count }.by 2
 
       expect(post.hash_tags.size).to eq 3
-      expect(post.hash_tags.map(&:tag).sort).to eq ['hash', 'multiple', 'tags']
+      expect(post.hash_tags.map(&:tag).sort).to eq %w(hash multiple tags)
     end
 
     it 'removes hash tags associations that are removed from the caption' do
@@ -45,18 +45,18 @@ RSpec.describe Post, type: :model do
 
       post.update(caption: 'this post has a #multiple #hash #tags')
       expect(post.hash_tags.size).to eq 3
-      expect(post.hash_tags.map(&:tag).sort).to eq ['hash', 'multiple', 'tags']
+      expect(post.hash_tags.map(&:tag).sort).to eq %w(hash multiple tags)
     end
 
     it 'removes hash tags that no longer associated with anything' do
-      prior_post = create_post('this will create an #existing hash tag')
+      create_post('this will create an #existing hash tag')
       post = create_post('this will create an #existing hash tag and a #new hash tag')
 
       expect(post.hash_tags.size).to eq 2
 
-      expect {
+      expect do
         post.update(caption: 'this has no hash tags')
-      }.to change { HashTag.count }.by -1
+      end.to change { HashTag.count }.by(-1)
 
       expect(post.hash_tags.size).to eq 0
     end
@@ -66,24 +66,23 @@ RSpec.describe Post, type: :model do
     it 'removes hash tag assocations' do
       post = create_post('this will create an #existing hash tag and a #new hash tag')
 
-      expect {
+      expect do
         post.destroy
-      }.to change { HashTagPost.count }.by -2
-
+      end.to change { HashTagPost.count }.by(-2)
     end
 
     it 'removes hash tags that no longer associated with anything' do
-      prior_post = create_post('this will create an #existing hash tag')
+      create_post('this will create an #existing hash tag')
       post = create_post('this will create an #existing hash tag and a #new hash tag')
 
-      expect {
+      expect do
         post.destroy
-      }.to change { HashTag.count }.by -1
+      end.to change { HashTag.count }.by(-1)
     end
   end
 
   def create_post(caption)
-    post = user.posts.create(
+    user.posts.create(
       original_key: "#{user.unique_id}/original",
       thumbnail_key: "#{user.unique_id}/thumbnail",
       caption: caption

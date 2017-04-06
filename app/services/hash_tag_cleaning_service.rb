@@ -10,7 +10,7 @@ class HashTagCleaningService
       model = HashTag.find_by(tag: tag)
       next unless model
 
-      model.destroy if model.hash_tag_posts.count == 0
+      model.destroy if model.hash_tag_posts.count.zero?
     end
   end
 end
