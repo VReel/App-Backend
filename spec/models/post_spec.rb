@@ -27,6 +27,17 @@ RSpec.describe Post, type: :model do
       expect(post.hash_tags.first.tag).to eq 'existing'
     end
 
+    it 'downcases hash tags' do
+      post = nil
+
+      expect do
+        post = create_post('this post has an #UPPERCASE hash tag')
+      end.to change { HashTag.count }.by 1
+
+      expect(post.hash_tags.size).to eq 1
+      expect(post.hash_tags.first.tag).to eq 'uppercase'
+    end
+
     it 'creates multiple hash_tag associations' do
       HashTag.create(tag: 'multiple')
       post = nil

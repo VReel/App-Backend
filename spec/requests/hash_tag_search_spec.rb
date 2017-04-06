@@ -7,7 +7,7 @@ RSpec.describe 'Hash tag search', type: :request do
 
   describe 'searching for hash tags' do
     before(:each) do
-      10.times { HashTag.create(tag: Faker::Name.first_name.downcase) }
+      10.times { |i| HashTag.create(tag: "#{Faker::Name.first_name.downcase}#{i}") }
     end
     let(:hash_tag) { HashTag.first }
     let(:hash_tag_ids) { data['data'].map { |result| result['id'] } }
