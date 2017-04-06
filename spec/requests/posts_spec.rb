@@ -18,6 +18,14 @@ RSpec.describe 'Post requests', type: :request do
       expect(response.status).to eq 201
     end
 
+    it 'increments the users post_count' do
+      expect do
+        post '/v1/posts', params: {
+          post: new_post.attributes.slice('original_key', 'thumbnail_key', 'caption')
+        }, headers: auth_headers_from_response
+      end.to change { user.reload.post_count }.by 1
+    end
+
     it 'fails when invalid' do
       expect do
         post '/v1/posts', params: {
@@ -73,6 +81,16 @@ RSpec.describe 'Post requests', type: :request do
       expect(response.status).to eq 404
       expect(existing_post.reload.caption).not_to eq caption
     end
+
+    it 'does not change the users post_count' do
+      existing_post
+
+      expect do
+        put "/v1/posts/#{existing_post.id}", params: {
+          post: { caption: caption }
+        }, headers: auth_headers_from_response
+      end.not_to change { user.reload.post_count }
+    end
   end
 
   describe 'delete a post' do
@@ -82,6 +100,16 @@ RSpec.describe 'Post requests', type: :request do
       expect do
         delete "/v1/posts/#{existing_post.id}", headers: auth_headers_from_response
       end.to change { Post.count }.by(-1)
+
+      expect(response.status).to eq 204
+    end
+
+    it 'decrements the users post_count' do
+      existing_post
+
+      expect do
+        delete "/v1/posts/#{existing_post.id}", headers: auth_headers_from_response
+      end.to change { user.reload.post_count }.by(-1)
 
       expect(response.status).to eq 204
     end
