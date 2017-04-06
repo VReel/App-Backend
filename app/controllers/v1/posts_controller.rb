@@ -60,7 +60,7 @@ class V1::PostsController < ApplicationController
     return @posts if @posts.present?
 
     # We try to get one more than the window size, to tell us if we need a next page link.
-    @posts = current_user.posts.limit(API_PAGE_SIZE + 1)
+    @posts = current_user.posts.limit(API_PAGE_SIZE + 1).includes(:user)
     @posts.where!('created_at < ?', Time.zone.parse(Base64.urlsafe_decode64(params[:page]))) if params[:page].present?
     @posts.to_a
   end
