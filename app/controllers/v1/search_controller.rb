@@ -4,6 +4,6 @@ class V1::SearchController < ApplicationController
   end
 
   def hash_tags
-    render json: HashTag.search(params[:term].gsub('#', ''))
+    render json: HashTag.search(params[:term].delete('#'))
   end
 end

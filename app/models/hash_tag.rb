@@ -1,10 +1,11 @@
 class HashTag < ApplicationRecord
   has_many :hash_tag_posts
   has_many :posts, through: :hash_tag_posts
+  before_save { tag.downcase! }
 
   # remove # and downcase when finding.
-  def self.find_by_tag(tag)
-    find_by(tag: tag.gsub('#', '').downcase)
+  def self.find_with_tag(tag)
+    find_by(tag: tag.delete('#').downcase)
   end
 
   def self.regexp

@@ -5,6 +5,7 @@ AllCops:
     - bin/*
     - Rakefile
     - config/initializers/*
+    - app/docs/*
 
 Rails:
   Enabled: true

@@ -7,6 +7,7 @@ class V1::PostHashTagsController < V1::PostsController
 
   protected
 
+  # rubocop:disable Metrics/AbcSize
   def posts
     return @posts if @posts.present?
 
@@ -16,11 +17,12 @@ class V1::PostHashTagsController < V1::PostsController
 
     @posts = hash_tag_posts.map(&:post)
   end
+  # rubocop:enable Metrics/AbcSize
 
   def hash_tag_id
     # if the hash_tag does not start with a #, assume it is a uuid.
     @hash_tag_id ||= if params[:hash_tag].first == '#'
-                       HashTag.find_by_tag(params[:hash_tag]).try(:id)
+                       HashTag.find_with_tag(params[:hash_tag]).try(:id)
                      else
                        params[:hash_tag]
                      end

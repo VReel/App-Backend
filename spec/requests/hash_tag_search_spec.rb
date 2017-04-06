@@ -36,7 +36,7 @@ RSpec.describe 'Hash tag search', type: :request do
     end
 
     it 'finds posts with the hash_tag by hash_tag_id' do
-      hash_tag_id = HashTag.find_by_tag('#chocolate').id
+      hash_tag_id = HashTag.find_with_tag('#chocolate').id
 
       get "/v1/posts/hash_tags/#{hash_tag_id}", headers: auth_headers
 
