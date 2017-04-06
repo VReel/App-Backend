@@ -100,4 +100,73 @@ RSpec.describe 'Update profile requests', type: :request do
       expect(confirmed_user.valid_password?('a_new_password_3')).to be true
     end
   end
+
+  describe 'update s3 assets' do
+    let(:thumbnail_key) { "#{confirmed_user.unique_id}/some_thumbnail_key" }
+    let(:original_key) { "#{confirmed_user.unique_id}/some_original_key" }
+
+    it 'must have a thumbnail_key if it has an original_key' do
+      patch '/v1/users', headers: auth_headers, params: {
+        original_key: 'some_new_key'
+      }
+      expect(response.status).to eq 422
+      expect(data['errors'].first['source']['pointer']).to eq '/data/attributes/thumbnail_key'
+    end
+
+    it 'must have an original_key if it has an thumbnail_key' do
+      patch '/v1/users', headers: auth_headers, params: {
+        thumbnail_key: 'some_new_key'
+      }
+      expect(response.status).to eq 422
+      expect(data['errors'].first['source']['pointer']).to eq '/data/attributes/original_key'
+    end
+
+    it 'keys must be prefixed with the user unique id' do
+      patch '/v1/users', headers: auth_headers, params: {
+        thumbnail_key: 'some_new_key',
+        original_key: 'some_other_new_key'
+      }
+      expect(response.status).to eq 422
+      expect(data['errors'].first['source']['pointer']).to eq '/data/attributes/original_key'
+      expect(data['errors'].second['source']['pointer']).to eq '/data/attributes/thumbnail_key'
+    end
+
+    it 'can update keys' do
+      patch '/v1/users', headers: auth_headers, params: {
+        thumbnail_key: thumbnail_key,
+        original_key: original_key
+      }
+      expect(response.status).to eq 200
+
+      expect(data['data']['attributes']['thumbnail_url']).to be_present
+      expect(data['data']['attributes']['original_url']).to be_present
+
+      confirmed_user.reload
+
+      expect(confirmed_user.thumbnail_key).to eq thumbnail_key
+      expect(confirmed_user.original_key).to eq original_key
+    end
+
+    describe 'updating keys in pairs' do
+      before(:each) { confirmed_user.update(thumbnail_key: thumbnail_key, original_key: original_key) }
+
+      it 'must update original_key if it updates the thumbnail_key' do
+        patch '/v1/users', headers: auth_headers, params: {
+          thumbnail_key: "#{thumbnail_key}-updated"
+        }
+
+        expect(response.status).to eq 422
+        expect(data['errors'].first['source']['pointer']).to eq '/data/attributes/original_key'
+      end
+
+      it 'must update thumbnail_key if it updates the original_key' do
+        patch '/v1/users', headers: auth_headers, params: {
+          original_key: "#{original_key}-updated"
+        }
+
+        expect(response.status).to eq 422
+        expect(data['errors'].first['source']['pointer']).to eq '/data/attributes/thumbnail_key'
+      end
+    end
+  end
 end

@@ -24,7 +24,7 @@ class ApplicationController < ActionController::API
   end
 
   def configure_permitted_parameters
-    added_attrs = [:handle, :email, :password, :password_confirmation, :name, :profile]
+    added_attrs = [:handle, :email, :password, :password_confirmation, :name, :profile, :thumbnail_key, :original_key]
     devise_parameter_sanitizer.permit :sign_up, keys: added_attrs
     # We don't allow email to be changed.
     devise_parameter_sanitizer.permit :account_update, keys: (added_attrs - [:email])

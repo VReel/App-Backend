@@ -1,7 +1,7 @@
 class SearchDoc
   include Swagger::Blocks
 
-  swagger_path '/users/search/{term}' do
+  swagger_path '/search/users/{term}' do
     operation :get do
       key :summary, 'Search for users by name'
       key :operationId, 'search_users'

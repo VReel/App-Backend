@@ -16,11 +16,11 @@ Rails.application.routes.draw do
   resources :apidocs, only: [:index]
 
   namespace :v1, defaults: { format: 'json' } do
-    resources :users, only: :index
+    resources :users, only: [:index, :show]
     resources :s3_presigned_url, only: [:index]
     resources :posts
     resources :stats, only: :index
-    get 'users/search/:term', to: 'search#users'
+    get 'search/users/:term', to: 'search#users'
   end
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

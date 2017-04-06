@@ -12,7 +12,7 @@ RSpec.describe 'User search', type: :request do
   let(:auth_headers) { auth_headers_from_response }
 
   it 'can find results by handle' do
-    get '/v1/users/search/han', headers: auth_headers
+    get '/v1/search/users/han', headers: auth_headers
 
     expect(response.status).to eq 200
     expect(data['data'].size).to be > 0
@@ -20,7 +20,7 @@ RSpec.describe 'User search', type: :request do
   end
 
   it 'can find results by name' do
-    get '/v1/users/search/b%2Ea%2E', headers: auth_headers
+    get '/v1/search/users/b%2Ea%2E', headers: auth_headers
 
     expect(response.status).to eq 200
     expect(data['data'].size).to be > 0
@@ -28,7 +28,7 @@ RSpec.describe 'User search', type: :request do
   end
 
   it 'can find results by surname' do
-    get '/v1/users/search/hay', headers: auth_headers
+    get '/v1/search/users/hay', headers: auth_headers
 
     expect(response.status).to eq 200
     expect(data['data'].size).to be > 0
@@ -36,24 +36,24 @@ RSpec.describe 'User search', type: :request do
   end
 
   it 'does not find mid-string matches' do
-    get '/v1/users/search/annibal', headers: auth_headers
+    get '/v1/search/users/annibal', headers: auth_headers
 
     expect(response.status).to eq 200
     expect(data['data'].size).to eq 0
 
-    get '/v1/users/search/ayes', headers: auth_headers
+    get '/v1/search/users/ayes', headers: auth_headers
 
     expect(response.status).to eq 200
     expect(data['data'].size).to eq 0
 
-    get '/v1/users/search/_T', headers: auth_headers
+    get '/v1/search/users/_T', headers: auth_headers
 
     expect(response.status).to eq 200
     expect(data['data'].size).to eq 0
   end
 
   it 'does not find false matches' do
-    get '/v1/users/search/zzzyyyxxxxaafsasf', headers: auth_headers
+    get '/v1/search/users/zzzyyyxxxxaafsasf', headers: auth_headers
 
     expect(response.status).to eq 200
     expect(data['data'].size).to eq 0
@@ -61,7 +61,7 @@ RSpec.describe 'User search', type: :request do
 
   it 'errors if no search term' do
     expect do
-      get '/v1/users/search/', headers: auth_headers
+      get '/v1/search/users/', headers: auth_headers
     end.to raise_error ActionController::RoutingError
   end
 end

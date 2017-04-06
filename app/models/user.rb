@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  include S3Urls
   acts_as_paranoid
 
   # Virtual attribute for authenticating by either username or email
@@ -19,6 +20,10 @@ class User < ApplicationRecord
   validates :handle, format: { with: /\A[a-z0-9_]{3,}\z/i, message: '%{value} - is invalid' }
   validates :profile, length: { maximum: 500 }
   validates :name, length: { maximum: 100 }
+  # Both keys need to be present or blank
+  validates :thumbnail_key, presence: true, if: :original_key?
+  validates :original_key, presence: true, if: :thumbnail_key?
+  validate :valid_keys
 
   # Use this if we want to require a password confirmation at the model level.
   validates :password_confirmation, presence: true, if: :password_required?
@@ -115,6 +120,10 @@ class User < ApplicationRecord
   end
 
   protected
+
+  def s3_folder
+    unique_id
+  end
 
   # Override email as uid.
   def sync_uid

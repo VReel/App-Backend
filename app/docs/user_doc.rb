@@ -40,8 +40,8 @@ class UserDoc
     end
 
     operation :get do
-      key :summary, 'Get user details'
-      key :operationId, 'get_user'
+      key :summary, 'Get own user details'
+      key :operationId, 'get_own_user'
       key :produces, [
         'application/json'
       ]
@@ -84,6 +84,27 @@ class UserDoc
     end
   end
 
+  swagger_path '/users/{userId}' do
+    operation :get do
+      key :summary, 'Show a user'
+      key :description, 'Shows the full details of the user'
+      key :operationId, 'get_user'
+      key :produces, [
+        'application/json'
+      ]
+      key :tags, [
+        'User'
+      ]
+      parameter do
+        key :name, :userId
+        key :in, :path
+        key :description, 'ID of user'
+        key :required, true
+        key :type, :string
+      end
+    end
+  end
+
   swagger_schema :UserInput do
     allOf do
       schema do
@@ -104,6 +125,12 @@ class UserDoc
           key :type, :string
         end
         property :profile do
+          key :type, :string
+        end
+        property :thumbnail_key do
+          key :type, :string
+        end
+        property :original_key do
           key :type, :string
         end
       end
@@ -129,6 +156,12 @@ class UserDoc
           key :type, :string
         end
         property :profile do
+          key :type, :string
+        end
+        property :thumbnail_key do
+          key :type, :string
+        end
+        property :original_key do
           key :type, :string
         end
       end
