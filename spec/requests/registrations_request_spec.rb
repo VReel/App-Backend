@@ -213,10 +213,12 @@ RSpec.describe 'Registration requests', type: :request do
   describe 'Get user details' do
     it 'should get the current user details' do
       user = create_user_and_sign_in
+      user.update(profile: 'a profile')
       get '/v1/users', headers: auth_headers_from_response
 
       expect(data['data']['id']).to eq user.id
       expect(data['data']['attributes']['email']).to eq user.email
+      expect(data['data']['attributes']['profile']).to be_present
     end
   end
 end
