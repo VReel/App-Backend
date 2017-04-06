@@ -342,6 +342,13 @@ CREATE INDEX delayed_jobs_priority ON delayed_jobs USING btree (priority, run_at
 
 
 --
+-- Name: hash_tag_posts_created_at_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX hash_tag_posts_created_at_index ON hash_tag_posts USING btree (created_at DESC NULLS LAST);
+
+
+--
 -- Name: hash_tags_tag_gin_trgm_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -511,6 +518,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170405145142'),
 ('20170406091535'),
 ('20170406101643'),
-('20170406101922');
+('20170406101922'),
+('20170406142548');
 
 
