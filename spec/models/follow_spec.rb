@@ -45,6 +45,17 @@ RSpec.describe Follow, type: :model do
       expect(simone.follows?(arthur)).to be false
     end
 
+    it 'dan can follow arthur and simone' do
+      dan.follow(arthur)
+      dan.follow(simone)
+
+      expect(dan.follows?(arthur)).to be true
+      expect(arthur.follows?(dan)).to be false
+
+      expect(dan.follows?(simone)).to be true
+      expect(simone.follows?(dan)).to be false
+    end
+
     it 'dan can unfollow arthur' do
       dan.follow(arthur)
       arthur.follow(dan)
