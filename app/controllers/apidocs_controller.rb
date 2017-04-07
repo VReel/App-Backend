@@ -66,6 +66,7 @@ class ApidocsController < ActionController::Base
     SessionDoc,
     S3PresignedUrl,
     PostDoc,
+    FollowDoc,
     SearchDoc,
     StatsDoc,
     HelloWorldDoc,
