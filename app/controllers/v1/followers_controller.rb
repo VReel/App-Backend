@@ -2,39 +2,38 @@ class V1::FollowersController < ApplicationController
   include Pagination
 
   def followers
-    render json: following_users.first(API_PAGE_SIZE), links: followers_links, meta: meta
+    render json: followers_of_current_user.first(API_PAGE_SIZE), links: followers_links, meta: meta
   end
 
   def following
-    render json: followed_users.first(API_PAGE_SIZE), links: following_links, meta: meta
+    render json: users_current_user_follows.first(API_PAGE_SIZE), links: following_links, meta: meta
   end
 
   protected
 
-  # rubocop:disable all
-  def followed_users
-    return @followed_users unless @followed_users.nil?
+  def users_current_user_follows
+    return @users_current_user_follows unless @users_current_user_follows.nil?
 
     following_relationships = current_user.following_relationships.includes(:following)
     paginate(following_relationships)
 
-    @followed_users = following_relationships.map(&:following)
+    @users_current_user_follows = following_relationships.map(&:following)
   end
 
-  def following_users
-    return @following_users unless @following_users.nil?
+  def followers_of_current_user
+    return @followers_of_current_user unless @followers_of_current_user.nil?
 
     follower_relationships = current_user.follower_relationships.includes(:follower)
     paginate(follower_relationships)
 
-    @following_users = follower_relationships.map(&:follower)
+    @followers_of_current_user = follower_relationships.map(&:follower)
   end
-   # rubocop:enable all
 
+  # Needed for pagination
   def records
-    return followed_users if request.path[/following/]
+    return users_current_user_follows if request.path[/following/]
 
-    following_users
+    followers_of_current_user
   end
 
   def followers_links

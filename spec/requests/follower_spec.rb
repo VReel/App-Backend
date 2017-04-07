@@ -42,11 +42,58 @@ RSpec.describe 'Followers', type: :request do
     end
   end
 
-  it 'followers are paginated' do
+  describe 'pagination' do
+    describe 'followers pagination' do
+      before(:each) do
+        25.times { Fabricate(:user).follow(user) }
 
-  end
+        get '/v1/followers', headers: auth_headers
+      end
 
-  it 'following is paginated' do
+      it 'gets a page of followers' do
+        expect(response.status).to eq 200
+        expect(data['data'].size).to eq 20
+      end
 
+      it 'gets the next page of followers' do
+        next_page_expectations
+      end
+    end
+
+    describe 'following pagination' do
+      before(:each) do
+        25.times { user.follow(Fabricate(:user)) }
+
+        get '/v1/following', headers: auth_headers
+      end
+
+      it 'gets a page of followers' do
+        expect(response.status).to eq 200
+        expect(data['data'].size).to eq 20
+      end
+
+      it 'gets the next page of followers' do
+        next_page_expectations
+      end
+    end
+
+    # rubocop:disable Metrics/AbcSize
+    def next_page_expectations
+      expect(data['links']['next']).to be_present
+      expect(data['meta']['next_page']).to be true
+      expect(data['meta']['next_page_id']).to be_present
+
+      get data['links']['next'], headers: auth_headers
+
+      expect(response.status).to eq 200
+
+      new_data = JSON.parse(response.body)
+
+      expect(new_data['data'].size).to eq 5
+
+      expect(new_data['links']).to be_nil
+      expect(new_data['meta']['next_page']).to be false
+    end
+    # rubocop:enable Metrics/AbcSize
   end
 end
