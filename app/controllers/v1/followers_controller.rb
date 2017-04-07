@@ -1,4 +1,4 @@
-class V1::FollowsController < ApplicationController
+class V1::FollowersController < ApplicationController
   include Pagination
 
   def followers
@@ -15,19 +15,19 @@ class V1::FollowsController < ApplicationController
   def followed_users
     return @followed_users unless @followed_users.nil?
 
-    followed_user_relationships = current_user.followed_user_relationships.includes(:followed)
-    paginate(followed_user_relationships)
+    following_relationships = current_user.following_relationships.includes(:following)
+    paginate(following_relationships)
 
-    @followed_users = followed_user_relationships.map(&:followed)
+    @followed_users = following_relationships.map(&:following)
   end
 
   def following_users
     return @following_users unless @following_users.nil?
 
-    following_user_relationships = current_user.following_user_relationships.includes(:following)
-    paginate(following_user_relationships)
+    follower_relationships = current_user.follower_relationships.includes(:follower)
+    paginate(follower_relationships)
 
-    @following_users = followed_user_relationships.map(&:following)
+    @following_users = follower_relationships.map(&:follower)
   end
    # rubocop:enable all
 
