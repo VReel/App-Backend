@@ -20,6 +20,10 @@ Rails.application.routes.draw do
     resources :s3_presigned_url, only: [:index]
     resources :posts
     resources :stats, only: :index
+
+    post 'follow/:user_id', to: 'follows#create'
+    delete 'follow/:user_id', to: 'follows#destroy'
+
     get 'search/users/:term', to: 'search#users'
     get 'search/hash_tags/:term', to: 'search#hash_tags'
     get 'posts/hash_tags/:hash_tag', to: 'post_hash_tags#posts_with_hash_tag', as: :post_hash_tags
