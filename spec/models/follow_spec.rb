@@ -12,6 +12,18 @@ RSpec.describe Follow, type: :model do
 
       expect(simone.follows?(dan)).to be false
       expect(simone.follows?(arthur)).to be false
+
+      dan.reload
+      arthur.reload
+      simone.reload
+
+      expect(dan.follower_count).to eq 0
+      expect(arthur.follower_count).to eq 0
+      expect(simone.follower_count).to eq 0
+
+      expect(dan.following_count).to eq 0
+      expect(arthur.following_count).to eq 0
+      expect(simone.following_count).to eq 0
     end
 
     it 'arthur can follow dan' do
@@ -22,6 +34,18 @@ RSpec.describe Follow, type: :model do
 
       expect(simone.follows?(dan)).to be false
       expect(simone.follows?(arthur)).to be false
+
+      dan.reload
+      arthur.reload
+      simone.reload
+
+      expect(dan.follower_count).to eq 1
+      expect(arthur.follower_count).to eq 0
+      expect(simone.follower_count).to eq 0
+
+      expect(dan.following_count).to eq 0
+      expect(arthur.following_count).to eq 1
+      expect(simone.following_count).to eq 0
     end
 
     it 'dan can follow arthur' do
@@ -32,6 +56,18 @@ RSpec.describe Follow, type: :model do
 
       expect(simone.follows?(dan)).to be false
       expect(simone.follows?(arthur)).to be false
+
+      dan.reload
+      arthur.reload
+      simone.reload
+
+      expect(dan.follower_count).to eq 0
+      expect(arthur.follower_count).to eq 1
+      expect(simone.follower_count).to eq 0
+
+      expect(dan.following_count).to eq 1
+      expect(arthur.following_count).to eq 0
+      expect(simone.following_count).to eq 0
     end
 
     it 'dan and arthur can follow each other' do
@@ -43,6 +79,18 @@ RSpec.describe Follow, type: :model do
 
       expect(simone.follows?(dan)).to be false
       expect(simone.follows?(arthur)).to be false
+
+      dan.reload
+      arthur.reload
+      simone.reload
+
+      expect(dan.follower_count).to eq 1
+      expect(arthur.follower_count).to eq 1
+      expect(simone.follower_count).to eq 0
+
+      expect(dan.following_count).to eq 1
+      expect(arthur.following_count).to eq 1
+      expect(simone.following_count).to eq 0
     end
 
     it 'dan can follow arthur and simone' do
@@ -54,6 +102,18 @@ RSpec.describe Follow, type: :model do
 
       expect(dan.follows?(simone)).to be true
       expect(simone.follows?(dan)).to be false
+
+      dan.reload
+      arthur.reload
+      simone.reload
+
+      expect(dan.follower_count).to eq 0
+      expect(arthur.follower_count).to eq 1
+      expect(simone.follower_count).to eq 1
+
+      expect(dan.following_count).to eq 2
+      expect(arthur.following_count).to eq 0
+      expect(simone.following_count).to eq 0
     end
 
     it 'dan can unfollow arthur' do
@@ -63,10 +123,49 @@ RSpec.describe Follow, type: :model do
       expect(dan.follows?(arthur)).to be true
       expect(arthur.follows?(dan)).to be true
 
+      # arthur.reload
+      # expect(arthur.following_count).to eq 1
+
       dan.unfollow(arthur)
 
       expect(dan.follows?(arthur)).to be false
       expect(arthur.follows?(dan)).to be true
+
+      dan.reload
+      arthur.reload
+      simone.reload
+
+      expect(dan.follower_count).to eq 1
+      expect(arthur.follower_count).to eq 0
+      expect(simone.follower_count).to eq 0
+
+      expect(dan.following_count).to eq 0
+      expect(arthur.following_count).to eq 1
+      expect(simone.following_count).to eq 0
+    end
+
+    it 'decrements follow counts when unfollowed' do
+      dan.follow(arthur)
+
+      dan.reload
+      arthur.reload
+
+      expect(dan.follower_count).to eq 0
+      expect(arthur.follower_count).to eq 1
+
+      expect(dan.following_count).to eq 1
+      expect(arthur.following_count).to eq 0
+
+      dan.unfollow(arthur)
+
+      dan.reload
+      arthur.reload
+
+      expect(dan.follower_count).to eq 0
+      expect(arthur.follower_count).to eq 0
+
+      expect(dan.following_count).to eq 0
+      expect(arthur.following_count).to eq 0
     end
   end
 end

@@ -23,6 +23,8 @@ Rails.application.routes.draw do
 
     post 'follow/:user_id', to: 'follows#create'
     delete 'follow/:user_id', to: 'follows#destroy'
+    get 'followers', to: 'follows#followers'
+    get 'following', to: 'follows#following'
 
     get 'search/users/:term', to: 'search#users'
     get 'search/hash_tags/:term', to: 'search#hash_tags'
