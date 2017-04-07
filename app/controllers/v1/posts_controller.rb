@@ -6,6 +6,7 @@ class V1::PostsController < ApplicationController
   end
 
   def show
+    # This is the only method in this controller that allows access to posts by other users.
     show_post = Post.find_by(id: params[:id])
 
     return render json: show_post, serializer: PostFullSerializer, include: :user, status: 200 if show_post.present?
