@@ -9,7 +9,7 @@ class V1::PostHashTagsController < V1::PostsController
 
   # rubocop:disable Metrics/AbcSize
   def posts
-    return @posts if @posts.present?
+    return @posts unless @posts.nil?
 
     hash_tag_posts = HashTagPost.where(hash_tag_id: hash_tag_id).order('created_at DESC').includes(post: :user)
     hash_tag_posts.limit!(API_PAGE_SIZE + 1)
