@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   include S3Urls
+  include LockedIncrementDecrement
   acts_as_paranoid
 
   # Virtual attribute for authenticating by either username or email
