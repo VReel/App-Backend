@@ -123,9 +123,6 @@ RSpec.describe Follow, type: :model do
       expect(dan.follows?(arthur)).to be true
       expect(arthur.follows?(dan)).to be true
 
-      # arthur.reload
-      # expect(arthur.following_count).to eq 1
-
       dan.unfollow(arthur)
 
       expect(dan.follows?(arthur)).to be false
