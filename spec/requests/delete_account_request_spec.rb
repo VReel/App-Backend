@@ -70,7 +70,7 @@ RSpec.describe 'Delete account requests', type: :request do
     end
   end
 
-  describe "delete user's followering relationships" do
+  describe "delete user's follower/following relationships" do
     let(:arthur) { create_user_and_sign_in }
     let(:dan) { Fabricate(:user) }
     let(:simone) { Fabricate(:user) }
