@@ -52,7 +52,7 @@ module RequestHelpers
   end
 
   # rubocop:disable Metrics/AbcSize
-  def next_page_expectations
+  def next_page_expectations(total_posts: 25)
     expect(data['links']['next']).to be_present
     expect(data['meta']['next_page']).to be true
     expect(data['meta']['next_page_id']).to be_present
@@ -63,7 +63,7 @@ module RequestHelpers
 
     new_data = JSON.parse(response.body)
 
-    expect(new_data['data'].size).to eq 5
+    expect(new_data['data'].size).to eq(total_posts - 20)
 
     expect(new_data['links']).to be_nil
     expect(new_data['meta']['next_page']).to be false
