@@ -1,5 +1,6 @@
 class V1::PostsController < ApplicationController
   include ErrorResource
+  include Pagination
 
   def index
     render json: posts.first(API_PAGE_SIZE), links: posts_links, meta: meta, include: :user
@@ -59,23 +60,13 @@ class V1::PostsController < ApplicationController
     @post ||= current_user.posts.find_by(id: params[:id])
   end
 
-  # rubocop:disable Metrics/AbcSize
   def posts
     return @posts if @posts.present?
 
     # We try to get one more than the window size, to tell us if we need a next page link.
-    @posts = current_user.posts.limit(API_PAGE_SIZE + 1).includes(:user)
-    @posts.where!('created_at < ?', Time.zone.parse(Base64.urlsafe_decode64(params[:page]))) if params[:page].present?
+    @posts = current_user.posts.includes(:user)
+    paginate(@posts)
     @posts.to_a
-  end
-  # rubocop:enable Metrics/AbcSize
-
-  def pagination_needed?
-    posts.size > API_PAGE_SIZE
-  end
-
-  def next_page_id
-    @next_page_id ||= Base64.urlsafe_encode64(posts[API_PAGE_SIZE - 1].created_at.xmlschema(6))
   end
 
   def posts_links
@@ -85,9 +76,8 @@ class V1::PostsController < ApplicationController
     }
   end
 
-  def meta
-    meta = { next_page: pagination_needed? }
-    meta[:next_page_id] = next_page_id if pagination_needed?
-    meta
+  # Needed for pagination concern.
+  def records
+    posts
   end
 end

@@ -19,6 +19,7 @@ class UserDeletionService
     delete_s3_assets
     delete_remaining_s3_assets
     delete_posts
+    delete_following_relationships
     set_unique_fields
     Rails.logger.info "User #{user.id} assets and posts deleted"
   end
@@ -55,6 +56,30 @@ class UserDeletionService
   def delete_posts
     posts.delete_all
   end
+
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable SkipsModelValidations
+  def delete_following_relationships
+    # First store who we follow and are followed_by
+    # I guess there's a scaling limit here.
+    followed_users = user.following.select(:id, :created_at).to_a
+    followed_by_users = user.followers.select(:id, :created_at).to_a
+    # Delete the relationships
+    user.following_relationships.delete_all(:delete_all)
+    user.follower_relationships.delete_all(:delete_all)
+
+    # Set the follower_counts of users who were being followed.
+    followed_users.each do |followed_user|
+      followed_user.update_columns(follower_count: followed_user.followers.count)
+    end
+
+    # Set the following_count of users who were following.
+    followed_by_users.each do |followed_by_user|
+      followed_by_user.update_columns(following_count: followed_by_user.following.count)
+    end
+  end
+  # rubocop:enable SkipsModelValidations
+  # rubocop:enable Metrics/AbcSize
 
   def set_unique_fields
     # We are putting dummy values in these fields so the unique indexes

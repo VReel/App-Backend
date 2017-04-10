@@ -142,6 +142,38 @@ ALTER SEQUENCE delayed_jobs_id_seq OWNED BY delayed_jobs.id;
 
 
 --
+-- Name: follows; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE follows (
+    id integer NOT NULL,
+    following_id uuid NOT NULL,
+    follower_id uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: follows_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE follows_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: follows_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE follows_id_seq OWNED BY follows.id;
+
+
+--
 -- Name: hash_tag_posts; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -267,6 +299,13 @@ ALTER TABLE ONLY delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY follows ALTER COLUMN id SET DEFAULT nextval('follows_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY hash_tag_posts ALTER COLUMN id SET DEFAULT nextval('hash_tag_posts_id_seq'::regclass);
 
 
@@ -292,6 +331,14 @@ ALTER TABLE ONLY client_applications
 
 ALTER TABLE ONLY delayed_jobs
     ADD CONSTRAINT delayed_jobs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: follows_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY follows
+    ADD CONSTRAINT follows_pkey PRIMARY KEY (id);
 
 
 --
@@ -342,6 +389,13 @@ CREATE INDEX delayed_jobs_priority ON delayed_jobs USING btree (priority, run_at
 
 
 --
+-- Name: follows_created_at_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX follows_created_at_index ON follows USING btree (created_at DESC NULLS LAST);
+
+
+--
 -- Name: hash_tag_posts_created_at_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -374,6 +428,27 @@ CREATE UNIQUE INDEX index_client_applications_on_application_id ON client_applic
 --
 
 CREATE INDEX index_client_applications_on_deleted_at ON client_applications USING btree (deleted_at);
+
+
+--
+-- Name: index_follows_on_follower_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_follows_on_follower_id ON follows USING btree (follower_id);
+
+
+--
+-- Name: index_follows_on_following_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_follows_on_following_id ON follows USING btree (following_id);
+
+
+--
+-- Name: index_follows_on_following_id_and_follower_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_follows_on_following_id_and_follower_id ON follows USING btree (following_id, follower_id);
 
 
 --
@@ -519,6 +594,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170406091535'),
 ('20170406101643'),
 ('20170406101922'),
-('20170406142548');
+('20170406142548'),
+('20170407111725');
 
 

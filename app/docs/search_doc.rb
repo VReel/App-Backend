@@ -4,6 +4,7 @@ class SearchDoc
   swagger_path '/search/users/{term}' do
     operation :get do
       key :summary, 'Search for users by name'
+      key :description, 'Typically used for autocompletion'
       key :operationId, 'search_users'
       key :produces, [
         'application/json'
@@ -24,6 +25,7 @@ class SearchDoc
   swagger_path '/search/hash_tags/{term}' do
     operation :get do
       key :summary, 'Search for hash_tags by name'
+      key :description, 'Typically used for autocompletion'
       key :operationId, 'search_hash_tags'
       key :produces, [
         'application/json'

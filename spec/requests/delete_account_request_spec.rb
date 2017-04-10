@@ -69,4 +69,75 @@ RSpec.describe 'Delete account requests', type: :request do
       delete '/v1/users', headers: auth_headers_from_response
     end
   end
+
+  describe "delete user's follower/following relationships" do
+    let(:arthur) { create_user_and_sign_in }
+    let(:dan) { Fabricate(:user) }
+    let(:simone) { Fabricate(:user) }
+    let(:bruno) { Fabricate(:user) }
+    before(:each) do
+      arthur.follow(dan)
+      dan.follow(arthur)
+      arthur.follow(simone)
+      simone.follow(arthur)
+      dan.follow(simone)
+      simone.follow(dan)
+      arthur.follow(bruno)
+      bruno.follow(simone)
+    end
+
+    it 'has the correct following/follower counts' do
+      arthur.reload
+      simone.reload
+      dan.reload
+      bruno.reload
+
+      expect(arthur.following_count).to eq 3
+      expect(arthur.follower_count).to eq 2
+      expect(dan.following_count).to eq 2
+      expect(dan.follower_count).to eq 2
+      expect(simone.following_count).to eq 2
+      expect(simone.follower_count).to eq 3
+      expect(bruno.following_count).to eq 1
+      expect(bruno.follower_count).to eq 1
+    end
+
+    it 'deletes follower_relationships' do
+      expect do
+        delete '/v1/users', headers: auth_headers_from_response
+      end.to change { deleted_arthur.following_relationships.count }.by(-3)
+
+      expect(deleted_arthur.following_relationships.count).to be 0
+    end
+
+    it 'deletes_following_relationships' do
+      expect do
+        delete '/v1/users', headers: auth_headers_from_response
+      end.to change { deleted_arthur.follower_relationships.count }.by(-2)
+
+      expect(deleted_arthur.follower_relationships.count).to be 0
+    end
+
+    it 'updates follower_counts' do
+      delete '/v1/users', headers: auth_headers_from_response
+
+      # People who arthur folowed have their follower count decremented.
+      expect(dan.reload.follower_count).to eq 1
+      expect(simone.reload.follower_count).to eq 2
+      expect(bruno.reload.follower_count).to eq 0
+    end
+
+    it 'updates following_counts' do
+      delete '/v1/users', headers: auth_headers_from_response
+
+      # People who arthur folowed have their follower count decremented.
+      expect(dan.reload.following_count).to eq 1
+      expect(simone.reload.following_count).to eq 1
+      expect(bruno.reload.following_count).to eq 1
+    end
+
+    def deleted_arthur
+      User.with_deleted.find_by(id: arthur.id)
+    end
+  end
 end

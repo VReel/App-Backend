@@ -1,6 +1,5 @@
 class Post < ApplicationRecord
   include S3Urls
-  include IncrementDecrement
   MAX_HASH_TAGS = 30
 
   belongs_to :user
@@ -18,8 +17,8 @@ class Post < ApplicationRecord
   before_destroy { remove_hash_tags(hash_tag_values) }
   before_destroy { Post.delay.delete_s3_resources([thumbnail_key, original_key]) }
 
-  after_create { increment(user, :post_count) }
-  after_destroy { decrement(user, :post_count) }
+  after_create { user.locked_increment(:post_count) }
+  after_destroy { user.locked_decrement(:post_count) }
 
   # This is a class method so doesn't rely on existence of record.
   def self.delete_s3_resources(keys)
