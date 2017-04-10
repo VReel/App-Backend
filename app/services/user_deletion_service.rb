@@ -58,6 +58,7 @@ class UserDeletionService
   end
 
   # rubocop:disable Metrics/AbcSize
+  # rubocop:disable SkipsModelValidations
   def delete_following_relationships
     # First store who we follow and are followed_by
     # I guess there's a scaling limit here.
@@ -77,6 +78,7 @@ class UserDeletionService
       followed_by_user.update_columns(following_count: followed_by_user.following.count)
     end
   end
+  # rubocop:enable SkipsModelValidations
   # rubocop:enable Metrics/AbcSize
 
   def set_unique_fields
