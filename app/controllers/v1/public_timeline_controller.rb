@@ -2,7 +2,10 @@ class V1::PublicTimelineController < V1::PostsController
   protected
 
   def posts
-    @posts ||= Post.all.order('created_at DESC')
+    return @posts unless @posts.nil?
+    @posts = Post.all.order('created_at DESC')
+    paginate(@posts)
+    @posts
   end
 
   def posts_links

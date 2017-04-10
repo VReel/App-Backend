@@ -23,9 +23,9 @@ RSpec.describe 'Hash tag search', type: :request do
 
   describe 'search for posts with hash tags' do
     before(:each) do
-      create_post('i like #iceccream')
-      create_post('i hate #iceccream but like #chocolate')
-      create_post('i love #iceccream but hate #chocolate')
+      create_post(user, 'i like #iceccream')
+      create_post(user, 'i hate #iceccream but like #chocolate')
+      create_post(user, 'i love #iceccream but hate #chocolate')
     end
 
     it 'finds posts with the hash_tag by hash_tag' do
@@ -53,7 +53,7 @@ RSpec.describe 'Hash tag search', type: :request do
 
     describe 'search result pagination posts' do
       before(:each) do
-        25.times { create_post('i love #pizza') }
+        25.times { create_post(user, 'i love #pizza') }
 
         get '/v1/posts/hash_tags/%23pizza', headers: auth_headers
       end
@@ -80,13 +80,5 @@ RSpec.describe 'Hash tag search', type: :request do
         expect(new_data['meta']['next_page']).to be false
       end
     end
-  end
-
-  def create_post(caption)
-    user.posts.create(
-      original_key: "#{user.unique_id}/original",
-      thumbnail_key: "#{user.unique_id}/thumbnail",
-      caption: caption
-    )
   end
 end

@@ -42,4 +42,31 @@ module RequestHelpers
       uid: response.headers['uid']
     }.merge(client_application_header)
   end
+
+  def create_post(user, caption)
+    user.posts.create(
+      original_key: "#{user.unique_id}/original",
+      thumbnail_key: "#{user.unique_id}/thumbnail",
+      caption: caption
+    )
+  end
+
+  # rubocop:disable Metrics/AbcSize
+  def next_page_expectations
+    expect(data['links']['next']).to be_present
+    expect(data['meta']['next_page']).to be true
+    expect(data['meta']['next_page_id']).to be_present
+
+    get data['links']['next'], headers: auth_headers
+
+    expect(response.status).to eq 200
+
+    new_data = JSON.parse(response.body)
+
+    expect(new_data['data'].size).to eq 5
+
+    expect(new_data['links']).to be_nil
+    expect(new_data['meta']['next_page']).to be false
+  end
+  # rubocop:enable Metrics/AbcSize
 end
