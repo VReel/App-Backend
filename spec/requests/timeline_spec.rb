@@ -7,7 +7,7 @@ RSpec.describe 'Timelines', type: :request do
   describe 'public timeline' do
     before(:each) { 25.times { create_post(Fabricate(:user), Faker::HarryPotter.quote) } }
     before(:each) { create_user_and_sign_in }
-    before(:each) { get '/v1/public_timeline', headers: auth_headers_from_response }
+    before(:each) { get '/v1/public_timeline', headers: auth_headers }
 
     it 'gets the most recent posts in the system' do
       expect(response.status).to eq 200
@@ -35,7 +35,7 @@ RSpec.describe 'Timelines', type: :request do
       arthur.follow(simone)
     end
 
-    before(:each) { get '/v1/timeline', headers: auth_headers_from_response }
+    before(:each) { get '/v1/timeline', headers: auth_headers }
 
     it 'gets posts just from followed users' do
       expect(response.status).to eq 200
