@@ -23,6 +23,7 @@ Rails.application.routes.draw do
 
     post 'follow/:user_id', to: 'follows#create'
     delete 'follow/:user_id', to: 'follows#destroy'
+
     get 'followers', to: 'followers#followers'
     get 'following', to: 'followers#following'
 
@@ -32,6 +33,9 @@ Rails.application.routes.draw do
 
     get 'timeline', to: 'timeline#index'
     get 'public_timeline', to: 'public_timeline#index'
+
+    post 'like/:post_id', to: 'likes#create'
+    delete 'like/:post_id', to: 'likes#destroy'
   end
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
