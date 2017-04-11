@@ -218,6 +218,38 @@ CREATE TABLE hash_tags (
 
 
 --
+-- Name: likes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE likes (
+    id integer NOT NULL,
+    post_id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: likes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE likes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: likes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE likes_id_seq OWNED BY likes.id;
+
+
+--
 -- Name: posts; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -310,6 +342,13 @@ ALTER TABLE ONLY hash_tag_posts ALTER COLUMN id SET DEFAULT nextval('hash_tag_po
 
 
 --
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY likes ALTER COLUMN id SET DEFAULT nextval('likes_id_seq'::regclass);
+
+
+--
 -- Name: ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -355,6 +394,14 @@ ALTER TABLE ONLY hash_tag_posts
 
 ALTER TABLE ONLY hash_tags
     ADD CONSTRAINT hash_tags_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: likes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY likes
+    ADD CONSTRAINT likes_pkey PRIMARY KEY (id);
 
 
 --
@@ -473,6 +520,27 @@ CREATE UNIQUE INDEX index_hash_tags_on_tag ON hash_tags USING btree (tag);
 
 
 --
+-- Name: index_likes_on_post_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_likes_on_post_id ON likes USING btree (post_id);
+
+
+--
+-- Name: index_likes_on_post_id_and_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_likes_on_post_id_and_user_id ON likes USING btree (post_id, user_id);
+
+
+--
+-- Name: index_likes_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_likes_on_user_id ON likes USING btree (user_id);
+
+
+--
 -- Name: index_posts_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -526,6 +594,13 @@ CREATE UNIQUE INDEX index_users_on_uid_and_provider ON users USING btree (uid, p
 --
 
 CREATE INDEX index_users_on_unique_id ON users USING btree (unique_id);
+
+
+--
+-- Name: likes_created_at_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX likes_created_at_index ON likes USING btree (created_at DESC NULLS LAST);
 
 
 --
@@ -595,6 +670,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170406101643'),
 ('20170406101922'),
 ('20170406142548'),
-('20170407111725');
+('20170407111725'),
+('20170411160909');
 
 
