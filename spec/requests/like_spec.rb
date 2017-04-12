@@ -14,7 +14,7 @@ RSpec.describe 'Likes', type: :request do
     expect(user.reload.likes?(liked_post)).to be true
   end
 
-  it 'can unfollow the other user' do
+  it 'can unlike a post' do
     user.like(liked_post)
 
     delete "/v1/like/#{liked_post.id}", headers: auth_headers
@@ -24,7 +24,7 @@ RSpec.describe 'Likes', type: :request do
     expect(user.reload.likes?(liked_post)).to be false
   end
 
-  it 'errors if the user is already followed' do
+  it 'errors if the post is already liked' do
     user.like(liked_post)
 
     post "/v1/like/#{liked_post.id}", headers: auth_headers
