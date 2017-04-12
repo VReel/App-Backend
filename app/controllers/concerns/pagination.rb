@@ -4,6 +4,7 @@ module Pagination
   def paginate(query)
     query.limit!(API_PAGE_SIZE + 1)
     query.where!('created_at < ?', Time.zone.parse(Base64.urlsafe_decode64(params[:page]))) if params[:page].present?
+    query
   end
 
   def pagination_needed?

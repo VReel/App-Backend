@@ -8,10 +8,7 @@ class V1::OtherUserPostsController < V1::PostsController
   protected
 
   def posts
-    return @posts unless @posts.nil?
-    @posts = user.posts.includes(:user)
-    paginate(@posts)
-    @posts
+    @posts ||= paginate(user.posts.includes(:user))
   end
 
   def user
