@@ -7,6 +7,7 @@ class Post < ApplicationRecord
   belongs_to :user
   has_many :hash_tag_posts
   has_many :hash_tags, through: :hash_tag_posts
+  has_many :comments, -> { order('created_at ASC') }
 
   validates :original_key, presence: true
   validates :thumbnail_key, presence: true
@@ -34,11 +35,17 @@ class Post < ApplicationRecord
   end
 
   def hash_tag_values
-    hash_tags.map(&:tag).first(MAX_HASH_TAGS)
+    ret = hash_tags.map(&:tag).first(MAX_HASH_TAGS)
+  end
+
+  def hash_tags_in_comments
+    HashTag.find_in(comments.where(has_hash_tags: true).limit(MAX_HASH_TAGS).map(&:text).join(' '))
   end
 
   def set_hash_tags!
     updated_hash_tag_values = HashTag.find_in(caption).first(MAX_HASH_TAGS)
+    updated_hash_tag_values += hash_tags_in_comments if updated_hash_tag_values.size < MAX_HASH_TAGS
+    updated_hash_tag_values.uniq!
 
     new_hash_tags = updated_hash_tag_values - hash_tag_values
     deleted_hash_tags = hash_tag_values - updated_hash_tag_values
