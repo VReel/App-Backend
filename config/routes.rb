@@ -23,6 +23,10 @@ Rails.application.routes.draw do
     end
     resources :stats, only: :index
 
+    resources :hash_tags, only: :show do
+      get :posts, to: 'hash_tag_posts#index'
+    end
+
     post 'follow/:user_id', to: 'follows#create'
     delete 'follow/:user_id', to: 'follows#destroy'
 
@@ -31,7 +35,6 @@ Rails.application.routes.draw do
 
     get 'search/users/:term', to: 'search#users'
     get 'search/hash_tags/:term', to: 'search#hash_tags'
-    get 'posts/hash_tags/:hash_tag', to: 'post_hash_tags#index', as: :post_hash_tags
 
     get 'timeline', to: 'timeline#index'
     get 'public_timeline', to: 'public_timeline#index'

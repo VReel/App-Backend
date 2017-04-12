@@ -124,7 +124,7 @@ class PostDoc
     end
   end
 
-  swagger_path '/posts/hash_tags/{hashTag}' do
+  swagger_path '/hash_tags/{hashTag}/posts' do
     operation :get do
       key :summary, 'Search for posts by hash_tag'
       key :operationId, 'search_post_hash_tags'
@@ -132,7 +132,7 @@ class PostDoc
         'application/json'
       ]
       key :tags, [
-        'Post'
+        'Post', 'Hash Tag'
       ]
       parameter do
         key :in, :path

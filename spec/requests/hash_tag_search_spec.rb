@@ -27,16 +27,41 @@ RSpec.describe 'Hash tag search', type: :request do
       create_post(user, 'i hate #iceccream but like #chocolate')
       create_post(user, 'i love #iceccream but hate #chocolate')
     end
+    let(:chocolate_hash_tag) { HashTag.find_with_tag('chocolate') }
+
+    it 'can find a hash tag' do
+      get '/v1/hash_tags/%23chocolate', headers: auth_headers
+
+      expect(response.status).to eq 200
+      expect(data['data']['id']).to eq chocolate_hash_tag.id
+    end
+
+    it 'can find a hash tag by id' do
+      get "/v1/hash_tags/#{chocolate_hash_tag.id}", headers: auth_headers
+
+      expect(response.status).to eq 200
+      expect(data['data']['id']).to eq chocolate_hash_tag.id
+    end
+
+    it '404s for an unrecognised hash tag by tag' do
+      get '/v1/hash_tags/%23beer', headers: auth_headers
+      expect(response.status).to eq 404
+    end
+
+    it '404s for an unrecognised hash tag by id' do
+      get '/v1/hash_tags/235123523', headers: auth_headers
+      expect(response.status).to eq 404
+    end
 
     it 'finds posts with the hash_tag by hash_tag' do
-      get '/v1/posts/hash_tags/%23chocolate', headers: auth_headers
+      get '/v1/hash_tags/%23chocolate/posts', headers: auth_headers
 
       expect(response.status).to eq 200
       expect(data['data'].size).to eq 2
     end
 
     it 'includes the user details of the post' do
-      get '/v1/posts/hash_tags/%23chocolate', headers: auth_headers
+      get '/v1/hash_tags/%23chocolate/posts', headers: auth_headers
 
       expect(data['data'].first['relationships']['user']['data']['id']).to eq user.id
       expect(data['included'].first['id']).to eq user.id
@@ -45,7 +70,7 @@ RSpec.describe 'Hash tag search', type: :request do
     it 'finds posts with the hash_tag by hash_tag_id' do
       hash_tag_id = HashTag.find_with_tag('#chocolate').id
 
-      get "/v1/posts/hash_tags/#{hash_tag_id}", headers: auth_headers
+      get "/v1/hash_tags/#{hash_tag_id}/posts", headers: auth_headers
 
       expect(response.status).to eq 200
       expect(data['data'].size).to eq 2
@@ -56,7 +81,7 @@ RSpec.describe 'Hash tag search', type: :request do
       before(:each) do
         total_posts.times { create_post(user, 'i love #pizza') }
 
-        get '/v1/posts/hash_tags/%23pizza', headers: auth_headers
+        get '/v1/hash_tags/%23pizza/posts', headers: auth_headers
       end
 
       it 'gets a page of posts' do
