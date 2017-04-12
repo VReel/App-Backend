@@ -24,7 +24,7 @@ Rails.application.routes.draw do
       resources :likes, only: :index
       resources :comments, only: [:index, :create]
     end
-    resource :comments, only: [:update, :delete]
+    resources :comments, only: [:update, :destroy]
     resources :stats, only: :index
 
     resources :hash_tags, only: :show do

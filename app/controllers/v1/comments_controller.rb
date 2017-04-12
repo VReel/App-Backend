@@ -1,7 +1,8 @@
 class V1::CommentsController < ApplicationController
   include Pagination
   include ErrorResource
-  before_action :check_post_is_found
+  before_action :check_post_is_found, only: [:index, :create]
+  before_action :check_comment_is_found, only: [:update, :destroy]
 
   def index
     render json: comments.first(API_PAGE_SIZE), links: comment_links, meta: meta, include: :user
@@ -12,11 +13,17 @@ class V1::CommentsController < ApplicationController
 
     return render json: new_comment, status: 201 if new_comment.persisted?
 
-    render_validation_error(new_post)
+    render_validation_error(new_comment)
   end
 
   def update
+    return render json: comment, status: 200 if comment.update(permitted_params)
 
+    render_validation_error(comment)
+  end
+
+  def destroy
+    head :no_content if comment.destroy
   end
 
   protected
@@ -32,6 +39,10 @@ class V1::CommentsController < ApplicationController
     }
   end
 
+  def comment
+    @comment ||= current_user.comments.find_by(id: params[:id])
+  end
+
   def post
     @post ||= Post.find_by(id: params[:post_id])
   end
@@ -44,7 +55,15 @@ class V1::CommentsController < ApplicationController
     render_error('No post found for that ID', 404) if post.blank?
   end
 
+  def check_comment_is_found
+    render_error('No comment found for that ID', 404) if comment.blank?
+  end
+
   def permitted_params
     params.require(:comment).permit(:text)
+  end
+
+  def render_validation_error(comment)
+    render json: comment, serializer: ActiveModel::Serializer::ErrorSerializer, status: 422
   end
 end
