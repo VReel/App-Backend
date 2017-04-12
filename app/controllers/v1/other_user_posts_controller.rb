@@ -12,8 +12,7 @@ class V1::OtherUserPostsController < V1::PostsController
   end
 
   def user
-    # if the hash_tag does not start with a #, assume it is a uuid.
-    @user = User.find_by(id: params[:user_id])
+    @user ||= User.find_by(id: params[:user_id])
   end
 
   def posts_links
