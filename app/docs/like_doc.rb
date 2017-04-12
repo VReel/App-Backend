@@ -1,7 +1,7 @@
 class LikeDoc
   include Swagger::Blocks
 
-  swagger_path '/like/{post_id}' do
+  swagger_path '/like/{postId}' do
     operation :post do
       key :summary, 'Like a post'
       key :operationId, 'like_post'
@@ -13,7 +13,7 @@ class LikeDoc
       ]
       parameter do
         key :in, :path
-        key :name, :post_id
+        key :name, :postId
         key :description, 'UUID of the post to like.'
         key :required, true
         key :type, :string
@@ -31,7 +31,7 @@ class LikeDoc
       ]
       parameter do
         key :in, :path
-        key :name, :post_id
+        key :name, :postId
         key :description, 'UUID of the post to unlike.'
         key :required, true
         key :type, :string
