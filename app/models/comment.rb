@@ -9,6 +9,7 @@ class Comment < ApplicationRecord
   after_destroy { post.locked_decrement(:comment_count) }
 
   validates :text, length: { maximum: 500 }
+  validates :text, presence: true
 
   def comment_is_by_post_author?
     user_id == post.user_id

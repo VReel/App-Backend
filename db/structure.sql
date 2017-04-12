@@ -107,7 +107,7 @@ ALTER SEQUENCE client_applications_id_seq OWNED BY client_applications.id;
 --
 
 CREATE TABLE comments (
-    id integer NOT NULL,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL,
     post_id uuid NOT NULL,
     user_id uuid NOT NULL,
     text text,
@@ -115,25 +115,6 @@ CREATE TABLE comments (
     updated_at timestamp without time zone NOT NULL,
     has_hash_tags boolean DEFAULT false NOT NULL
 );
-
-
---
--- Name: comments_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE comments_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: comments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE comments_id_seq OWNED BY comments.id;
 
 
 --
@@ -354,13 +335,6 @@ CREATE TABLE users (
 --
 
 ALTER TABLE ONLY client_applications ALTER COLUMN id SET DEFAULT nextval('client_applications_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY comments ALTER COLUMN id SET DEFAULT nextval('comments_id_seq'::regclass);
 
 
 --

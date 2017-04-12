@@ -1,3 +1,3 @@
 class PostFullSerializer < PostSerializer
-  attributes :id, :thumbnail_url, :original_url, :caption, :created_at, :edited
+  attributes :id, :thumbnail_url, :caption, :like_count, :comment_count, :created_at, :edited, :original_url, :edited
 end
