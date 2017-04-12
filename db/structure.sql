@@ -261,7 +261,8 @@ CREATE TABLE posts (
     user_id uuid NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    edited boolean DEFAULT false
+    edited boolean DEFAULT false,
+    like_count integer DEFAULT 0 NOT NULL
 );
 
 
@@ -671,6 +672,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170406101922'),
 ('20170406142548'),
 ('20170407111725'),
-('20170411160909');
+('20170411160909'),
+('20170412083957');
 
 
