@@ -151,6 +151,33 @@ class PostDoc
     end
   end
 
+  swagger_path '/users/{userId}/posts' do
+    operation :get do
+      key :summary, 'Get posts by user'
+      key :operationId, 'other_user_posts'
+      key :produces, [
+        'application/json'
+      ]
+      key :tags, [
+        'Post', 'User'
+      ]
+      parameter do
+        key :in, :path
+        key :name, :userId
+        key :description, 'UUID of user'
+        key :required, true
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :page
+        key :description, 'Gets next page of posts.'
+        key :required, false
+        key :type, :string
+      end
+    end
+  end
+
   swagger_path '/posts/{postId}' do
     operation :delete do
       key :summary, 'Delete a post'

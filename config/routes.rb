@@ -16,7 +16,9 @@ Rails.application.routes.draw do
   resources :apidocs, only: [:index]
 
   namespace :v1, defaults: { format: 'json' } do
-    resources :users, only: [:index, :show]
+    resources :users, only: [:index, :show] do
+      get :posts, to: 'other_user_posts#index'
+    end
     resources :s3_presigned_url, only: [:index]
     resources :posts do
       resources :likes, only: :index
