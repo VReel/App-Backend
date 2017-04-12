@@ -8,7 +8,9 @@ module Pagination
   end
 
   def pagination_needed?
-    records.size > API_PAGE_SIZE
+    # Using #to_a stops active record trying to be clever
+    # by converting queries to select count(*)s which then need to be repeated.
+    @pagination_needed ||= records.to_a.size > API_PAGE_SIZE
   end
 
   def next_page_id
