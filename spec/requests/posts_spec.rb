@@ -160,34 +160,21 @@ RSpec.describe 'Post requests', type: :request do
   end
 
   describe 'list posts' do
-    before(:each) do
-      25.times { fabricate_post_for(user) }
+    let(:total_posts) { more_than_a_page_count }
+    let(:auth_headers) { auth_headers_from_response }
 
-      # For some reason this fails in the full test suite if we don't memoize headers.
-      @auth_headers = auth_headers_from_response
-      get '/v1/posts', headers: @auth_headers
+    before(:each) do
+      total_posts.times { fabricate_post_for(user) }
+
+      get '/v1/posts', headers: auth_headers
     end
 
     it 'gets a page of posts' do
-      expect(response.status).to eq 200
-      expect(data['data'].size).to eq 20
+      first_page_expectations
     end
 
     it 'gets the next page of posts' do
-      expect(data['links']['next']).to be_present
-      expect(data['meta']['next_page']).to be true
-      expect(data['meta']['next_page_id']).to be_present
-
-      get data['links']['next'], headers: @auth_headers
-
-      expect(response.status).to eq 200
-
-      new_data = JSON.parse(response.body)
-
-      expect(new_data['data'].size).to eq 5
-
-      expect(new_data['links']).to be_nil
-      expect(new_data['meta']['next_page']).to be false
+      next_page_expectations(total: total_posts)
     end
   end
 end

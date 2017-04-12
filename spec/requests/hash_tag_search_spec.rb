@@ -52,32 +52,19 @@ RSpec.describe 'Hash tag search', type: :request do
     end
 
     describe 'search result pagination posts' do
+      let(:total_posts) { more_than_a_page_count }
       before(:each) do
-        25.times { create_post(user, 'i love #pizza') }
+        total_posts.times { create_post(user, 'i love #pizza') }
 
         get '/v1/posts/hash_tags/%23pizza', headers: auth_headers
       end
 
       it 'gets a page of posts' do
-        expect(response.status).to eq 200
-        expect(data['data'].size).to eq 20
+        first_page_expectations
       end
 
       it 'gets the next page of posts' do
-        expect(data['links']['next']).to be_present
-        expect(data['meta']['next_page']).to be true
-        expect(data['meta']['next_page_id']).to be_present
-
-        get data['links']['next'], headers: auth_headers
-
-        expect(response.status).to eq 200
-
-        new_data = JSON.parse(response.body)
-
-        expect(new_data['data'].size).to eq 5
-
-        expect(new_data['links']).to be_nil
-        expect(new_data['meta']['next_page']).to be false
+        next_page_expectations(total: total_posts)
       end
     end
   end

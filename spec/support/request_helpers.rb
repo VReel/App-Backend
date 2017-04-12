@@ -43,7 +43,7 @@ module RequestHelpers
     }.merge(client_application_header)
   end
 
-  def create_post(user, caption)
+  def create_post(user, caption = Faker::HarryPotter.quote)
     user.posts.create(
       original_key: "#{user.unique_id}/original",
       thumbnail_key: "#{user.unique_id}/thumbnail",
@@ -51,8 +51,17 @@ module RequestHelpers
     )
   end
 
+  def more_than_a_page_count
+    API_PAGE_SIZE + rand(API_PAGE_SIZE / 2) + 1
+  end
+
+  def first_page_expectations
+    expect(response.status).to eq 200
+    expect(data['data'].size).to eq API_PAGE_SIZE
+  end
+
   # rubocop:disable Metrics/AbcSize
-  def next_page_expectations(total_posts: 25)
+  def next_page_expectations(total: 25)
     expect(data['links']['next']).to be_present
     expect(data['meta']['next_page']).to be true
     expect(data['meta']['next_page_id']).to be_present
@@ -63,7 +72,7 @@ module RequestHelpers
 
     new_data = JSON.parse(response.body)
 
-    expect(new_data['data'].size).to eq(total_posts - 20)
+    expect(new_data['data'].size).to eq(total - API_PAGE_SIZE)
 
     expect(new_data['links']).to be_nil
     expect(new_data['meta']['next_page']).to be false

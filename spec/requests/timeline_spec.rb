@@ -49,7 +49,7 @@ RSpec.describe 'Timelines', type: :request do
     end
 
     it 'paginates the posts' do
-      next_page_expectations(total_posts: 22)
+      next_page_expectations(total: 22)
     end
   end
 end
