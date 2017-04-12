@@ -1,4 +1,4 @@
-class V1::PostHashTagsController < V1::PostsController
+class V1::HashTagPostsController < V1::PostsController
   def index
     return render_error('Hash tag not found', 404) if hash_tag_id.blank?
     # We inherit pagination and meta links from posts controller.
@@ -18,17 +18,17 @@ class V1::PostHashTagsController < V1::PostsController
 
   def hash_tag_id
     # if the hash_tag does not start with a #, assume it is a uuid.
-    @hash_tag_id ||= if params[:hash_tag].first == '#'
-                       HashTag.find_with_tag(params[:hash_tag]).try(:id)
+    @hash_tag_id ||= if params[:hash_tag_id].first == '#'
+                       HashTag.find_with_tag(params[:hash_tag_id]).try(:id)
                      else
-                       params[:hash_tag]
+                       params[:hash_tag_id]
                      end
   end
 
   def posts_links
     return nil unless pagination_needed?
     {
-      next: v1_post_hash_tags_url(hash_tag: params[:hash_tag], page: next_page_id)
+      next: v1_hash_tag_posts_url(hash_tag_id: params[:hash_tag_id], page: next_page_id)
     }
   end
 end

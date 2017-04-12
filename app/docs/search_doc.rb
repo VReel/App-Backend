@@ -10,7 +10,7 @@ class SearchDoc
         'application/json'
       ]
       key :tags, [
-        'Search'
+        'Search', 'User'
       ]
       parameter do
         key :in, :path
@@ -31,7 +31,7 @@ class SearchDoc
         'application/json'
       ]
       key :tags, [
-        'Search'
+        'Search', 'Hash Tag'
       ]
       parameter do
         key :in, :path
