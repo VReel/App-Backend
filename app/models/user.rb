@@ -40,6 +40,8 @@ class User < ApplicationRecord
   has_many :follower_relationships, -> { order('created_at DESC') }, class_name: 'Follow', foreign_key: :following_id
   has_many :following, through: :following_relationships
   has_many :followers, through: :follower_relationships
+  has_many :likes
+  has_many :liked_posts, through: :likes, source: :post
 
   def self.search(term, limit: 10)
     # Get handle matches - starting substring.
@@ -135,6 +137,18 @@ class User < ApplicationRecord
 
   def follows?(user)
     following.include?(user)
+  end
+
+  def like(post)
+    liked_posts << post
+  end
+
+  def unlike(post)
+    liked_posts.destroy(post)
+  end
+
+  def likes?(post)
+    liked_posts.include?(post)
   end
 
   protected

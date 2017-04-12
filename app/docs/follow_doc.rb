@@ -1,7 +1,7 @@
 class FollowDoc
   include Swagger::Blocks
 
-  swagger_path '/follow/{user_id}' do
+  swagger_path '/follow/{userId}' do
     operation :post do
       key :summary, 'Follow a user'
       key :operationId, 'follow_user'
@@ -13,7 +13,7 @@ class FollowDoc
       ]
       parameter do
         key :in, :path
-        key :name, :user_id
+        key :name, :userId
         key :description, 'UUID of the user to follow.'
         key :required, true
         key :type, :string
@@ -31,7 +31,7 @@ class FollowDoc
       ]
       parameter do
         key :in, :path
-        key :name, :user_id
+        key :name, :userId
         key :description, 'UUID of the user to unfollow.'
         key :required, true
         key :type, :string

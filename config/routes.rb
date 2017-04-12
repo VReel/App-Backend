@@ -18,11 +18,14 @@ Rails.application.routes.draw do
   namespace :v1, defaults: { format: 'json' } do
     resources :users, only: [:index, :show]
     resources :s3_presigned_url, only: [:index]
-    resources :posts
+    resources :posts do
+      resources :likes, only: :index
+    end
     resources :stats, only: :index
 
     post 'follow/:user_id', to: 'follows#create'
     delete 'follow/:user_id', to: 'follows#destroy'
+
     get 'followers', to: 'followers#followers'
     get 'following', to: 'followers#following'
 
@@ -32,6 +35,9 @@ Rails.application.routes.draw do
 
     get 'timeline', to: 'timeline#index'
     get 'public_timeline', to: 'public_timeline#index'
+
+    post 'like/:post_id', to: 'like#create'
+    delete 'like/:post_id', to: 'like#destroy'
   end
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

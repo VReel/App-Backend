@@ -1,5 +1,7 @@
 class Post < ApplicationRecord
   include S3Urls
+  include LockedIncrementDecrement
+
   MAX_HASH_TAGS = 30
 
   belongs_to :user

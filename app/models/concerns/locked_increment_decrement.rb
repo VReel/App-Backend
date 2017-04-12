@@ -9,6 +9,8 @@ module LockedIncrementDecrement
   end
 
   def locked_decrement(field)
+    return unless send(field).positive?
+
     with_lock do
       update_columns(field => send(field) - 1)
     end

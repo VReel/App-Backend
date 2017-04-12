@@ -69,6 +69,7 @@ class ApidocsController < ActionController::Base
     FollowDoc,
     TimelineDoc,
     SearchDoc,
+    LikeDoc,
     StatsDoc,
     HelloWorldDoc,
     self

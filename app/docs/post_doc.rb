@@ -104,7 +104,27 @@ class PostDoc
     end
   end
 
-  swagger_path '/posts/hash_tags/{hash_tag}' do
+  swagger_path '/posts/{postId}/likes' do
+    operation :get do
+      key :summary, 'Show who likes a post'
+      key :operationId, 'get_post_likes'
+      key :produces, [
+        'application/json'
+      ]
+      key :tags, [
+        'Post', 'Like'
+      ]
+      parameter do
+        key :name, :postId
+        key :in, :path
+        key :description, 'ID of post'
+        key :required, true
+        key :type, :string
+      end
+    end
+  end
+
+  swagger_path '/posts/hash_tags/{hashTag}' do
     operation :get do
       key :summary, 'Search for posts by hash_tag'
       key :operationId, 'search_post_hash_tags'
@@ -116,7 +136,7 @@ class PostDoc
       ]
       parameter do
         key :in, :path
-        key :name, :hash_tag
+        key :name, :hashTag
         key :description, 'Hash tag (prefixed with #) or hash tag uuid to search for'
         key :required, true
         key :type, :string

@@ -9,7 +9,7 @@ RSpec.describe 'Followers', type: :request do
   describe 'a followed user appears in the list of following' do
     before(:each) { user.follow(other_user) }
 
-    it 'appears in the list of followers' do
+    it 'appears in the list of following' do
       get '/v1/following', headers: auth_headers
 
       expect(response.status).to eq 200
@@ -35,7 +35,7 @@ RSpec.describe 'Followers', type: :request do
       expect(data['data'].first['id']).to eq other_user.id
     end
 
-    it 'does not appear in the list of followers' do
+    it 'does not appear in the list of following' do
       get '/v1/following', headers: auth_headers
       expect(response.status).to eq 200
       expect(data['data'].size).to eq 0
@@ -43,37 +43,36 @@ RSpec.describe 'Followers', type: :request do
   end
 
   describe 'pagination' do
+    let(:item_count) { more_than_a_page_count }
     describe 'followers pagination' do
       before(:each) do
-        25.times { Fabricate(:user).follow(user) }
+        item_count.times { Fabricate(:user).follow(user) }
 
         get '/v1/followers', headers: auth_headers
       end
 
       it 'gets a page of followers' do
-        expect(response.status).to eq 200
-        expect(data['data'].size).to eq 20
+        first_page_expectations
       end
 
       it 'gets the next page of followers' do
-        next_page_expectations
+        next_page_expectations(total: item_count)
       end
     end
 
     describe 'following pagination' do
       before(:each) do
-        25.times { user.follow(Fabricate(:user)) }
+        item_count.times { user.follow(Fabricate(:user)) }
 
         get '/v1/following', headers: auth_headers
       end
 
       it 'gets a page of followers' do
-        expect(response.status).to eq 200
-        expect(data['data'].size).to eq 20
+        first_page_expectations
       end
 
       it 'gets the next page of followers' do
-        next_page_expectations
+        next_page_expectations(total: item_count)
       end
     end
   end
