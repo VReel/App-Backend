@@ -33,6 +33,8 @@ RSpec.describe Comment, type: :model do
       expect do
         comment.update(text: 'updated comment')
       end.not_to change { post.reload.comment_count }
+
+      expect(comment.has_hash_tags).to be false
     end
 
     describe 'by post author' do

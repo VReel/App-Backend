@@ -35,7 +35,7 @@ class Post < ApplicationRecord
   end
 
   def hash_tag_values
-    ret = hash_tags.map(&:tag).first(MAX_HASH_TAGS)
+    hash_tags.map(&:tag).first(MAX_HASH_TAGS)
   end
 
   def hash_tags_in_comments
@@ -50,7 +50,7 @@ class Post < ApplicationRecord
     new_hash_tags = updated_hash_tag_values - hash_tag_values
     deleted_hash_tags = hash_tag_values - updated_hash_tag_values
 
-    add_hash_tags(new_hash_tags) if new_hash_tags.any?
+    add_hash_tags(new_hash_tags)
     remove_hash_tags(deleted_hash_tags) if deleted_hash_tags.any?
   end
 

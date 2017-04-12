@@ -8,15 +8,16 @@ class Comment < ApplicationRecord
   after_create { post.locked_increment(:comment_count) }
   after_destroy { post.locked_decrement(:comment_count) }
 
+  validates :text, length: { maximum: 500 }
+
   def comment_is_by_post_author?
     user_id == post.user_id
   end
 
   def set_has_hash_tags
-    return unless comment_is_by_post_author?
     return unless text_changed?
 
-    self.has_hash_tags = !!HashTag.find_in(text).any?
+    self.has_hash_tags = comment_is_by_post_author? && HashTag.find_in(text).any?
   end
 
   def update_post_hash_tags
