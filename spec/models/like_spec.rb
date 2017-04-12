@@ -16,4 +16,20 @@ RSpec.describe Like, type: :model do
 
     expect(user.likes?(post)).to be false
   end
+
+  describe 'like_counts' do
+    it 'adds one to the liked_count of the post when liked' do
+      expect do
+        user.like(post)
+      end.to change { post.like_count }.by 1
+    end
+
+    it 'subtracts one to the liked_count of the post when liked' do
+      user.like(post)
+
+      expect do
+        user.unlike(post)
+      end.to change { post.reload.like_count }.by(-1)
+    end
+  end
 end
