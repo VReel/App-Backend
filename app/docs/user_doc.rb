@@ -159,6 +159,62 @@ class UserDoc
     end
   end
 
+  swagger_path '/users/{userId}/followers' do
+    operation :get do
+      key :summary, 'Get users that follow user'
+      key :operationId, 'other_user_followers'
+      key :produces, [
+        'application/json'
+      ]
+      key :tags, [
+        'User'
+      ]
+      parameter do
+        key :in, :path
+        key :name, :userId
+        key :description, 'UUID of user'
+        key :required, true
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :page
+        key :description, 'Gets next page of followers.'
+        key :required, false
+        key :type, :string
+      end
+    end
+  end
+
+
+swagger_path '/users/{userId}/following' do
+    operation :get do
+      key :summary, 'Get users that user follows'
+      key :operationId, 'other_user_followinh'
+      key :produces, [
+        'application/json'
+      ]
+      key :tags, [
+        'User'
+      ]
+      parameter do
+        key :in, :path
+        key :name, :userId
+        key :description, 'UUID of user'
+        key :required, true
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :page
+        key :description, 'Gets next page of following users'
+        key :required, false
+        key :type, :string
+      end
+    end
+  end
+
+
   swagger_schema :UserInput do
     allOf do
       schema do

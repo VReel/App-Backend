@@ -11,6 +11,10 @@ class V1::FollowersController < ApplicationController
 
   protected
 
+  def user
+    current_user
+  end
+
   def users_current_user_follows
     @users_current_user_follows ||= following_relationships.map(&:following)
   end
@@ -20,11 +24,11 @@ class V1::FollowersController < ApplicationController
   end
 
   def following_relationships
-    @following_relationships ||= paginate(current_user.following_relationships.includes(:following))
+    @following_relationships ||= paginate(user.following_relationships.includes(:following))
   end
 
   def follower_relationships
-    @follower_relationships ||= paginate(current_user.follower_relationships.includes(:follower))
+    @follower_relationships ||= paginate(user.follower_relationships.includes(:follower))
   end
 
   # Needed for pagination.
