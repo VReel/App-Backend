@@ -8,11 +8,7 @@ class V1::HashTagPostsController < V1::PostsController
   protected
 
   def posts
-    return @posts unless @posts.nil?
-
-    paginate(hash_tag_posts)
-
-    @posts = hash_tag_posts.map(&:post)
+    @posts ||= paginate(hash_tag_posts).map(&:post)
   end
 
   def hash_tag_posts
