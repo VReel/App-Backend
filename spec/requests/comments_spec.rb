@@ -132,6 +132,10 @@ RSpec.describe 'Comment requests', type: :request do
       get "/v1/posts/#{existing_post.id}/comments", headers: auth_headers
     end
 
+    it 'gets the oldest comment first' do
+      expect(data['data'].first['id']).to eq existing_post.comments.order('created_at ASC').first.id
+    end
+
     it 'gets a page of posts' do
       first_page_expectations
     end
