@@ -17,13 +17,13 @@ class V1::CommentsController < ApplicationController
   end
 
   def update
-    return render json: comment, status: 200 if comment.update(permitted_params)
+    return render json: current_user_comment, status: 200 if current_user_comment.update(permitted_params)
 
-    render_validation_error(comment)
+    render_validation_error(current_user_comment)
   end
 
   def destroy
-    head :no_content if comment.destroy
+    head :no_content if current_user_comment.destroy
   end
 
   protected
@@ -39,8 +39,8 @@ class V1::CommentsController < ApplicationController
     }
   end
 
-  def comment
-    @comment ||= current_user.comments.find_by(id: params[:id])
+  def current_user_comment
+    @current_user_comment ||= current_user.comments.find_by(id: params[:id])
   end
 
   def post
@@ -56,7 +56,7 @@ class V1::CommentsController < ApplicationController
   end
 
   def check_comment_is_found
-    render_error('No comment found for that ID', 404) if comment.blank?
+    render_error('No comment found for that ID', 404) if current_user_comment.blank?
   end
 
   def permitted_params
