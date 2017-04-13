@@ -18,7 +18,7 @@ class Comment < ApplicationRecord
   def set_has_hash_tags
     return unless text_changed?
 
-    self.has_hash_tags = comment_is_by_post_author? && HashTag.find_in(text).any?
+    self.has_hash_tags = HashTag.find_in(text).any? && comment_is_by_post_author?
   end
 
   def update_post_hash_tags
