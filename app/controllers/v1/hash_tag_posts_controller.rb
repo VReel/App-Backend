@@ -8,11 +8,11 @@ class V1::HashTagPostsController < V1::PostsController
   protected
 
   def posts
-    @posts ||= paginate(hash_tag_posts).map(&:post)
+    @posts ||= hash_tag_posts.map(&:post)
   end
 
   def hash_tag_posts
-    @hash_tag_posts ||= HashTagPost.where(hash_tag_id: hash_tag_id).order('created_at DESC').includes(post: :user)
+    @hash_tag_posts ||= paginate(HashTagPost.where(hash_tag_id: hash_tag_id).order('created_at DESC').includes(post: :user))
   end
 
   def hash_tag_id

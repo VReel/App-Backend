@@ -8,11 +8,11 @@ class V1::LikesController < ApplicationController
   protected
 
   def likers
-    @likers ||= paginate(likes, order: 'ASC').map(&:user)
+    @likers ||= likes.map(&:user)
   end
 
   def likes
-    @likes ||= Like.where(post_id: params[:post_id]).order('created_at ASC').includes(:user)
+    @likes ||= paginate(Like.where(post_id: params[:post_id]).order('created_at ASC').includes(:user), order: 'ASC')
   end
 
   def likers_links
