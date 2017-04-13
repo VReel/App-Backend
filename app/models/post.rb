@@ -8,6 +8,7 @@ class Post < ApplicationRecord
   has_many :hash_tag_posts
   has_many :hash_tags, through: :hash_tag_posts
   has_many :comments, -> { order('created_at ASC') }
+  has_many :likes
 
   validates :original_key, presence: true
   validates :thumbnail_key, presence: true
@@ -18,6 +19,10 @@ class Post < ApplicationRecord
   before_update { self.edited = true if caption_changed? }
   before_save { set_hash_tags! }
   before_destroy { remove_hash_tags(hash_tag_values) }
+  before_destroy do
+    comments.delete_all(:delete_all)
+    likes.delete_all(:delete_all)
+  end
   before_destroy { Post.delay.delete_s3_resources([thumbnail_key, original_key]) }
 
   after_create { user.locked_increment(:post_count) }

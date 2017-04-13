@@ -140,4 +140,32 @@ RSpec.describe 'Delete account requests', type: :request do
       User.with_deleted.find_by(id: arthur.id)
     end
   end
+
+  describe "delete user's comments" do
+    let(:comment_count) { rand(5) + 2 }
+    let!(:user) { create_user_and_sign_in }
+    before(:each) do
+      comment_count.times { create_post(Fabricate(:user)).comments.create(user: user, text: Faker::HarryPotter.quote) }
+    end
+
+    it 'deletes the posts' do
+      expect do
+        delete '/v1/users', headers: auth_headers_from_response
+      end.to change { Comment.count }.from(comment_count).to(0)
+    end
+  end
+
+  describe "delete user's likes" do
+    let(:like_count) { rand(5) + 2 }
+    let!(:user) { create_user_and_sign_in }
+    before(:each) do
+      like_count.times { user.like(create_post(Fabricate(:user))) }
+    end
+
+    it 'deletes the posts' do
+      expect do
+        delete '/v1/users', headers: auth_headers_from_response
+      end.to change { Like.count }.from(like_count).to(0)
+    end
+  end
 end

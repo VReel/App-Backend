@@ -686,35 +686,11 @@ CREATE INDEX users_name_gin_trgm_idx ON users USING gist (name gist_trgm_ops);
 
 
 --
--- Name: fk_rails_03de2dc08c; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY comments
-    ADD CONSTRAINT fk_rails_03de2dc08c FOREIGN KEY (user_id) REFERENCES users(id);
-
-
---
 -- Name: fk_rails_1742e8f0ff; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY hash_tag_posts
     ADD CONSTRAINT fk_rails_1742e8f0ff FOREIGN KEY (post_id) REFERENCES posts(id);
-
-
---
--- Name: fk_rails_2fd19c0db7; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY comments
-    ADD CONSTRAINT fk_rails_2fd19c0db7 FOREIGN KEY (post_id) REFERENCES posts(id);
-
-
---
--- Name: fk_rails_5b5ddfd518; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY posts
-    ADD CONSTRAINT fk_rails_5b5ddfd518 FOREIGN KEY (user_id) REFERENCES users(id);
 
 
 --
@@ -754,6 +730,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170412114944'),
 ('20170412145523'),
 ('20170413092030'),
-('20170413145205');
+('20170413145205'),
+('20170413164935');
 
 

@@ -14,15 +14,19 @@ class UserDeletionService
     @s3_deletion_service ||= S3DeletionService.new
   end
 
+  # rubocop:disable Metrics/AbcSize
   def delete!
     delete_user_model_assets
     delete_s3_assets
     delete_remaining_s3_assets
     delete_posts
     delete_following_relationships
+    Like.where(user_id: user.id).delete_all
+    Comment.where(user_id: user.id).delete_all
     set_unique_fields
     Rails.logger.info "User #{user.id} assets and posts deleted"
   end
+  # rubocop:enable Metrics/AbcSize
 
   def posts
     Post.where(user_id: user.id)
@@ -84,7 +88,7 @@ class UserDeletionService
   def set_unique_fields
     # We are putting dummy values in these fields so the unique indexes
     # remain unique.
-    # As far as rails is concerned, these records will not longer exist.
+    # As far as rails is concerned, these records will no longer exist.
     user.email = "#{user.email}.#{rand(999_999_999_999_999)}.deleted"
     # Blank any fields with security issues
     user.password = nil

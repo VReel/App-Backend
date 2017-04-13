@@ -137,6 +137,32 @@ RSpec.describe 'Post requests', type: :request do
 
       expect(response.status).to eq 404
     end
+
+    describe "deletes the post's comments" do
+      let(:comment_count) { rand(5) + 2 }
+      before(:each) do
+        comment_count.times { existing_post.comments.create(user: Fabricate(:user), text: Faker::HarryPotter.quote) }
+      end
+
+      it 'deletes the comments' do
+        expect do
+          delete  "/v1/posts/#{existing_post.id}", headers: auth_headers_from_response
+        end.to change { Comment.count }.from(comment_count).to(0)
+      end
+    end
+
+    describe "deletes the post's likes" do
+      let(:like_count) { rand(5) + 2 }
+      before(:each) do
+        like_count.times { Fabricate(:user).like(existing_post) }
+      end
+
+      it 'deletes the likes' do
+        expect do
+          delete  "/v1/posts/#{existing_post.id}", headers: auth_headers_from_response
+        end.to change { Like.count }.from(like_count).to(0)
+      end
+    end
   end
 
   describe 'show a post' do
