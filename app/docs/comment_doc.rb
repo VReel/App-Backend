@@ -19,7 +19,7 @@ class CommentDoc
         'application/json'
       ]
       key :tags, [
-        'Post', 'Comment'
+        'Post'
       ]
       parameter do
         key :name, :postId
