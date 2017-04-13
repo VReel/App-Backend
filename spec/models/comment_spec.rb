@@ -23,6 +23,12 @@ RSpec.describe Comment, type: :model do
       expect(comment.has_hash_tags).to be false
       expect(post.hash_tags.map(&:tag).sort).to eq %w(caption hash)
     end
+
+    it 'is not edited when created' do
+      comment = post.comments.create(text: Faker::HarryPotter.quote, user: user)
+
+      expect(comment.edited).to be false
+    end
   end
 
   describe 'updating comments' do
@@ -50,6 +56,13 @@ RSpec.describe Comment, type: :model do
         comment.update(text: 'updated comment without hash tag')
         expect(comment.has_hash_tags).to be false
         expect(post.reload.hash_tags.map(&:tag).sort).to eq %w(caption hash)
+      end
+
+      it 'is edited when updated' do
+        comment = post.comments.create(text: Faker::HarryPotter.quote, user: user)
+        comment.update(text: 'Another comment')
+
+        expect(comment.edited).to be true
       end
     end
 
