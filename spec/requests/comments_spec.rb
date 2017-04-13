@@ -122,7 +122,6 @@ RSpec.describe 'Comment requests', type: :request do
     end
   end
 
-
   describe 'list comments' do
     let(:total_comments) { more_than_a_page_count }
     let(:auth_headers) { auth_headers_from_response }
