@@ -79,6 +79,8 @@ RSpec.describe 'Hash tag search', type: :request do
     describe 'search result pagination posts' do
       let(:total_posts) { more_than_a_page_count }
       before(:each) do
+        HashTagPost.delete_all
+
         total_posts.times { create_post(user, 'i love #pizza') }
 
         get '/v1/hash_tags/%23pizza/posts', headers: auth_headers
@@ -86,6 +88,11 @@ RSpec.describe 'Hash tag search', type: :request do
 
       it 'gets a page of posts' do
         first_page_expectations
+
+        expect_page_id_to_match(
+          data['meta']['next_page_id'],
+          HashTagPost.all.order('created_at DESC')[API_PAGE_SIZE - 1]
+        )
       end
 
       it 'gets the next page of posts' do
