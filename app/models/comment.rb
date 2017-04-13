@@ -5,6 +5,9 @@ class Comment < ApplicationRecord
   before_save :set_has_hash_tags
   after_save :update_post_hash_tags
   after_destroy :update_post_hash_tags
+
+  before_update { self.edited = true if text_changed? }
+
   after_create { post.locked_increment(:comment_count) }
   after_destroy { post.locked_decrement(:comment_count) }
 

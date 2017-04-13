@@ -113,7 +113,8 @@ CREATE TABLE comments (
     text text,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    has_hash_tags boolean DEFAULT false NOT NULL
+    has_hash_tags boolean DEFAULT false NOT NULL,
+    edited boolean DEFAULT false
 );
 
 
@@ -752,6 +753,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170412114224'),
 ('20170412114944'),
 ('20170412145523'),
-('20170413092030');
+('20170413092030'),
+('20170413145205');
 
 
