@@ -694,6 +694,14 @@ ALTER TABLE ONLY hash_tag_posts
 
 
 --
+-- Name: fk_rails_5b5ddfd518; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY posts
+    ADD CONSTRAINT fk_rails_5b5ddfd518 FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+--
 -- Name: fk_rails_800f3fa9e7; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
