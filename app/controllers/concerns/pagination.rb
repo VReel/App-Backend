@@ -1,9 +1,10 @@
 module Pagination
   extend ActiveSupport::Concern
 
-  def paginate(query)
+  def paginate(query, order: 'DESC')
     query.limit!(API_PAGE_SIZE + 1)
-    query.where!('created_at < ?', Time.zone.parse(Base64.urlsafe_decode64(params[:page]))) if params[:page].present?
+    filter = "created_at #{order == 'DESC' ? '<' : '>'} ?"
+    query.where!(filter, Time.zone.parse(Base64.urlsafe_decode64(params[:page]))) if params[:page].present?
     query
   end
 

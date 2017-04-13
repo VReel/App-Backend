@@ -22,7 +22,9 @@ Rails.application.routes.draw do
     resources :s3_presigned_url, only: [:index]
     resources :posts do
       resources :likes, only: :index
+      resources :comments, only: [:index, :create]
     end
+    resources :comments, only: [:update, :destroy]
     resources :stats, only: :index
 
     resources :hash_tags, only: :show do
