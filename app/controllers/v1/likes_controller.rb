@@ -8,10 +8,7 @@ class V1::LikesController < ApplicationController
   protected
 
   def likers
-    return @likers unless @likers.nil?
-
-    paginate(likes, order: 'ASC')
-    @likers = @likes.map(&:user)
+    @likers ||= paginate(likes, order: 'ASC').map(&:user)
   end
 
   def likes
