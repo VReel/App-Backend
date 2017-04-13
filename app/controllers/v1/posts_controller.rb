@@ -77,7 +77,7 @@ class V1::PostsController < ApplicationController
   end
 
   # Needed for pagination concern.
-  def records
+  def primary_records
     posts
   end
 end

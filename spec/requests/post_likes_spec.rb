@@ -18,27 +18,36 @@ RSpec.describe 'Post likes', type: :request do
       expect(data['data'].first['id']).to eq dan.id
     end
 
-    it 'orders the users by who liked it most recent first' do
+    it 'orders the users by who liked it oldest first' do
       dan.like(liked_post)
       arthur.like(liked_post)
 
       get "/v1/posts/#{liked_post.id}/likes", headers: auth_headers
 
       expect(response.status).to eq 200
-      expect(data['data'].map { |user| user['id'] }).to eq [arthur.id, dan.id]
+      expect(data['data'].map { |user| user['id'] }).to eq [dan.id, arthur.id]
     end
   end
 
   describe 'pagination' do
-    let(:liker_count) { more_than_a_page_count }
+    let(:liker_count) { 22 }
     before(:each) do
       liker_count.times { Fabricate(:user).like(liked_post) }
 
       get "/v1/posts/#{liked_post.id}/likes", headers: auth_headers
     end
 
+    it 'gets oldest liker first' do
+      expect(data['data'].first['id']).to eq Like.where(post: liked_post).order('created_at ASC').first.user_id
+    end
+
     it 'gets a page of likers' do
       first_page_expectations
+
+      expect_page_id_to_match(
+        data['meta']['next_page_id'],
+        Like.where(post: liked_post).order('created_at ASC')[API_PAGE_SIZE - 1]
+      )
     end
 
     it 'gets the next page of likers' do

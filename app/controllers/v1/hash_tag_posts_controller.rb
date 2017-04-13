@@ -10,10 +10,13 @@ class V1::HashTagPostsController < V1::PostsController
   def posts
     return @posts unless @posts.nil?
 
-    hash_tag_posts = HashTagPost.where(hash_tag_id: hash_tag_id).order('created_at DESC').includes(post: :user)
     paginate(hash_tag_posts)
 
     @posts = hash_tag_posts.map(&:post)
+  end
+
+  def hash_tag_posts
+    @hash_tag_posts ||= HashTagPost.where(hash_tag_id: hash_tag_id).order('created_at DESC').includes(post: :user)
   end
 
   def hash_tag_id
@@ -30,5 +33,9 @@ class V1::HashTagPostsController < V1::PostsController
     {
       next: v1_hash_tag_posts_url(hash_tag_id: params[:hash_tag_id], page: next_page_id)
     }
+  end
+
+  def primary_records
+    hash_tag_posts
   end
 end

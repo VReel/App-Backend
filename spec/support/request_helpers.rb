@@ -60,6 +60,10 @@ module RequestHelpers
     expect(data['data'].size).to eq API_PAGE_SIZE
   end
 
+  def expect_page_id_to_match(page_id, record)
+    expect(Base64.urlsafe_decode64(page_id)).to eq record.created_at.xmlschema(6)
+  end
+
   # rubocop:disable Metrics/AbcSize
   def next_page_expectations(total: 25)
     expect(data['links']['next']).to be_present

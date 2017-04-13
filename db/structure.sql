@@ -650,6 +650,13 @@ CREATE INDEX index_users_on_unique_id ON users USING btree (unique_id);
 
 
 --
+-- Name: likes_created_at_asc_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX likes_created_at_asc_index ON likes USING btree (created_at);
+
+
+--
 -- Name: likes_created_at_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -744,6 +751,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170412083957'),
 ('20170412114224'),
 ('20170412114944'),
-('20170412145523');
+('20170412145523'),
+('20170413092030');
 
 

@@ -12,28 +12,28 @@ class V1::FollowersController < ApplicationController
   protected
 
   def users_current_user_follows
-    return @users_current_user_follows unless @users_current_user_follows.nil?
-
-    following_relationships = current_user.following_relationships.includes(:following)
-    paginate(following_relationships)
-
-    @users_current_user_follows = following_relationships.map(&:following)
+    @users_current_user_follows ||= paginate(following_relationships).map(&:following)
   end
 
   def followers_of_current_user
-    return @followers_of_current_user unless @followers_of_current_user.nil?
-
-    follower_relationships = current_user.follower_relationships.includes(:follower)
-    paginate(follower_relationships)
-
-    @followers_of_current_user = follower_relationships.map(&:follower)
+    @followers_of_current_user ||= paginate(follower_relationships).map(&:follower)
   end
 
-  # Needed for pagination
-  def records
-    return users_current_user_follows if request.path[/following/]
+  def following_relationships
+    @following_relationships ||= current_user.following_relationships.includes(:following)
+  end
 
-    followers_of_current_user
+  def follower_relationships
+    @follower_relationships ||= current_user.follower_relationships.includes(:follower)
+  end
+
+  # Needed for pagination.
+  # We need to specify the record we are selecting from (followers/following), not the one we display (users)
+  # so pagination is on the correct created_at timestamp.
+  def primary_records
+    return following_relationships if request.path[/following/]
+
+    follower_relationships
   end
 
   def followers_links

@@ -47,7 +47,7 @@ class V1::CommentsController < ApplicationController
     @post ||= Post.find_by(id: params[:post_id])
   end
 
-  def records
+  def primary_records
     comments
   end
 

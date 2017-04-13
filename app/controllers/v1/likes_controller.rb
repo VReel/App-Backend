@@ -10,10 +10,12 @@ class V1::LikesController < ApplicationController
   def likers
     return @likers unless @likers.nil?
 
-    likes = Like.where(post_id: params[:post_id]).order('created_at DESC').includes(:user)
-    paginate(likes)
+    paginate(likes, order: 'ASC')
+    @likers = @likes.map(&:user)
+  end
 
-    @likers = likes.map(&:user)
+  def likes
+    @likes ||= Like.where(post_id: params[:post_id]).order('created_at ASC').includes(:user)
   end
 
   def likers_links
@@ -27,7 +29,7 @@ class V1::LikesController < ApplicationController
     @post ||= Posts.find_by(id: params[:post_id])
   end
 
-  def records
-    likers
+  def primary_records
+    likes
   end
 end

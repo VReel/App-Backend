@@ -121,6 +121,13 @@ class PostDoc
         key :required, true
         key :type, :string
       end
+      parameter do
+        key :in, :query
+        key :name, :page
+        key :description, 'Gets next page of likers.'
+        key :required, false
+        key :type, :string
+      end
     end
   end
 
