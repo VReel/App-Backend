@@ -18,6 +18,9 @@ Rails.application.routes.draw do
   namespace :v1, defaults: { format: 'json' } do
     resources :users, only: [:index, :show] do
       get :posts, to: 'other_user_posts#index'
+      get :likes, to: 'user_likes#index'
+      get :followers, to: 'other_user_followers#followers'
+      get :following, to: 'other_user_followers#following'
     end
     resources :s3_presigned_url, only: [:index]
     resources :posts do

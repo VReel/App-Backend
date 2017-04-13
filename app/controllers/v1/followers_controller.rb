@@ -2,29 +2,33 @@ class V1::FollowersController < ApplicationController
   include Pagination
 
   def followers
-    render json: followers_of_current_user.first(API_PAGE_SIZE), links: followers_links, meta: meta
+    render json: followers_of_user.first(API_PAGE_SIZE), links: followers_links, meta: meta
   end
 
   def following
-    render json: users_current_user_follows.first(API_PAGE_SIZE), links: following_links, meta: meta
+    render json: users_user_follows.first(API_PAGE_SIZE), links: following_links, meta: meta
   end
 
   protected
 
-  def users_current_user_follows
-    @users_current_user_follows ||= following_relationships.map(&:following)
+  def user
+    current_user
   end
 
-  def followers_of_current_user
-    @followers_of_current_user ||= follower_relationships.map(&:follower)
+  def users_user_follows
+    @users_user_follows ||= following_relationships.map(&:following)
+  end
+
+  def followers_of_user
+    @followers_of_user ||= follower_relationships.map(&:follower)
   end
 
   def following_relationships
-    @following_relationships ||= paginate(current_user.following_relationships.includes(:following))
+    @following_relationships ||= paginate(user.following_relationships.includes(:following))
   end
 
   def follower_relationships
-    @follower_relationships ||= paginate(current_user.follower_relationships.includes(:follower))
+    @follower_relationships ||= paginate(user.follower_relationships.includes(:follower))
   end
 
   # Needed for pagination.
