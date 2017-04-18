@@ -1,0 +1,14 @@
+<p>Hi VReel Moderator,</p>
+
+User <%= @flag.user.handle %> has flagged post <%= @flag.post.id %> by <%= @flag.post.user.handle %>
+
+<% if @flag.reason.present? %>
+  <p>The reason given was:</p>
+  <pre><%= @flag.reason %></pre>
+<% else %>
+  <p>No reason was given</p>
+<% end %>
+
+<p>Best of luck,</p>
+
+<p>VReel back end =)</p>
