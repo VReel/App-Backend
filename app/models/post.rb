@@ -1,6 +1,7 @@
 class Post < ApplicationRecord
   include S3Urls
   include LockedIncrementDecrement
+  acts_as_paranoid
 
   MAX_HASH_TAGS = 30
 
@@ -8,6 +9,7 @@ class Post < ApplicationRecord
   has_many :hash_tag_posts
   has_many :hash_tags, through: :hash_tag_posts
   has_many :comments, -> { order('created_at ASC') }
+  has_many :likes
 
   validates :original_key, presence: true
   validates :thumbnail_key, presence: true
@@ -17,17 +19,18 @@ class Post < ApplicationRecord
 
   before_update { self.edited = true if caption_changed? }
   before_save { set_hash_tags! }
-  before_destroy { remove_hash_tags(hash_tag_values) }
-  before_destroy { Post.delay.delete_s3_resources([thumbnail_key, original_key]) }
+
+  before_destroy do
+    PostDeletionService.new(id).delay.delete!
+  end
 
   after_create { user.locked_increment(:post_count) }
   after_destroy { user.locked_decrement(:post_count) }
 
-  # This is a class method so doesn't rely on existence of record.
-  def self.delete_s3_resources(keys)
+  def delete_s3_resources
     s3_deletion_service = S3DeletionService.new
 
-    keys.each { |key| s3_deletion_service.delete(key) }
+    [thumbnail_key, original_key].each { |key| s3_deletion_service.delete(key) }
   end
 
   def s3_folder

@@ -279,7 +279,8 @@ CREATE TABLE posts (
     updated_at timestamp without time zone NOT NULL,
     edited boolean DEFAULT false,
     like_count integer DEFAULT 0 NOT NULL,
-    comment_count integer DEFAULT 0 NOT NULL
+    comment_count integer DEFAULT 0 NOT NULL,
+    deleted_at timestamp without time zone
 );
 
 
@@ -595,6 +596,13 @@ CREATE INDEX index_likes_on_user_id ON likes USING btree (user_id);
 
 
 --
+-- Name: index_posts_on_deleted_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_posts_on_deleted_at ON posts USING btree (deleted_at);
+
+
+--
 -- Name: index_posts_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -702,6 +710,14 @@ ALTER TABLE ONLY hash_tag_posts
 
 
 --
+-- Name: fk_rails_1e09b5dabf; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY likes
+    ADD CONSTRAINT fk_rails_1e09b5dabf FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+--
 -- Name: fk_rails_2fd19c0db7; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -723,6 +739,14 @@ ALTER TABLE ONLY posts
 
 ALTER TABLE ONLY hash_tag_posts
     ADD CONSTRAINT fk_rails_800f3fa9e7 FOREIGN KEY (hash_tag_id) REFERENCES hash_tags(id);
+
+
+--
+-- Name: fk_rails_87a8aac469; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY likes
+    ADD CONSTRAINT fk_rails_87a8aac469 FOREIGN KEY (post_id) REFERENCES posts(id);
 
 
 --
@@ -754,6 +778,9 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170412114944'),
 ('20170412145523'),
 ('20170413092030'),
-('20170413145205');
+('20170413145205'),
+('20170413164935'),
+('20170418101134'),
+('20170418105255');
 
 
