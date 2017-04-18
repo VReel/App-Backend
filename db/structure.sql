@@ -279,7 +279,8 @@ CREATE TABLE posts (
     updated_at timestamp without time zone NOT NULL,
     edited boolean DEFAULT false,
     like_count integer DEFAULT 0 NOT NULL,
-    comment_count integer DEFAULT 0 NOT NULL
+    comment_count integer DEFAULT 0 NOT NULL,
+    deleted_at timestamp without time zone
 );
 
 
@@ -595,6 +596,13 @@ CREATE INDEX index_likes_on_user_id ON likes USING btree (user_id);
 
 
 --
+-- Name: index_posts_on_deleted_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_posts_on_deleted_at ON posts USING btree (deleted_at);
+
+
+--
 -- Name: index_posts_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -739,6 +747,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170412145523'),
 ('20170413092030'),
 ('20170413145205'),
-('20170413164935');
+('20170413164935'),
+('20170418101134');
 
 
