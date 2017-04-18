@@ -4,6 +4,7 @@ RSpec.describe 'Post requests', type: :request do
   let!(:user) { create_user_and_sign_in }
   let(:data) { JSON.parse(response.body) }
   let(:existing_post) { fabricate_post_for(user) }
+  let(:auth_headers) { auth_headers_from_response }
 
   describe 'create a post' do
     let!(:new_post) { fabricate_post_for(user) }
@@ -183,11 +184,21 @@ RSpec.describe 'Post requests', type: :request do
       get '/v1/posts/some_other_id', headers: auth_headers_from_response
       expect(response.status).to eq 404
     end
+
+    it 'tells me whether I like it' do
+      get "/v1/posts/#{existing_post.id}", headers: auth_headers
+      expect(data['data']['attributes']['liked_by_me']).to be false
+
+      user.like(existing_post)
+
+      get "/v1/posts/#{existing_post.id}", headers: auth_headers
+      expect(JSON.parse(response.body)['data']['attributes']['liked_by_me']).to be true
+    end
   end
 
   describe 'list posts' do
     let(:total_posts) { more_than_a_page_count }
-    let(:auth_headers) { auth_headers_from_response }
+    let(:random_number) { rand(4) + 1 }
 
     before(:each) do
       total_posts.times { fabricate_post_for(user) }
@@ -201,6 +212,18 @@ RSpec.describe 'Post requests', type: :request do
 
     it 'gets the next page of posts' do
       next_page_expectations(total: total_posts)
+    end
+
+    it 'shows which posts I like' do
+      liked_post1 = Post.all.order('created_at DESC')[random_number]
+      liked_post2 = Post.all.order('created_at DESC')[random_number * 2]
+      user.like(liked_post1)
+      user.like(liked_post2)
+
+      get '/v1/posts', headers: auth_headers
+
+      liked_posts_in_response = data['data'].select { |post| post['attributes']['liked_by_me'] }
+      expect(liked_posts_in_response.map { |post| post['id'] }).to eq [liked_post1.id, liked_post2.id]
     end
   end
 end
