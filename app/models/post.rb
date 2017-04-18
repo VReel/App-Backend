@@ -10,6 +10,8 @@ class Post < ApplicationRecord
   has_many :hash_tags, through: :hash_tag_posts
   has_many :comments, -> { order('created_at ASC') }
   has_many :likes
+  has_many :flags
+  has_many :flagged_by_users, through: :flags, source: :user
 
   validates :original_key, presence: true
   validates :thumbnail_key, presence: true

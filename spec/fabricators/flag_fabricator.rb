@@ -1,0 +1,2 @@
+Fabricator(:flag) do
+end

@@ -26,6 +26,7 @@ Rails.application.routes.draw do
     resources :posts do
       resources :likes, only: :index
       resources :comments, only: [:index, :create]
+      resources :flags, only: :create
     end
     resources :comments, only: [:update, :destroy]
     resources :stats, only: :index
