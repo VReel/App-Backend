@@ -4,6 +4,7 @@ RSpec.describe 'Delete account requests', type: :request do
   let(:password) { 'I_liek_ham!' }
   let(:user) { Fabricate(:user, password: password, password_confirmation: password) }
   let(:data) { JSON.parse(response.body) }
+  let(:random_number) { rand(10) + 1 }
 
   describe 'failure without authentication' do
     before(:each) do
@@ -67,6 +68,26 @@ RSpec.describe 'Delete account requests', type: :request do
       expect_any_instance_of(S3DeletionService).to receive(:bulk_delete).with([])
 
       delete '/v1/users', headers: auth_headers_from_response
+    end
+
+    it "deletes comments on the user's posts" do
+      random_number.times do
+        Comment.create(post: user.posts[rand(10)], user: Fabricate(:user), text: Faker::HarryPotter.quote)
+      end
+
+      expect do
+        delete '/v1/users', headers: auth_headers_from_response
+      end.to change { Comment.count }.from(random_number).to(0)
+    end
+
+    it "deletes likes on the user's posts" do
+      random_number.times do
+        Fabricate(:user).like(user.posts[rand(10)])
+      end
+
+      expect do
+        delete '/v1/users', headers: auth_headers_from_response
+      end.to change { Like.count }.from(random_number).to(0)
     end
   end
 

@@ -14,19 +14,17 @@ class UserDeletionService
     @s3_deletion_service ||= S3DeletionService.new
   end
 
-  # rubocop:disable Metrics/AbcSize
   def delete!
     delete_user_model_assets
     delete_s3_assets
     delete_remaining_s3_assets
-    delete_posts
     delete_following_relationships
-    Like.where(user_id: user.id).delete_all
-    Comment.where(user_id: user.id).delete_all
+    delete_likes
+    delete_comments
+    delete_posts
     set_unique_fields
     Rails.logger.info "User #{user.id} assets and posts deleted"
   end
-  # rubocop:enable Metrics/AbcSize
 
   def posts
     Post.where(user_id: user.id)
@@ -84,6 +82,20 @@ class UserDeletionService
   end
   # rubocop:enable SkipsModelValidations
   # rubocop:enable Metrics/AbcSize
+
+  def delete_likes
+    # Delete user's own likes.
+    Like.where(user_id: user.id).delete_all
+    # Delete likes on user's posts.
+    Like.where('post_id IN (SELECT id FROM posts WHERE user_id = ?)', user.id).delete_all
+  end
+
+  def delete_comments
+    # Delete user's own comments.
+    Comment.where(user_id: user.id).delete_all
+    # Delete comments on user's posts.
+    Comment.where('post_id IN (SELECT id FROM posts WHERE user_id = ?)', user.id).delete_all
+  end
 
   def set_unique_fields
     # We are putting dummy values in these fields so the unique indexes
