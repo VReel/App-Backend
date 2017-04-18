@@ -3,7 +3,7 @@ class V1::PublicTimelineController < V1::PostsController
 
   def posts
     return @posts unless @posts.nil?
-    @posts = Post.all.order('created_at DESC')
+    @posts = Post.all.order('created_at DESC').includes(:user)
     paginate(@posts)
     @posts
   end

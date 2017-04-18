@@ -3,14 +3,23 @@ class V1::PostsController < ApplicationController
   include Pagination
 
   def index
-    render json: posts.first(API_PAGE_SIZE), links: posts_links, meta: meta, include: :user
+    render json: posts.first(API_PAGE_SIZE),
+           links: posts_links,
+           meta: meta,
+           include: :user,
+           post_ids_in_window_liked_by_current_user: post_ids_in_window_liked_by_current_user
   end
 
   def show
     # This is the only method in this controller that allows access to posts by other users.
     show_post = Post.find_by(id: params[:id])
 
-    return render json: show_post, serializer: PostFullSerializer, include: :user, status: 200 if show_post.present?
+    if show_post.present?
+      return render json: show_post,
+                    serializer: PostFullSerializer,
+                    include: :user,
+                    post_ids_in_window_liked_by_current_user: post_ids_in_window_liked_by_current_user
+    end
 
     render_error('Post not found', 404)
   end
@@ -18,14 +27,25 @@ class V1::PostsController < ApplicationController
   def create
     new_post = current_user.posts.create(create_permitted_params)
 
-    return render json: new_post, serializer: PostFullSerializer, status: 201 if new_post.persisted?
+    if new_post.persisted?
+      return render json:
+                    new_post,
+                    serializer: PostFullSerializer,
+                    post_ids_in_window_liked_by_current_user: [],
+                    status: 201
+    end
 
     render_validation_error(new_post)
   end
 
   def update
     return render_error('Post not found', 404) unless post.present?
-    return render json: post, serializer: PostFullSerializer, status: 200 if post.update(update_permitted_params)
+    if post.update(update_permitted_params)
+      return render json: post,
+                    serializer: PostFullSerializer,
+                    post_ids_in_window_liked_by_current_user: post_ids_in_window_liked_by_current_user,
+                    status: 200
+    end
 
     render_validation_error
   end
@@ -61,7 +81,7 @@ class V1::PostsController < ApplicationController
   end
 
   def posts
-    return @posts if @posts.present?
+    return @posts unless @posts.nil?
 
     # We try to get one more than the window size, to tell us if we need a next page link.
     @posts = current_user.posts.includes(:user)
@@ -79,5 +99,16 @@ class V1::PostsController < ApplicationController
   # Needed for pagination concern.
   def primary_records
     posts
+  end
+
+  def posts_ids
+    return posts.map(&:id) if action_name == 'index'
+
+    params[:id]
+  end
+
+  # Used to efficiently set the liked_by_me property of the post.
+  def post_ids_in_window_liked_by_current_user
+    @posts_in_window_liked_by_current_user ||= current_user.likes.where(post_id: posts_ids).map(&:post_id)
   end
 end

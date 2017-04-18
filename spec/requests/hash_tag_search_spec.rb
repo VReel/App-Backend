@@ -78,6 +78,7 @@ RSpec.describe 'Hash tag search', type: :request do
 
     describe 'search result pagination posts' do
       let(:total_posts) { more_than_a_page_count }
+      let(:random_number) { rand(4) + 1 }
       before(:each) do
         HashTagPost.delete_all
 
@@ -97,6 +98,18 @@ RSpec.describe 'Hash tag search', type: :request do
 
       it 'gets the next page of posts' do
         next_page_expectations(total: total_posts)
+      end
+
+      it 'shows which posts I like' do
+        liked_post1 = Post.all.order('created_at DESC')[random_number]
+        liked_post2 = Post.all.order('created_at DESC')[random_number * 2]
+        user.like(liked_post1)
+        user.like(liked_post2)
+
+        get '/v1/hash_tags/%23pizza/posts', headers: auth_headers
+
+        liked_posts_in_response = data['data'].select { |post| post['attributes']['liked_by_me'] }
+        expect(liked_posts_in_response.map { |post| post['id'] }).to eq [liked_post1.id, liked_post2.id]
       end
     end
   end
