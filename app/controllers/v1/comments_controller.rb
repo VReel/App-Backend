@@ -5,7 +5,7 @@ class V1::CommentsController < ApplicationController
   before_action :check_comment_is_found, only: [:update, :destroy]
 
   def index
-    render json: comments.first(API_PAGE_SIZE), links: comment_links, meta: meta, include: :user
+    render json: comments.to_a.first(API_PAGE_SIZE), links: comment_links, meta: meta, include: :user
   end
 
   def create

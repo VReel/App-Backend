@@ -3,7 +3,7 @@ class V1::PostsController < ApplicationController
   include Pagination
 
   def index
-    render json: posts.first(API_PAGE_SIZE),
+    render json: posts.to_a.first(API_PAGE_SIZE),
            links: posts_links,
            meta: meta,
            include: :user,

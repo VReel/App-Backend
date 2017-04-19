@@ -4,7 +4,7 @@ class V1::Admin::FlagsController < V1::Admin::BaseController
   before_action :check_post_is_found, only: :index
 
   def index
-    render json: flags.first(API_PAGE_SIZE),
+    render json: flags,
            links: flag_links,
            meta: meta,
            include: [:user, post: :user]

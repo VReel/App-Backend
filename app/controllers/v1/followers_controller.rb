@@ -2,11 +2,11 @@ class V1::FollowersController < ApplicationController
   include Pagination
 
   def followers
-    render json: followers_of_user.first(API_PAGE_SIZE), links: followers_links, meta: meta
+    render json: followers_of_user.to_a.first(API_PAGE_SIZE), links: followers_links, meta: meta
   end
 
   def following
-    render json: users_user_follows.first(API_PAGE_SIZE), links: following_links, meta: meta
+    render json: users_user_follows.to_a.first(API_PAGE_SIZE), links: following_links, meta: meta
   end
 
   protected

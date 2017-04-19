@@ -10,10 +10,10 @@ class FlaggedPostSerializer < PostSerializer
              :edited,
              :flag_count
 
-  has_many :flags
-
   def flag_count
-    object.flags.where(status: :awaiting).count
+    return if instance_options[:flag_counts].nil?
+
+    instance_options[:flag_counts][object.id]
   end
 
   def liked_by_me

@@ -2,7 +2,7 @@ class V1::LikesController < ApplicationController
   include Pagination
 
   def index
-    render json: likers.first(API_PAGE_SIZE), links: likers_links, meta: meta
+    render json: likers.to_a.first(API_PAGE_SIZE), links: likers_links, meta: meta
   end
 
   protected

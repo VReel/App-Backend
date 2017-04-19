@@ -3,17 +3,18 @@ class V1::Admin::FlaggedPostsController < V1::Admin::BaseController
   include Pagination
 
   def index
-    render json: posts.first(API_PAGE_SIZE),
+    render json: posts.to_a.first(API_PAGE_SIZE),
            links: flagged_posts_links,
            meta: meta,
            include: :user,
-           each_serializer: FlaggedPostSerializer
+           each_serializer: FlaggedPostSerializer,
+           flag_counts: flag_counts
   end
 
   protected
 
   def posts
-    @posts ||= paginate(Post.where(id: flag_counts.keys).order('created_at DESC'))
+    @posts ||= paginate(Post.where(id: flag_counts.keys).order('created_at DESC').includes(:user))
   end
 
   def flag_counts
