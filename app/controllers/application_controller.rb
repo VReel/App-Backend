@@ -49,7 +49,7 @@ class ApplicationController < ActionController::API
        ENV['ACCESS_TOKEN_LIFETIME'].to_i > 0
 
       # Get the token we are working with before reload (a simultaneous request could alter the valid token)
-      original_token = @resource.tokens[@client_id]['token']
+      original_token = @resource.tokens[@client_id].try(:fetch, 'token')
 
       @resource.reload
 

@@ -288,6 +288,10 @@ RSpec.describe 'Authenticated requests', type: :request do
       expect(response.headers['access-token']).not_to eq auth_headers[:'access-token']
     end
 
+    # This test exists because we had a case that 2 simultaneous requests with a token
+    # that was about to expire returned a stale token.
+    # This was because a simultaneous request could update the created_at of the token,
+    # but previosuly the code did not check if the token had changed.
     it 'can make multiple requests and get not get stale access-tokens' do
       20.times { create_post(Fabricate(:user)) }
 
