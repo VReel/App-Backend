@@ -36,7 +36,6 @@ class ApplicationController < ActionController::API
   # Changing on every request seems like an unnecessary overhead.
   # rubocop:disable all
   def update_auth_header
-    # puts 'AFTER ACTION'
     # cannot save object if model has invalid params
     # @resource should == current_user
     return unless @resource && @resource.valid? && @client_id
