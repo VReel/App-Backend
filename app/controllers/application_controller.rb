@@ -1,11 +1,22 @@
 class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
 
+  before_action :log_access_token_before
+  append_after_action :log_access_token_after
+  prepend_after_action :log_access_token_after
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_application!
   before_action :authenticate_user!
 
   protected
+
+  def log_access_token_before
+    puts "ACCESS TOKEN IN REQUEST #{request.headers['access-token']}"
+  end
+
+  def log_access_token_after
+    puts "ACCESS TOKEN IN RESPONSE #{response.headers['access-token']}"
+  end
 
   def authenticate_chief!
     return if current_user.try(:is_chief?)
@@ -36,6 +47,7 @@ class ApplicationController < ActionController::API
   # Changing on every request seems like an unnecessary overhead.
   # rubocop:disable all
   def update_auth_header
+    puts 'AFTER ACTION'
     # cannot save object if model has invalid params
     # @resource should == current_user
     return unless @resource && @resource.valid? && @client_id
