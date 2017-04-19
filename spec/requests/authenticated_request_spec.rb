@@ -129,6 +129,7 @@ RSpec.describe 'Authenticated requests', type: :request do
   describe 'multiple requests with ACCESS_TOKEN_LIFETIME set' do
     before(:each) do
       # Disable batch processing for the purpose of this test.
+      DeviseTokenAuth.batch_request_buffer_throttle = 0
       ENV['ACCESS_TOKEN_LIFETIME'] = '300' # 5 Minutes
 
       post '/v1/users/sign_in', params: {
@@ -263,6 +264,47 @@ RSpec.describe 'Authenticated requests', type: :request do
       expect(@first_response.headers['uid']).to be_nil
       expect(@first_response.headers['access-token']).to be_nil
       expect(@first_response.headers['expiry']).to be_nil
+    end
+  end
+
+  describe 'Edge case - multiple requests as token expires' do
+    before(:each) do
+      DeviseTokenAuth.batch_request_buffer_throttle = 5.seconds
+      ENV['ACCESS_TOKEN_LIFETIME'] = '300'
+      user
+      Timecop.freeze(Time.current + Integer(ENV['ACCESS_TOKEN_LIFETIME']) + 20)
+    end
+    after(:each) do
+      Timecop.return
+    end
+    let(:user) { create_user_and_sign_in }
+    let(:auth_headers) { auth_headers_from_response }
+
+    it 'can make a single request and get a different access-token' do
+      get '/', headers: auth_headers
+
+      expect(response.status).to eq 200
+      expect(response.headers['access-token']).to be_present
+      expect(response.headers['access-token']).not_to eq auth_headers[:'access-token']
+    end
+
+    it 'can make multiple requests and get not get stale access-tokens' do
+      20.times { create_post(Fabricate(:user)) }
+
+      t1 = Thread.new do
+        get '/v1/public_timeline', headers: auth_headers
+        expect(response.status).to eq 200
+        expect(response.headers['access-token']).not_to eq auth_headers[:'access-token']
+      end
+
+      t2 = Thread.new do
+        get '/', headers: auth_headers
+        expect(response.status).to eq 200
+        expect(response.headers['access-token']).not_to eq auth_headers[:'access-token']
+      end
+
+      t1.join
+      t2.join
     end
   end
 end

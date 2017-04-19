@@ -1,22 +1,11 @@
 class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
 
-  before_action :log_access_token_before
-  append_after_action :log_access_token_after
-  prepend_after_action :log_access_token_after
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_application!
   before_action :authenticate_user!
 
   protected
-
-  def log_access_token_before
-    puts "ACCESS TOKEN IN REQUEST #{request.headers['access-token']}"
-  end
-
-  def log_access_token_after
-    puts "ACCESS TOKEN IN RESPONSE #{response.headers['access-token']}"
-  end
 
   def authenticate_chief!
     return if current_user.try(:is_chief?)
@@ -47,7 +36,7 @@ class ApplicationController < ActionController::API
   # Changing on every request seems like an unnecessary overhead.
   # rubocop:disable all
   def update_auth_header
-    puts 'AFTER ACTION'
+    # puts 'AFTER ACTION'
     # cannot save object if model has invalid params
     # @resource should == current_user
     return unless @resource && @resource.valid? && @client_id
@@ -59,11 +48,19 @@ class ApplicationController < ActionController::API
        @resource.try(:tokens).present? &&
        ENV['ACCESS_TOKEN_LIFETIME'].to_i > 0
 
+      # Get the token we are working with before reload (a simultaneous request could alter the valid token)
+      original_token = @resource.tokens[@client_id]['token']
+
+      @resource.reload
+
       # should not append auth header if @resource related token was
       # cleared by sign out in the meantime.
-      return if @resource.reload.tokens[@client_id].nil?
+      return if @resource.tokens[@client_id].nil?
 
-      if @request_started_at < Time.zone.at(@resource.tokens[@client_id]['created_at'])+ Integer(ENV['ACCESS_TOKEN_LIFETIME'])
+      token_created_at = Time.zone.at(@resource.tokens[@client_id]['created_at'])
+
+      # If the token has not expired or changed, return it as a valid token.
+      if @request_started_at < token_created_at + Integer(ENV['ACCESS_TOKEN_LIFETIME']) && original_token == @resource.tokens[@client_id]['token']
         return response.headers.merge!(@resource.build_auth_header(@token, @client_id))
       end
     end
