@@ -167,7 +167,8 @@ CREATE TABLE flags (
     user_id uuid NOT NULL,
     reason text,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    status integer DEFAULT 0 NOT NULL
 );
 
 
@@ -313,7 +314,8 @@ CREATE TABLE posts (
     edited boolean DEFAULT false,
     like_count integer DEFAULT 0 NOT NULL,
     comment_count integer DEFAULT 0 NOT NULL,
-    deleted_at timestamp without time zone
+    deleted_at timestamp without time zone,
+    moderated boolean DEFAULT false
 );
 
 
@@ -585,6 +587,13 @@ CREATE INDEX index_comments_on_user_id ON comments USING btree (user_id);
 --
 
 CREATE INDEX index_flags_on_post_id ON flags USING btree (post_id);
+
+
+--
+-- Name: index_flags_on_status; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_flags_on_status ON flags USING btree (status);
 
 
 --
@@ -860,6 +869,8 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170413164935'),
 ('20170418101134'),
 ('20170418105255'),
-('20170418121750');
+('20170418121750'),
+('20170419094738'),
+('20170419095055');
 
 

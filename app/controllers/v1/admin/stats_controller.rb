@@ -1,6 +1,5 @@
-class V1::StatsController < ApplicationController
+class V1::Admin::StatsController < V1::Admin::BaseController
   include ErrorResource
-  before_action :authenticate_chief!
 
   def index
     render json: {

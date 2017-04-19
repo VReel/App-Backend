@@ -1,4 +1,6 @@
 class Flag < ApplicationRecord
+  enum status: [ :awaiting, :ignored, :deleted_post ]
+
   belongs_to :user
   belongs_to :post
 
