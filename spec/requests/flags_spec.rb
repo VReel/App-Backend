@@ -5,7 +5,7 @@ RSpec.describe 'Flag requests', type: :request do
   let(:data) { JSON.parse(response.body) }
   let(:existing_post) { fabricate_post_for(Fabricate(:user)) }
   let(:auth_headers) { auth_headers_from_response }
-  before(:each) { ENV['MODERATOR_EMAILS'] = "#{Faker::Internet.email}, #{Faker::Internet.email}"}
+  before(:each) { ENV['MODERATOR_EMAILS'] = "#{Faker::Internet.email}, #{Faker::Internet.email}" }
 
   describe 'flag a post' do
     it 'succeeds when valid' do
