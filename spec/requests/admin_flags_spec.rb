@@ -48,5 +48,4 @@ RSpec.describe 'Admin Flag requests', type: :request do
       expect(data['included'].map { |item| item['id'] }).to include flag_author.id
     end
   end
-
 end
