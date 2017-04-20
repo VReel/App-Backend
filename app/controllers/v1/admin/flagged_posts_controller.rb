@@ -11,6 +11,28 @@ class V1::Admin::FlaggedPostsController < V1::Admin::BaseController
            flag_counts: flag_counts
   end
 
+  def update
+    return render_error('Post not found', 404) unless post.present?
+
+    if post.update(update_permitted_params)
+      return render json: post,
+                    serializer: PostFullSerializer,
+                    status: 200
+    end
+
+    render_validation_error
+  end
+
+  def destroy
+    return render_error('Post not found', 404) unless post.present?
+
+    if post.destroy
+      head :no_content
+    else
+      render_validation_error
+    end
+  end
+
   protected
 
   def posts
@@ -18,7 +40,7 @@ class V1::Admin::FlaggedPostsController < V1::Admin::BaseController
   end
 
   def flag_counts
-    @flag_counts ||= Flag.where(status: :awaiting).group(:post_id).count
+    @flag_counts ||= Flag.pending.group(:post_id).count
   end
 
   def flagged_posts_links
@@ -30,5 +52,13 @@ class V1::Admin::FlaggedPostsController < V1::Admin::BaseController
 
   def primary_records
     posts
+  end
+
+  def post
+    @post ||= Post.find_by(id: params[:id])
+  end
+
+  def update_permitted_params
+    params.require(:post).permit(:moderated)
   end
 end

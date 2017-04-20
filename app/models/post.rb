@@ -21,6 +21,9 @@ class Post < ApplicationRecord
 
   before_update { self.edited = true if caption_changed? }
   before_save { set_hash_tags! }
+  # rubocop:disable SkipsModelValidations
+  before_save { flags.pending.update_all(status: :moderated) if moderated && moderated_changed? }
+  # rubocop:enable SkipsModelValidations
 
   before_destroy do
     PostDeletionService.new(id).delay.delete!

@@ -11,7 +11,7 @@ class FlaggedPostSerializer < PostSerializer
              :flag_count
 
   def flag_count
-    return object.flags.where(status: :awaiting).count if instance_options[:flag_counts].nil?
+    return object.flags.pending.count if instance_options[:flag_counts].nil?
 
     instance_options[:flag_counts][object.id]
   end

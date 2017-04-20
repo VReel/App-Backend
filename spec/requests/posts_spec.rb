@@ -164,6 +164,19 @@ RSpec.describe 'Post requests', type: :request do
         end.to change { Like.count }.from(like_count).to(0)
       end
     end
+
+    describe "updates the post's flags to :post_deleted" do
+      let(:flag_count) { rand(5) + 2 }
+      before(:each) do
+        flag_count.times { existing_post.flags.create(user: Fabricate(:user), reason: Faker::HarryPotter.quote) }
+      end
+
+      it 'updates the flags' do
+        expect do
+          delete  "/v1/posts/#{existing_post.id}", headers: auth_headers_from_response
+        end.to change { Flag.pending.count }.from(flag_count).to(0)
+      end
+    end
   end
 
   describe 'show a post' do

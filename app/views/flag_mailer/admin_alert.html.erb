@@ -9,6 +9,10 @@ User <%= @flag.user.handle %> has flagged post <%= @flag.post.id %> by <%= @flag
   <p>No reason was given</p>
 <% end %>
 
+<p>
+  You can moderate the post here <%= ENV['ADMIN_UI_URL'] || 'https://vreel-admin-ui.herokuapp.com' %>/flagged_posts/<%= @flag.post.id %>
+</p>
+
 <p>Best of luck,</p>
 
 <p>VReel back end =)</p>

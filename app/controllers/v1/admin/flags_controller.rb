@@ -13,7 +13,7 @@ class V1::Admin::FlagsController < V1::Admin::BaseController
   protected
 
   def flags
-    @flags ||= paginate(post.flags.where(status: :awaiting).order('created_at DESC').includes(:user, post: :user))
+    @flags ||= paginate(post.flags.pending.order('created_at DESC').includes(:user, post: :user))
   end
 
   def post

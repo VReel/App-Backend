@@ -13,7 +13,7 @@ RSpec.describe 'Flag requests', type: :request do
         post "/v1/posts/#{existing_post.id}/flags", params: {
           flag: { reason: Faker::HarryPotter.quote }
         }, headers: auth_headers
-      end.to change { Flag.count }.by 1
+      end.to change { Flag.pending.count }.by 1
 
       expect(response.status).to eq 204
     end
@@ -35,6 +35,38 @@ RSpec.describe 'Flag requests', type: :request do
 
       expect(ActionMailer::Base.deliveries.last['to'].to_s).to eq ENV['MODERATOR_EMAILS']
       expect(ActionMailer::Base.deliveries.last['subject'].to_s).to include 'flagged'
+    end
+  end
+
+  describe 'flag a moderated post' do
+    before(:each) { existing_post.update(moderated: true) }
+
+    it 'succeeds when valid' do
+      expect do
+        post "/v1/posts/#{existing_post.id}/flags", params: {
+          flag: { reason: Faker::HarryPotter.quote }
+        }, headers: auth_headers
+      end.to change { Flag.count }.by 1
+
+      expect(response.status).to eq 204
+    end
+
+    it 'does not create a pending flag' do
+      expect do
+        post "/v1/posts/#{existing_post.id}/flags", params: {
+          flag: { reason: Faker::HarryPotter.quote }
+        }, headers: auth_headers
+      end.to change { Flag.pending.count }.by 0
+
+      expect(response.status).to eq 204
+    end
+
+    it 'does not send an email to the moderators' do
+      expect do
+        post "/v1/posts/#{existing_post.id}/flags", params: {
+          flag: { reason: Faker::HarryPotter.quote }
+        }, headers: auth_headers
+      end.to change { ActionMailer::Base.deliveries.size }.by(0)
     end
   end
 end

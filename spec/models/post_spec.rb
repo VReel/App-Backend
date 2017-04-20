@@ -92,6 +92,29 @@ RSpec.describe Post, type: :model do
     end
   end
 
+  describe 'moderating a post' do
+    it 'sets all pending flags to moderated' do
+      post = create_post('this post will be flagged')
+
+      7.times { post.flags.create(reason: Faker::HarryPotter.quote, user: Fabricate(:user)) }
+
+      expect do
+        post.update(moderated: true)
+      end.to change { post.flags.pending.count }.by(-7)
+
+      expect(post.flags.map(&:status).uniq).to eq ['moderated']
+    end
+
+    it 'new flags are set to already moderated' do
+      post = create_post('this post will be flagged')
+      post.update(moderated: true)
+
+      7.times { post.flags.create(reason: Faker::HarryPotter.quote, user: Fabricate(:user)) }
+
+      expect(post.flags.map(&:status).uniq).to eq ['post_already_moderated']
+    end
+  end
+
   def create_post(caption)
     user.posts.create(
       original_key: "#{user.unique_id}/original",
