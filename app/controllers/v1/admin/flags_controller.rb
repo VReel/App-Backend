@@ -23,7 +23,7 @@ class V1::Admin::FlagsController < V1::Admin::BaseController
   def flag_links
     return nil unless pagination_needed?
     {
-      next: v1_admin_flags_url(params[:flagged_post_id], page: next_page_id)
+      next: v1_admin_flagged_post_flags_url(params[:flagged_post_id], page: next_page_id)
     }
   end
 
