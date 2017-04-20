@@ -47,11 +47,19 @@ class ApplicationController < ActionController::API
        @resource.try(:tokens).present? &&
        ENV['ACCESS_TOKEN_LIFETIME'].to_i > 0
 
+      # Get the token we are working with before reload (a simultaneous request could alter the valid token)
+      original_token = @resource.tokens[@client_id].try(:fetch, 'token')
+
+      @resource.reload
+
       # should not append auth header if @resource related token was
       # cleared by sign out in the meantime.
-      return if @resource.reload.tokens[@client_id].nil?
+      return if @resource.tokens[@client_id].nil?
 
-      if @request_started_at < Time.zone.at(@resource.tokens[@client_id]['created_at'])+ Integer(ENV['ACCESS_TOKEN_LIFETIME'])
+      token_created_at = Time.zone.at(@resource.tokens[@client_id]['created_at'])
+
+      # If the token has not expired or changed, return it as a valid token.
+      if @request_started_at < token_created_at + Integer(ENV['ACCESS_TOKEN_LIFETIME']) && original_token == @resource.tokens[@client_id]['token']
         return response.headers.merge!(@resource.build_auth_header(@token, @client_id))
       end
     end
