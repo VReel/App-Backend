@@ -51,7 +51,7 @@ Rails.application.routes.draw do
 
     namespace :admin do
       resources :stats, only: :index
-      resources :flagged_posts, only: [:index, :update, :delete] do
+      resources :flagged_posts, only: [:index, :update, :destroy] do
         resources :flags, only: :index
       end
     end

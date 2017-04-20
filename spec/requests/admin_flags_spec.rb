@@ -48,4 +48,26 @@ RSpec.describe 'Admin Flag requests', type: :request do
       expect(data['included'].map { |item| item['id'] }).to include flag_author.id
     end
   end
+
+  describe 'moderation' do
+    let!(:flagged_post) do
+      flagged_post = create_post(Fabricate(:user))
+      flagged_post.flags.create(reason: Faker::HarryPotter.quote, user: Fabricate(:user))
+      flagged_post
+    end
+
+    it 'can delete a post' do
+      expect do
+        delete "/v1/admin/flagged_posts/#{flagged_post.id}", headers: auth_headers
+      end.to change { Post.count }.by(-1)
+    end
+
+    it 'can moderate a post' do
+      expect do
+        put "/v1/admin/flagged_posts/#{flagged_post.id}", headers: auth_headers, params: {
+          flagged_post: { moderated: true }
+        }
+      end.to change { Post.where(moderated: true).count }.by 1
+    end
+  end
 end

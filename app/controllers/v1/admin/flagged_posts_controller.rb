@@ -59,6 +59,6 @@ class V1::Admin::FlaggedPostsController < V1::Admin::BaseController
   end
 
   def update_permitted_params
-    params.require(:post).permit(:moderated)
+    params.require(:flagged_post).permit(:moderated)
   end
 end
