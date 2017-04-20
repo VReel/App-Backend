@@ -10,6 +10,8 @@ class Post < ApplicationRecord
   has_many :hash_tags, through: :hash_tag_posts
   has_many :comments, -> { order('created_at ASC') }
   has_many :likes
+  has_many :flags
+  has_many :flagged_by_users, through: :flags, source: :user
 
   validates :original_key, presence: true
   validates :thumbnail_key, presence: true
@@ -19,6 +21,9 @@ class Post < ApplicationRecord
 
   before_update { self.edited = true if caption_changed? }
   before_save { set_hash_tags! }
+  # rubocop:disable SkipsModelValidations
+  before_save { flags.pending.update_all(status: :moderated) if moderated && moderated_changed? }
+  # rubocop:enable SkipsModelValidations
 
   before_destroy do
     PostDeletionService.new(id).delay.delete!

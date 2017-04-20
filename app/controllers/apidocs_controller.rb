@@ -72,7 +72,8 @@ class ApidocsController < ActionController::Base
     TimelineDoc,
     SearchDoc,
     LikeDoc,
-    StatsDoc,
+    FlagDoc,
+    AdminDoc,
     HelloWorldDoc,
     self
   ].freeze

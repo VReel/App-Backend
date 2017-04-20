@@ -158,6 +158,40 @@ ALTER SEQUENCE delayed_jobs_id_seq OWNED BY delayed_jobs.id;
 
 
 --
+-- Name: flags; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE flags (
+    id integer NOT NULL,
+    post_id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    reason text,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    status integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- Name: flags_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE flags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: flags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE flags_id_seq OWNED BY flags.id;
+
+
+--
 -- Name: follows; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -280,7 +314,8 @@ CREATE TABLE posts (
     edited boolean DEFAULT false,
     like_count integer DEFAULT 0 NOT NULL,
     comment_count integer DEFAULT 0 NOT NULL,
-    deleted_at timestamp without time zone
+    deleted_at timestamp without time zone,
+    moderated boolean DEFAULT false
 );
 
 
@@ -350,6 +385,13 @@ ALTER TABLE ONLY delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY flags ALTER COLUMN id SET DEFAULT nextval('flags_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY follows ALTER COLUMN id SET DEFAULT nextval('follows_id_seq'::regclass);
 
 
@@ -397,6 +439,14 @@ ALTER TABLE ONLY comments
 
 ALTER TABLE ONLY delayed_jobs
     ADD CONSTRAINT delayed_jobs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: flags_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY flags
+    ADD CONSTRAINT flags_pkey PRIMARY KEY (id);
 
 
 --
@@ -530,6 +580,27 @@ CREATE INDEX index_comments_on_post_id_and_user_id ON comments USING btree (post
 --
 
 CREATE INDEX index_comments_on_user_id ON comments USING btree (user_id);
+
+
+--
+-- Name: index_flags_on_post_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_flags_on_post_id ON flags USING btree (post_id);
+
+
+--
+-- Name: index_flags_on_status; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_flags_on_status ON flags USING btree (status);
+
+
+--
+-- Name: index_flags_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_flags_on_user_id ON flags USING btree (user_id);
 
 
 --
@@ -750,6 +821,22 @@ ALTER TABLE ONLY likes
 
 
 --
+-- Name: fk_rails_cb0454c0d1; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY flags
+    ADD CONSTRAINT fk_rails_cb0454c0d1 FOREIGN KEY (post_id) REFERENCES posts(id);
+
+
+--
+-- Name: fk_rails_d7842de637; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY flags
+    ADD CONSTRAINT fk_rails_d7842de637 FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -781,6 +868,9 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170413145205'),
 ('20170413164935'),
 ('20170418101134'),
-('20170418105255');
+('20170418105255'),
+('20170418121750'),
+('20170419094738'),
+('20170419095055');
 
 

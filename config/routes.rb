@@ -26,9 +26,9 @@ Rails.application.routes.draw do
     resources :posts do
       resources :likes, only: :index
       resources :comments, only: [:index, :create]
+      resources :flags, only: :create
     end
     resources :comments, only: [:update, :destroy]
-    resources :stats, only: :index
 
     resources :hash_tags, only: :show do
       get :posts, to: 'hash_tag_posts#index'
@@ -48,7 +48,13 @@ Rails.application.routes.draw do
 
     post 'like/:post_id', to: 'like#create'
     delete 'like/:post_id', to: 'like#destroy'
-  end
 
+    namespace :admin do
+      resources :stats, only: :index
+      resources :flagged_posts, only: [:index, :update, :destroy] do
+        resources :flags, only: :index
+      end
+    end
+  end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

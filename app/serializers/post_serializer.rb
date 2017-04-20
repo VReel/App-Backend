@@ -4,6 +4,8 @@ class PostSerializer < ActiveModel::Serializer
   has_one :user
 
   def liked_by_me
+    return if instance_options[:post_ids_in_window_liked_by_current_user].nil?
+
     instance_options[:post_ids_in_window_liked_by_current_user].include?(object.id)
   end
 end
