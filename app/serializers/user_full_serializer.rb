@@ -4,6 +4,9 @@ class UserFullSerializer < UserSerializer
   attribute :follows_me, if: :follower_ids_present?
   attribute :followed_by_me, if: :following_ids_present?
 
+  # Private data.
+  attribute :email, if: :is_current_user?
+
   def follower_ids_present?
     !instance_options[:follower_ids].nil?
   end
