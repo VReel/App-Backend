@@ -1,11 +1,43 @@
 require 'rails_helper'
 
-RSpec.describe 'Get posts by other user', type: :request do
+RSpec.describe 'Other users', type: :request do
   let!(:user) { create_user_and_sign_in }
   let(:gandalf) { Fabricate(:user) }
   let(:data) { JSON.parse(response.body) }
+  let(:next_response_data) { JSON.parse(response.body) }
   let(:total_records) { more_than_a_page_count }
   let(:auth_headers) { auth_headers_from_response }
+
+  describe 'user full details' do
+    before(:each) do
+      get "/v1/users/#{gandalf.id}", headers: auth_headers
+    end
+
+    it 'can get user details' do
+      expect(response.status).to eq 200
+      expect(data['data']['id']).to eq gandalf.id
+    end
+
+    it 'shows if I follow the user' do
+      expect(data['data']['attributes']['followed_by_me']).to be false
+
+      user.follow(gandalf)
+
+      get "/v1/users/#{gandalf.id}", headers: auth_headers
+
+      expect(next_response_data['data']['attributes']['followed_by_me']).to be true
+    end
+
+    it 'shows if the user follows me' do
+      expect(data['data']['attributes']['follows_me']).to be false
+
+      gandalf.follow(user)
+
+      get "/v1/users/#{gandalf.id}", headers: auth_headers
+
+      expect(next_response_data['data']['attributes']['follows_me']).to be true
+    end
+  end
 
   describe 'list posts' do
     before(:each) do
