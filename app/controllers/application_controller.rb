@@ -58,8 +58,11 @@ class ApplicationController < ActionController::API
 
       token_created_at = Time.zone.at(@resource.tokens[@client_id]['created_at'])
 
-      # If the token has not expired or changed, return it as a valid token.
-      if @request_started_at < token_created_at + Integer(ENV['ACCESS_TOKEN_LIFETIME']) && original_token == @resource.tokens[@client_id]['token']
+      # If the token has not expired or changed and this is not a batch request, return it as a valid token.
+      if @request_started_at < token_created_at + Integer(ENV['ACCESS_TOKEN_LIFETIME']) &&
+           original_token == @resource.tokens[@client_id]['token'] &&
+           !is_batch_request?(@resource, @client_id)
+
         return response.headers.merge!(@resource.build_auth_header(@token, @client_id))
       end
     end

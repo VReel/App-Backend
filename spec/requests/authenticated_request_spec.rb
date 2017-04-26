@@ -307,8 +307,17 @@ RSpec.describe 'Authenticated requests', type: :request do
         expect(response.headers['access-token']).not_to eq auth_headers[:'access-token']
       end
 
+      t3 = Thread.new do
+        # This always failed before checking for !is_batch_request
+        sleep 1
+        get '/v1/public_timeline', headers: auth_headers
+        expect(response.status).to eq 200
+        expect(response.headers['access-token']).not_to eq auth_headers[:'access-token']
+      end
+
       t1.join
       t2.join
+      t3.join
     end
   end
 end
