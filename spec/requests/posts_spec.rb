@@ -48,6 +48,39 @@ RSpec.describe 'Post requests', type: :request do
       # Error references correct field.
       expect(data['errors'].first['source']['pointer']).to eq '/data/attributes/thumbnail_key'
     end
+
+    describe 'push notifications' do
+      let(:follower_1) { Fabricate(:user_with_device) }
+      let(:follower_2) { Fabricate(:user_with_device) }
+      before(:each) do
+        follower_1.follow(user)
+        follower_2.follow(user)
+      end
+
+      it 'sends a push notifications to followers of the poster' do
+        expect(OneSignal::Notification).to(
+          receive(:create).with(one_signal_packet_with_player_ids(follower_1.device_ids + follower_2.device_ids))
+        )
+
+        post '/v1/posts', params: {
+          post: new_post.attributes.slice('original_key', 'thumbnail_key', 'caption')
+        }, headers: auth_headers_from_response
+
+        expect(response.status).to eq 201
+      end
+
+      it 'sends multiple push notifications to large batches of followers' do
+        ENV['ONE_SIGNAL_QUERY_BATCH_SIZE'] = '1'
+
+        expect(OneSignal::Notification).to receive(:create).twice
+
+        post '/v1/posts', params: {
+          post: new_post.attributes.slice('original_key', 'thumbnail_key', 'caption')
+        }, headers: auth_headers_from_response
+
+        expect(response.status).to eq 201
+      end
+    end
   end
 
   describe 'update a post' do

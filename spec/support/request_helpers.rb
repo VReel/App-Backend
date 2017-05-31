@@ -85,5 +85,5 @@ module RequestHelpers
 end
 
 RSpec::Matchers.define :one_signal_packet_with_player_ids do |player_ids|
-  match { |packet| packet[:params][:include_player_ids] == player_ids }
+  match { |packet| packet[:params][:include_player_ids].sort == player_ids.sort }
 end
