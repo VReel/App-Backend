@@ -1,5 +1,6 @@
 class PushNotificationService
-  # We assume any give batch of 500 users will not have more than 200 device ids.
+  # We assume any give batch of 500 users will not have more than 2000 device ids.
+
   # I guess that's pretty unlikely.
   QUERY_BATCH_SIZE = 500
   ONE_SIGNAL_BATCH_SIZE = 2000
