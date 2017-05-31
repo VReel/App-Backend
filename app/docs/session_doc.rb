@@ -50,6 +50,9 @@ class SessionDoc
         property :password do
           key :type, :string
         end
+        property :player_id do
+          key :type, :string
+        end
       end
     end
   end
