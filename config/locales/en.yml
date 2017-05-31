@@ -27,5 +27,5 @@ en:
       body: "%{new_follower_handle} has followed you"
     new_post:
       title: Someone you follow has created a new post
-      body_without_caption: "%{post.handle} has created a new post"
+      body_without_caption: "%{poster_handle} has created a new post"
       body_with_caption: "%{poster_handle} has created a new post '%{post_caption}'"
