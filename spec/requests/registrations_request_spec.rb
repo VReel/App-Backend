@@ -210,6 +210,35 @@ RSpec.describe 'Registration requests', type: :request do
     end
   end
 
+  describe 'Successful registration with player_id' do
+    let(:player_id) { SecureRandom.uuid }
+
+    def post_user
+      post '/v1/users', params: {
+        email: email,
+        handle: fake_handle,
+        password: 'secret123',
+        password_confirmation: 'secret123',
+        unpermitted_param: '(x_x)',
+        player_id: player_id
+      }, headers: client_application_header
+    end
+
+    it 'user should have been created' do
+      expect { post_user }.to change { User.count }.by(1)
+    end
+
+    it 'user should have a device' do
+      expect { post_user }.to change { Device.count }.by(1)
+    end
+
+    it 'user should associate the device with the user' do
+      post_user
+
+      expect(User.last.devices.first.player_id).to eq player_id
+    end
+  end
+
   describe 'Get user details' do
     it 'should get the current user details' do
       user = create_user_and_sign_in
