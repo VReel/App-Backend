@@ -83,3 +83,7 @@ module RequestHelpers
   end
   # rubocop:enable Metrics/AbcSize
 end
+
+RSpec::Matchers.define :one_signal_packet_with_player_ids do |player_ids|
+  match { |packet| packet[:params][:include_player_ids] == player_ids }
+end
