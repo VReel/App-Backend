@@ -131,6 +131,8 @@ class User < ApplicationRecord
 
   def follow(user)
     following << user
+
+    PushNotificationService.new.new_follower_notification(user, self)
   end
 
   def unfollow(user)
