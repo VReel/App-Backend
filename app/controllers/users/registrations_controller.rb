@@ -43,6 +43,9 @@ class Users::RegistrationsController < DeviseTokenAuth::RegistrationsController
 
         sign_in(:user, @resource, store: false, bypass: false)
 
+        # Update devices if we have a player_id.
+        Device.create_for_user(@resource, params[:player_id]) if params[:player_id].present?
+
         update_auth_header
 
         render_create_success

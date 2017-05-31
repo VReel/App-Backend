@@ -158,6 +158,38 @@ ALTER SEQUENCE delayed_jobs_id_seq OWNED BY delayed_jobs.id;
 
 
 --
+-- Name: devices; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE devices (
+    id integer NOT NULL,
+    user_id uuid NOT NULL,
+    player_id character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: devices_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE devices_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: devices_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE devices_id_seq OWNED BY devices.id;
+
+
+--
 -- Name: flags; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -385,6 +417,13 @@ ALTER TABLE ONLY delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY devices ALTER COLUMN id SET DEFAULT nextval('devices_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY flags ALTER COLUMN id SET DEFAULT nextval('flags_id_seq'::regclass);
 
 
@@ -439,6 +478,14 @@ ALTER TABLE ONLY comments
 
 ALTER TABLE ONLY delayed_jobs
     ADD CONSTRAINT delayed_jobs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: devices_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY devices
+    ADD CONSTRAINT devices_pkey PRIMARY KEY (id);
 
 
 --
@@ -580,6 +627,20 @@ CREATE INDEX index_comments_on_post_id_and_user_id ON comments USING btree (post
 --
 
 CREATE INDEX index_comments_on_user_id ON comments USING btree (user_id);
+
+
+--
+-- Name: index_devices_on_player_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_devices_on_player_id ON devices USING btree (player_id);
+
+
+--
+-- Name: index_devices_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_devices_on_user_id ON devices USING btree (user_id);
 
 
 --
@@ -797,6 +858,14 @@ ALTER TABLE ONLY comments
 
 
 --
+-- Name: fk_rails_410b63ef65; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY devices
+    ADD CONSTRAINT fk_rails_410b63ef65 FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+--
 -- Name: fk_rails_5b5ddfd518; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -871,6 +940,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170418105255'),
 ('20170418121750'),
 ('20170419094738'),
-('20170419095055');
+('20170419095055'),
+('20170531085559');
 
 

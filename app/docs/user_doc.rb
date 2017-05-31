@@ -243,6 +243,9 @@ swagger_path '/users/{userId}/following' do
         property :original_key do
           key :type, :string
         end
+        property :player_id do
+          key :type, :string
+        end
       end
     end
   end
