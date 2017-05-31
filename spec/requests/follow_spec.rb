@@ -35,7 +35,7 @@ RSpec.describe 'Follows', type: :request do
   end
 
   describe 'push notifications' do
-    let(:player_id) { SecureRandom.uuid}
+    let(:player_id) { SecureRandom.uuid }
 
     it 'sends a push notification when a user with a device is followed' do
       other_user.devices.create(player_id: player_id)
