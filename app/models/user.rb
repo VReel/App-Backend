@@ -155,6 +155,10 @@ class User < ApplicationRecord
     liked_posts.include?(post)
   end
 
+  def device_ids
+    devices.map(&:player_id)
+  end
+
   protected
 
   def s3_folder

@@ -31,6 +31,7 @@ class Post < ApplicationRecord
 
   after_create { user.locked_increment(:post_count) }
   after_destroy { user.locked_decrement(:post_count) }
+  after_create { PushNotificationService.new.new_post_notification(self) }
 
   def delete_s3_resources
     s3_deletion_service = S3DeletionService.new
