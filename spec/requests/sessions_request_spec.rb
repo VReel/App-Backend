@@ -90,7 +90,7 @@ RSpec.describe 'Session requests', type: :request do
       post '/v1/users/sign_in', params: {
         login: confirmed_user.email,
         password: password,
-        player_id: player_id,
+        player_id: player_id
       }, headers: client_application_header
     end
 
