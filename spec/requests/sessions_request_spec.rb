@@ -83,6 +83,30 @@ RSpec.describe 'Session requests', type: :request do
     end
   end
 
+  describe 'login with player_id' do
+    let(:player_id) { SecureRandom.uuid }
+
+    before(:each) do
+      post '/v1/users/sign_in', params: {
+        login: confirmed_user.email,
+        password: password,
+        player_id: player_id,
+      }, headers: client_application_header
+    end
+
+    it 'should succeed' do
+      expect(response.status).to eq 200
+    end
+
+    it 'should create a device' do
+      expect(confirmed_user.reload.devices.count).to eq 1
+    end
+
+    it 'the device should belong to the user and have the player_id' do
+      expect(confirmed_user.reload.devices.first.player_id).to eq player_id
+    end
+  end
+
   describe 'logout' do
     before(:each) do
       post '/v1/users/sign_in', params: {

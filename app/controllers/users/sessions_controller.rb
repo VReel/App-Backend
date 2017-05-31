@@ -32,6 +32,9 @@ class Users::SessionsController < DeviseTokenAuth::SessionsController
 
       sign_in(:user, @resource, store: false, bypass: false)
 
+      # Update devices if we have a player_id.
+      Device.create_for_user(@resource, params[:player_id]) if params[:player_id].present?
+
       yield @resource if block_given?
 
       render_create_success
