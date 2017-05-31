@@ -22,6 +22,7 @@ class UserDeletionService
     delete_likes
     delete_comments
     delete_posts
+    delete_devices
     set_unique_fields
     Rails.logger.info "User #{user.id} assets and posts deleted"
   end
@@ -57,6 +58,10 @@ class UserDeletionService
 
   def delete_posts
     posts.delete_all
+  end
+
+  def delete_devices
+    Device.where(user_id: user.id).delete_all
   end
 
   # rubocop:disable Metrics/AbcSize

@@ -189,4 +189,17 @@ RSpec.describe 'Delete account requests', type: :request do
       end.to change { Like.count }.from(like_count).to(0)
     end
   end
+
+  describe "delete user's devices" do
+    let!(:user) { create_user_and_sign_in }
+    before(:each) do
+      3.times { user.devices.create(player_id: SecureRandom.uuid) }
+    end
+
+    it 'deletes the posts' do
+      expect do
+        delete '/v1/users', headers: auth_headers_from_response
+      end.to change { Device.count }.from(3).to(0)
+    end
+  end
 end
