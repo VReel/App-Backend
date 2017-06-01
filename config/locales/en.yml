@@ -23,9 +23,9 @@ en:
   hello: "Hello world"
   push_notifications:
     new_follower:
-      title: You have a new follower
-      body: "%{new_follower_handle} has followed you"
+      title: New Follower!
+      body: "%{new_follower_handle} is now following you"
     new_post:
-      title: Someone you follow has created a new post
+      title: New Post!
       body_without_caption: "%{poster_handle} has created a new post"
-      body_with_caption: "%{poster_handle} has created a new post '%{post_caption}'"
+      body_with_caption: "%{poster_handle} has posted '%{post_caption}'"
