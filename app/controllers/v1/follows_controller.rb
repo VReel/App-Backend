@@ -6,6 +6,8 @@ class V1::FollowsController < ApplicationController
 
     current_user.follow(followed_user)
 
+    PushNotificationService::Follower.new.call(followed_user, current_user)
+
     head :no_content
   rescue ActiveRecord::RecordNotUnique
     render_error('That user is already followed', 422)

@@ -28,6 +28,8 @@ class V1::PostsController < ApplicationController
     new_post = current_user.posts.create(create_permitted_params)
 
     if new_post.persisted?
+      PushNotificationService::Post.new.call(new_post)
+
       return render json:
                     new_post,
                     serializer: PostFullSerializer,

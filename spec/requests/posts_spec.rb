@@ -70,7 +70,7 @@ RSpec.describe 'Post requests', type: :request do
       end
 
       it 'sends multiple push notifications to large batches of followers' do
-        ENV['ONE_SIGNAL_QUERY_BATCH_SIZE'] = '1'
+        ENV['ONE_SIGNAL_BATCH_SIZE'] = '1'
 
         expect(OneSignal::Notification).to receive(:create).twice
 
