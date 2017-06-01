@@ -2,6 +2,7 @@ class Device < ApplicationRecord
   belongs_to :user
 
   validates :player_id, presence: true
+  validates :player_id, format: { with: /\A[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\z/i }
 
   def self.create_for_user(user, player_id)
     return if player_id.blank?
