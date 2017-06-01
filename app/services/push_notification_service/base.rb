@@ -13,6 +13,8 @@ module PushNotificationService
       # Ensure we only send valid player_ids, so the One Signal does not error.
       player_ids = player_ids.select { |id| id[PLAYER_ID_REGEX] }
 
+      return if player_ids.none?
+
       OneSignal::Notification.create(params: {
         app_id: ENV['ONE_SIGNAL_APP_ID'],
         include_player_ids: player_ids.first(ONE_SIGNAL_BATCH_SIZE)
