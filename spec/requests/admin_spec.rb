@@ -21,7 +21,7 @@ RSpec.describe 'Admin', type: :request do
   end
 
   describe 'posts' do
-    let(:user) { Fabricate(:user)}
+    let(:user) { Fabricate(:user) }
 
     describe 'chiefs' do
       let(:total_posts) { more_than_a_page_count }

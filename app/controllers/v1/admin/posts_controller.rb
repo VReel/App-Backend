@@ -38,17 +38,17 @@ class V1::Admin::PostsController < V1::PublicTimelineController
   def order_clause
     case params[:sort]
     when nil, '', 'created_at_desc'
-      ['created_at', 'DESC']
+      %w(created_at DESC)
     when 'created_at_asc'
-      ['created_at', 'ASC']
+      %w(created_at ASC)
     when 'likes_asc'
-      ['like_count', 'ASC']
+      %w(like_count ASC)
     when 'likes_desc'
-      ['like_count', 'DESC']
+      %w(like_count DESC)
     when 'comments_asc'
-      ['comment_count', 'ASC']
+      %w(comment_count ASC)
     when 'comments_desc'
-      ['comment_count', 'DESC']
+      %w(comment_count DESC)
     else
       raise 'Unsupported sort param'
     end
