@@ -30,7 +30,8 @@ class V1::Admin::UsersController < V1::Admin::BaseController
 
   def query
     q = User.all
-
+    q.where!('users.created_at >= ?', Time.zone.parse(params[:date_from]).beginning_of_day) if params[:date_from].present?
+    q.where!('users.created_at <= ?', Time.zone.parse(params[:date_to]).end_of_day) if params[:date_to].present?
     q.order(order_clause)
   end
 
