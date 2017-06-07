@@ -28,13 +28,11 @@ class V1::Admin::UsersController < V1::Admin::BaseController
     }
   end
 
-  # rubocop:disable all
   def query
     q = User.all
 
     q.order(order_clause)
   end
-  # rubocop:enable all
 
   def order_clause
     case params[:sort]
