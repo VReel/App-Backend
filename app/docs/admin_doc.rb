@@ -78,6 +78,49 @@ class AdminDoc
     end
   end
 
+
+  swagger_path '/admin/users' do
+    operation :get do
+      key :summary, 'Get all posts'
+      key :description, 'Authorized chiefs only'
+      key :operationId, 'admin_users'
+      key :produces, [
+        'application/json'
+      ]
+      key :tags, [
+        'Admin'
+      ]
+      parameter do
+        key :in, :query
+        key :name, :page
+        key :description, 'Gets next page of users.'
+        key :required, false
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :sort
+        key :description, 'Order users.'
+        key :required, false
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :date_from
+        key :description, 'Gets users registered from this date.'
+        key :required, false
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :date_to
+        key :description, 'Gets users registered to this date.'
+        key :required, false
+        key :type, :string
+      end
+    end
+  end
+
   swagger_path '/admin/posts' do
     operation :get do
       key :summary, 'Get all posts'
@@ -152,7 +195,9 @@ class AdminDoc
         key :required, false
         key :type, :string
       end
-
     end
+
+
+
   end
 end

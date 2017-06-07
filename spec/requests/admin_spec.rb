@@ -25,7 +25,6 @@ RSpec.describe 'Admin', type: :request do
 
     describe 'chiefs' do
       let(:total_posts) { more_than_a_page_count }
-      let(:random_number) { rand(4) + 1 }
 
       before(:each) do
         total_posts.times { fabricate_post_for(user) }
@@ -64,7 +63,6 @@ RSpec.describe 'Admin', type: :request do
 
     describe 'chiefs' do
       let(:total_users) { more_than_a_page_count }
-      let(:random_number) { rand(4) + 1 }
 
       before(:each) do
         total_users.times { Fabricate(:user) }
@@ -74,12 +72,13 @@ RSpec.describe 'Admin', type: :request do
         get '/v1/admin/users', headers: auth_headers
       end
 
-      it 'gets a page of posts' do
+      it 'gets a page of users' do
         first_page_expectations
       end
 
-      it 'gets the next page of posts' do
-        next_page_expectations(total: total_users)
+      it 'gets the next page of users' do
+        # We have plus one because the current user will also be returned.
+        next_page_expectations(total: total_users + 1)
       end
     end
 
