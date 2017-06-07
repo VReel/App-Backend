@@ -37,8 +37,6 @@ class V1::Admin::PostsController < V1::PublicTimelineController
 
   def order_clause
     case params[:sort]
-    when nil, '', 'created_at_desc'
-      %w(created_at DESC)
     when 'created_at_asc'
       %w(created_at ASC)
     when 'likes_asc'
@@ -50,7 +48,8 @@ class V1::Admin::PostsController < V1::PublicTimelineController
     when 'comments_desc'
       %w(comment_count DESC)
     else
-      raise 'Unsupported sort param'
+      # The default option
+      %w(created_at DESC)
     end
   end
 end
