@@ -1,8 +1,18 @@
-class V1::Admin::PostsController < V1::PublicTimelineController
+class V1::Admin::PostsController < V1::Admin::BaseController
   include AdminPagination
-  before_action :authenticate_chief!
+
+  def index
+    render json: posts.to_a.first(API_PAGE_SIZE),
+           links: posts_links,
+           meta: meta,
+           include: :user
+  end
 
   protected
+
+  def primary_records
+    posts
+  end
 
   def posts
     return @posts unless @posts.nil?
