@@ -19,7 +19,10 @@ class V1::Admin::PostsController < V1::PublicTimelineController
   end
 
   def query
-    Post.all.order(order_clause.join(' '))
+    q = Post.all
+    q.where!('created_at >= ?', Time.zone.parse(params[:date_from]).beginning_of_day) if params[:date_from].present?
+    q.where!('created_at <= ?', Time.zone.parse(params[:date_to]).end_of_day) if params[:date_to].present?
+    q.order(order_clause.join(' '))
   end
 
   def order_clause
