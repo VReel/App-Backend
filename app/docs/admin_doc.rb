@@ -77,4 +77,82 @@ class AdminDoc
       end
     end
   end
+
+  swagger_path '/admin/posts' do
+    operation :get do
+      key :summary, 'Get all posts'
+      key :description, 'Authorized chiefs only'
+      key :operationId, 'admin_posts'
+      key :produces, [
+        'application/json'
+      ]
+      key :tags, [
+        'Admin'
+      ]
+      parameter do
+        key :in, :query
+        key :name, :page
+        key :description, 'Gets next page of posts.'
+        key :required, false
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :sort
+        key :description, 'Order posts.'
+        key :required, false
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :date_from
+        key :description, 'Gets posts from this date.'
+        key :required, false
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :date_to
+        key :description, 'Gets posts to this date.'
+        key :required, false
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :min_comments
+        key :description, 'Gets posts with at least this number of comments.'
+        key :required, false
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :max_comments
+        key :description, 'Gets posts with at most this number of comments.'
+        key :required, false
+        key :type, :string
+      end
+       parameter do
+        key :in, :query
+        key :name, :min_likes
+        key :description, 'Gets posts with at least this number of likes.'
+        key :required, false
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :max_likes
+        key :description, 'Gets posts with at most this number of likes.'
+        key :required, false
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :user
+        key :description, 'Get posts by this user (handle).'
+        key :required, false
+        key :type, :string
+      end
+
+    end
+  end
 end
