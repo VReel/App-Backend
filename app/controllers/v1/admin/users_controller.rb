@@ -4,7 +4,8 @@ class V1::Admin::UsersController < V1::Admin::BaseController
   def index
     render json: users.to_a.first(API_PAGE_SIZE),
            links: users_links,
-           meta: meta
+           meta: meta,
+           each_serializer: UserAdminSerializer
   end
 
   protected
