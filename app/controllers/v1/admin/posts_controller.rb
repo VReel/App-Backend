@@ -18,7 +18,7 @@ class V1::Admin::PostsController < V1::PublicTimelineController
     }
   end
 
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable all
   def query
     q = Post.all
     q.where!('posts.created_at >= ?', Time.zone.parse(params[:date_from]).beginning_of_day) if params[:date_from].present?
@@ -30,7 +30,7 @@ class V1::Admin::PostsController < V1::PublicTimelineController
     q.where!('posts.comment_count <= ?', params[:max_comments].to_i) if params[:max_comments].present?
     q.order(order_clause.join(' '))
   end
-  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable all
 
   def order_clause
     case params[:sort]
