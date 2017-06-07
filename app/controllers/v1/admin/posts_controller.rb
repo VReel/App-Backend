@@ -5,7 +5,7 @@ class V1::Admin::PostsController < V1::PublicTimelineController
 
   def paginate(query)
     query.limit!(API_PAGE_SIZE + 1)
-    query.offset!(Integer(params[:page] || 0) * API_PAGE_SIZE)
+    query.offset!(current_page * API_PAGE_SIZE)
     query
   end
 
@@ -17,7 +17,11 @@ class V1::Admin::PostsController < V1::PublicTimelineController
   end
 
   def next_page_id
-    @next_page_id ||= params[:page].present? ? Integer(params[:page]) : 1
+    @next_page_id ||= current_page + 1
+  end
+
+  def current_page
+    params[:page].present? ? Integer(params[:page]) : 0
   end
 
   def meta
