@@ -28,25 +28,25 @@ class V1::Admin::PostsController < V1::PublicTimelineController
     q.where!('posts.like_count <= ?', params[:max_likes].to_i) if params[:max_likes].present?
     q.where!('posts.comment_count >= ?', params[:min_comments].to_i) if params[:min_comments].present?
     q.where!('posts.comment_count <= ?', params[:max_comments].to_i) if params[:max_comments].present?
-    q.order(order_clause.join(' '))
+    q.order(order_clause)
   end
   # rubocop:enable all
 
   def order_clause
     case params[:sort]
     when 'created_at_asc'
-      %w(created_at ASC)
+      'created_at ASC'
     when 'likes_asc'
-      %w(like_count ASC)
+      'like_count ASC'
     when 'likes_desc'
-      %w(like_count DESC)
+      'like_count DESC'
     when 'comments_asc'
-      %w(comment_count ASC)
+      'comment_count ASC'
     when 'comments_desc'
-      %w(comment_count DESC)
+      'comment_count DESC'
     else
       # The default option
-      %w(created_at DESC)
+      'created_at DESC'
     end
   end
 end
