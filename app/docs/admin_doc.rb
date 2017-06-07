@@ -77,4 +77,25 @@ class AdminDoc
       end
     end
   end
+
+  swagger_path '/admin/posts' do
+    operation :get do
+      key :summary, 'Get all posts'
+      key :description, 'Authorized chiefs only'
+      key :operationId, 'admin_posts'
+      key :produces, [
+        'application/json'
+      ]
+      key :tags, [
+        'Admin'
+      ]
+      parameter do
+        key :in, :query
+        key :name, :page
+        key :description, 'Gets next page of posts.'
+        key :required, false
+        key :type, :string
+      end
+    end
+  end
 end
