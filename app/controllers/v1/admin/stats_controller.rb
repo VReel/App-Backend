@@ -21,11 +21,11 @@ class V1::Admin::StatsController < V1::Admin::BaseController
   protected
 
   def date_from
-    Time.zone.parse(params[:date_from]) if params[:date_from].present?
+    Time.zone.parse(params[:date_from]).beginning_of_day if params[:date_from].present?
   end
 
   def date_to
-    Time.zone.parse(params[:date_to]) if params[:date_to].present?
+    Time.zone.parse(params[:date_to]).end_of_day if params[:date_to].present?
   end
 
   def users
