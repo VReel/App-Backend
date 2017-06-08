@@ -1,8 +1,18 @@
-class V1::Admin::PostsController < V1::PublicTimelineController
+class V1::Admin::PostsController < V1::Admin::BaseController
   include AdminPagination
-  before_action :authenticate_chief!
+
+  def index
+    render json: posts.to_a.first(API_PAGE_SIZE),
+           links: posts_links,
+           meta: meta,
+           include: :user
+  end
 
   protected
+
+  def primary_records
+    posts
+  end
 
   def posts
     return @posts unless @posts.nil?
@@ -23,11 +33,12 @@ class V1::Admin::PostsController < V1::PublicTimelineController
     q = Post.all
     q.where!('posts.created_at >= ?', Time.zone.parse(params[:date_from]).beginning_of_day) if params[:date_from].present?
     q.where!('posts.created_at <= ?', Time.zone.parse(params[:date_to]).end_of_day) if params[:date_to].present?
-    q.where!('posts.user_id IN (SELECT id FROM users WHERE handle = ?)', params[:user]) if params[:user].present?
+    q.where!('posts.user_id IN (SELECT id FROM users WHERE handle ilike(?))', params[:user]) if params[:user].present?
     q.where!('posts.like_count >= ?', params[:min_likes].to_i) if params[:min_likes].present?
     q.where!('posts.like_count <= ?', params[:max_likes].to_i) if params[:max_likes].present?
     q.where!('posts.comment_count >= ?', params[:min_comments].to_i) if params[:min_comments].present?
     q.where!('posts.comment_count <= ?', params[:max_comments].to_i) if params[:max_comments].present?
+    q.where!('posts.id IN (SELECT post_id FROM hash_tag_posts WHERE hash_tag_id IN ( SELECT id FROM hash_tags WHERE tag ilike(?)))', params[:hash_tag]) if params[:hash_tag].present?
     q.order(order_clause)
   end
   # rubocop:enable all
