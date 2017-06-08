@@ -52,6 +52,13 @@ class V1::Admin::UsersController < V1::Admin::BaseController
       q.where!('users.id IN (SELECT following_id FROM follows WHERE follower_id IN (SELECT id FROM users WHERE handle ilike(?)))', params[:following_user])
     end
     q.where!('users.handle like (?)', "#{params[:handle]}%") if params[:handle].present?
+    if params[:confirmed].present?
+      if params[:confirmed] == 'true'
+        q.where!('users.confirmed_at IS NOT NULL')
+      else
+        q.where!('users.confirmed_at IS NULL')
+      end
+    end
     q.order(order_clause)
   end
   # rubocop:enable all
