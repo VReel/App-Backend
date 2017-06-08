@@ -81,7 +81,7 @@ class AdminDoc
 
   swagger_path '/admin/users' do
     operation :get do
-      key :summary, 'Get all posts'
+      key :summary, 'Get all users'
       key :description, 'Authorized chiefs only'
       key :operationId, 'admin_users'
       key :produces, [
@@ -115,6 +115,13 @@ class AdminDoc
         key :in, :query
         key :name, :date_to
         key :description, 'Gets users registered to this date.'
+        key :required, false
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :quite_a_few_others
+        key :description, 'See code to see all the options'
         key :required, false
         key :type, :string
       end
@@ -185,6 +192,13 @@ class AdminDoc
         key :in, :query
         key :name, :max_likes
         key :description, 'Gets posts with at most this number of likes.'
+        key :required, false
+        key :type, :string
+      end
+      parameter do
+        key :in, :query
+        key :name, :user
+        key :description, 'Get posts by this user (handle).'
         key :required, false
         key :type, :string
       end
