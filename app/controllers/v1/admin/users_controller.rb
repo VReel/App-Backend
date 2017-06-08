@@ -34,6 +34,7 @@ class V1::Admin::UsersController < V1::Admin::BaseController
     }
   end
 
+  # rubocop:disable all
   def query
     q = User.all
     q.where!('users.created_at >= ?', Time.zone.parse(params[:date_from]).beginning_of_day) if params[:date_from].present?
@@ -53,15 +54,31 @@ class V1::Admin::UsersController < V1::Admin::BaseController
     q.where!('users.handle like (?)', "#{params[:handle]}%") if params[:handle].present?
     q.order(order_clause)
   end
+  # rubocop:enable all
 
   def order_clause
     case params[:sort]
     when 'created_at_asc'
       'created_at ASC'
+    when 'confirmed_at_desc'
+      'confirmed_at DESC'
+    when 'confirmed_at_asc'
+      'confirmed_at ASC'
+    when 'posts_desc'
+      'post_count DESC'
+    when 'posts_asc'
+      'post_count ASC'
+    when 'followers_desc'
+      'follower_count DESC'
+    when 'followers_asc'
+      'follower_count ASC'
+    when 'following_desc'
+      'following_count DESC'
+    when 'following_asc'
+      'following_count ASC'
     else
       # The default option
       'created_at DESC'
     end
   end
 end
-

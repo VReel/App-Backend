@@ -157,6 +157,10 @@ class User < ApplicationRecord
     devices.map(&:player_id)
   end
 
+  def fix_counts!
+    update(post_count: posts.count, following_count: following.count, follower_count: followers.count)
+  end
+
   protected
 
   def s3_folder
