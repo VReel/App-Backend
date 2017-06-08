@@ -38,6 +38,7 @@ class V1::Admin::PostsController < V1::Admin::BaseController
     q.where!('posts.like_count <= ?', params[:max_likes].to_i) if params[:max_likes].present?
     q.where!('posts.comment_count >= ?', params[:min_comments].to_i) if params[:min_comments].present?
     q.where!('posts.comment_count <= ?', params[:max_comments].to_i) if params[:max_comments].present?
+    q.where!('posts.id IN (SELECT post_id FROM hash_tag_posts WHERE hash_tag_id IN ( SELECT id FROM hash_tags WHERE tag ilike(?)))', params[:hash_tag]) if params[:hash_tag].present?
     q.order(order_clause)
   end
   # rubocop:enable all
