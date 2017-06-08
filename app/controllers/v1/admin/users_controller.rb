@@ -61,7 +61,6 @@ class V1::Admin::UsersController < V1::Admin::BaseController
     end
     q.order(order_clause)
   end
-  # rubocop:enable all
 
   def order_clause
     case params[:sort]
@@ -87,5 +86,6 @@ class V1::Admin::UsersController < V1::Admin::BaseController
       # The default option
       'created_at DESC'
     end
+    # rubocop:enable all
   end
 end
