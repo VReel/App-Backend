@@ -2,11 +2,19 @@ class V1::FollowersController < ApplicationController
   include Pagination
 
   def followers
-    render json: followers_of_user.to_a.first(API_PAGE_SIZE), links: followers_links, meta: meta
+    render json: followers_of_user.to_a.first(API_PAGE_SIZE),
+           links: followers_links,
+           meta: meta,
+           follower_ids: follower_ids_of_current_user,
+           following_ids: current_user_following_ids
   end
 
   def following
-    render json: users_user_follows.to_a.first(API_PAGE_SIZE), links: following_links, meta: meta
+    render json: users_user_follows.to_a.first(API_PAGE_SIZE),
+           links: following_links,
+           meta: meta,
+           follower_ids: follower_ids_of_current_user,
+           following_ids: current_user_following_ids
   end
 
   protected
@@ -31,13 +39,23 @@ class V1::FollowersController < ApplicationController
     @follower_relationships ||= paginate(user.follower_relationships.includes(:follower))
   end
 
+  def is_following?
+    request.path[/following/]
+  end
+
   # Needed for pagination.
   # We need to specify the record we are selecting from (followers/following), not the one we display (users)
   # so pagination is on the correct created_at timestamp.
   def primary_records
-    return following_relationships if request.path[/following/]
+    return following_relationships if is_following?
 
     follower_relationships
+  end
+
+  def user_records
+    return users_user_follows if is_following?
+
+    followers_of_user
   end
 
   def followers_links
@@ -52,5 +70,15 @@ class V1::FollowersController < ApplicationController
     {
       next: v1_following_url(page: next_page_id)
     }
+  end
+
+  # Used to efficiently set the following_me property of the post.
+  def follower_ids_of_current_user
+    @follower_ids ||= Follow.where(following: current_user).where(follower_id: user_records.map(&:id)).map(&:follower_id)
+  end
+
+  # Used to efficiently set the followed_by_me property of the post.
+  def current_user_following_ids
+    @following_ids ||= Follow.where(follower: current_user).where(following_id: user_records.map(&:id)).map(&:following_id)
   end
 end

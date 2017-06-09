@@ -78,38 +78,114 @@ RSpec.describe 'Other users', type: :request do
   end
 
   describe 'followers' do
-    before(:each) do
-      total_records.times do
-        Fabricate(:user).follow(gandalf)
+    describe 'pagination' do
+      before(:each) do
+        total_records.times do
+          Fabricate(:user).follow(gandalf)
+        end
+
+        get "/v1/users/#{gandalf.id}/followers", headers: auth_headers
       end
 
-      get "/v1/users/#{gandalf.id}/followers", headers: auth_headers
+      it 'can get a page of followers' do
+        first_page_expectations
+      end
+
+      it 'can get the next page' do
+        next_page_expectations(total: total_records)
+      end
     end
 
-    it 'can get a page of followers' do
-      first_page_expectations
-    end
+    describe 'follows_me and followed_by_me' do
+      let(:saruman) { Fabricate(:user) }
+      before(:each) do
+        saruman.follow(gandalf)
+      end
 
-    it 'can get the next page' do
-      next_page_expectations(total: total_records)
+      it 'has follows_me: false if the user does not follow me' do
+        get "/v1/users/#{gandalf.id}/followers", headers: auth_headers
+
+        expect(data['data'].first['attributes']['follows_me']).to be false
+      end
+
+      it 'has follows_me: true if the user does follow me' do
+        saruman.follow(user)
+
+        get "/v1/users/#{gandalf.id}/followers", headers: auth_headers
+
+        expect(data['data'].first['id']).to eq saruman.id
+        expect(data['data'].first['attributes']['follows_me']).to be true
+      end
+
+      it 'has followed_by_me: false if I do not follow the user' do
+        get "/v1/users/#{gandalf.id}/followers", headers: auth_headers
+
+        expect(data['data'].first['attributes']['followed_by_me']).to be false
+      end
+
+      it 'has followed_by_me: true if I do follow the user' do
+        user.follow(saruman)
+
+        get "/v1/users/#{gandalf.id}/followers", headers: auth_headers
+
+        expect(data['data'].first['attributes']['followed_by_me']).to be true
+      end
     end
   end
 
   describe 'following' do
-    before(:each) do
-      total_records.times do
-        gandalf.follow(Fabricate(:user))
+    describe 'pagination' do
+      before(:each) do
+        total_records.times do
+          gandalf.follow(Fabricate(:user))
+        end
+
+        get "/v1/users/#{gandalf.id}/following", headers: auth_headers
       end
 
-      get "/v1/users/#{gandalf.id}/following", headers: auth_headers
+      it 'can get a page of followed users' do
+        first_page_expectations
+      end
+
+      it 'can get the next page' do
+        next_page_expectations(total: total_records)
+      end
     end
 
-    it 'can get a page of followed users' do
-      first_page_expectations
-    end
+    describe 'follows_me and followed_by_me' do
+      let(:saruman) { Fabricate(:user) }
+      before(:each) do
+        gandalf.follow(saruman)
+      end
 
-    it 'can get the next page' do
-      next_page_expectations(total: total_records)
+      it 'has follows_me: false if the user does not follow me' do
+        get "/v1/users/#{gandalf.id}/following", headers: auth_headers
+
+        expect(data['data'].first['attributes']['follows_me']).to be false
+      end
+
+      it 'has follows_me: true if the user does follow me' do
+        saruman.follow(user)
+
+        get "/v1/users/#{gandalf.id}/following", headers: auth_headers
+
+        expect(data['data'].first['attributes']['follows_me']).to be true
+      end
+
+      it 'has followed_by_me: false if I do not follow the user' do
+        get "/v1/users/#{gandalf.id}/following", headers: auth_headers
+
+        expect(data['data'].first['attributes']['followed_by_me']).to be false
+      end
+
+      it 'has followed_by_me: true if I do follow the user' do
+        user.follow(saruman)
+
+        get "/v1/users/#{gandalf.id}/following", headers: auth_headers
+
+        expect(data['data'].first['id']).to eq saruman.id
+        expect(data['data'].first['attributes']['followed_by_me']).to be true
+      end
     end
   end
 end
