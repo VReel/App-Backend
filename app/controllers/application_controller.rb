@@ -24,10 +24,11 @@ class ApplicationController < ActionController::API
   end
 
   def configure_permitted_parameters
-    added_attrs = [:handle, :email, :password, :password_confirmation, :name, :profile, :thumbnail_key, :original_key]
-    devise_parameter_sanitizer.permit :sign_up, keys: added_attrs
+    sign_up_attrs = [:handle, :email, :password, :password_confirmation, :name, :profile]
+    account_update_attrs = (sign_up_attrs + [:thumbnail_key, :original_key]) - [:email]
+    devise_parameter_sanitizer.permit :sign_up, keys: sign_up_attrs
     # We don't allow email to be changed.
-    devise_parameter_sanitizer.permit :account_update, keys: (added_attrs - [:email])
+    devise_parameter_sanitizer.permit :account_update, keys: account_update_attrs
   end
 
   # This overrides https://github.com/lynndylanhurley/devise_token_auth/blob/v0.1.40/app/controllers/devise_token_auth/concerns/set_user_by_token.rb
