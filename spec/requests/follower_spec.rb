@@ -22,6 +22,20 @@ RSpec.describe 'Followers', type: :request do
       expect(response.status).to eq 200
       expect(data['data'].size).to eq 0
     end
+
+    it 'has follows_me: false if user does not follow me' do
+      get '/v1/following', headers: auth_headers
+
+      expect(data['data'].first['attributes']['follows_me']).to be false
+    end
+
+    it 'has follows_me: true if user follows me' do
+      other_user.follow(user)
+
+      get '/v1/following', headers: auth_headers
+
+      expect(data['data'].first['attributes']['follows_me']).to be true
+    end
   end
 
   describe 'a following user appears in the list of followers' do
@@ -39,6 +53,20 @@ RSpec.describe 'Followers', type: :request do
       get '/v1/following', headers: auth_headers
       expect(response.status).to eq 200
       expect(data['data'].size).to eq 0
+    end
+
+    it 'has followed_by_me: false if I do not follow that user' do
+      get '/v1/followers', headers: auth_headers
+
+      expect(data['data'].first['attributes']['followed_by_me']).to be false
+    end
+
+    it 'has followed_by_me: true if I follow that user' do
+      user.follow(other_user)
+
+      get '/v1/followers', headers: auth_headers
+
+      expect(data['data'].first['attributes']['followed_by_me']).to be true
     end
   end
 

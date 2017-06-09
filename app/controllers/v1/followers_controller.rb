@@ -2,11 +2,19 @@ class V1::FollowersController < ApplicationController
   include Pagination
 
   def followers
-    render json: followers_of_user.to_a.first(API_PAGE_SIZE), links: followers_links, meta: meta
+    render json: followers_of_user.to_a.first(API_PAGE_SIZE),
+           links: followers_links,
+           meta: meta,
+           follower_ids: follower_ids,
+           following_ids: following_ids
   end
 
   def following
-    render json: users_user_follows.to_a.first(API_PAGE_SIZE), links: following_links, meta: meta
+    render json: users_user_follows.to_a.first(API_PAGE_SIZE),
+           links: following_links,
+           meta: meta,
+           follower_ids: follower_ids,
+           following_ids: following_ids
   end
 
   protected
@@ -52,5 +60,15 @@ class V1::FollowersController < ApplicationController
     {
       next: v1_following_url(page: next_page_id)
     }
+  end
+
+  # Used to efficiently set the following_me property of the post.
+  def follower_ids
+    @follower_ids ||= Follow.where(following: current_user).where(follower_id: users_user_follows.map(&:id)).map(&:follower_id)
+  end
+
+  # Used to efficiently set the followed_by_me property of the post.
+  def following_ids
+    @following_ids ||= Follow.where(follower: current_user).where(following_id: followers_of_user.map(&:id)).map(&:following_id)
   end
 end
