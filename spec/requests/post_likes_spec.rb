@@ -54,4 +54,43 @@ RSpec.describe 'Post likes', type: :request do
       next_page_expectations(total: liker_count)
     end
   end
+
+  describe 'follows flags' do
+    let(:other_user) { Fabricate(:user) }
+    before(:each) do
+      other_user.like(liked_post)
+    end
+
+    describe 'followed_by_me' do
+      it 'has followed_by_me: false if I do not follow that user' do
+        get "/v1/posts/#{liked_post.id}/likes", headers: auth_headers
+
+        expect(data['data'].first['attributes']['followed_by_me']).to be false
+      end
+
+      it 'has followed_by_me: true if I follow that user' do
+        user.follow(other_user)
+
+        get "/v1/posts/#{liked_post.id}/likes", headers: auth_headers
+
+        expect(data['data'].first['attributes']['followed_by_me']).to be true
+      end
+    end
+
+    describe 'follows_me' do
+      it 'has follows_me: false if user does not follow me' do
+        get "/v1/posts/#{liked_post.id}/likes", headers: auth_headers
+
+        expect(data['data'].first['attributes']['follows_me']).to be false
+      end
+
+      it 'has follows_me: true if user follows me' do
+        other_user.follow(user)
+
+        get "/v1/posts/#{liked_post.id}/likes", headers: auth_headers
+
+        expect(data['data'].first['attributes']['follows_me']).to be true
+      end
+    end
+  end
 end
