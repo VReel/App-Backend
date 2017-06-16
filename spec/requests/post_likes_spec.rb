@@ -54,4 +54,14 @@ RSpec.describe 'Post likes', type: :request do
       next_page_expectations(total: liker_count)
     end
   end
+
+  describe 'follows flags' do
+    describe 'followed_by_me' do
+
+    end
+
+    describe 'follows_me' do
+
+    end
+  end
 end
