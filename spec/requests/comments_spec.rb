@@ -150,6 +150,8 @@ RSpec.describe 'Comment requests', type: :request do
       more_than_a_page_count.times { existing_post.comments.create(user: user, text: Faker::HarryPotter.quote) }
 
       get "/v1/posts/#{existing_post.id}/comments", headers: client_application_header
+
+      expect(response.status).to eq 200
     end
   end
 end
