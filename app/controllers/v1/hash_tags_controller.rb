@@ -1,5 +1,6 @@
 class V1::HashTagsController < ApplicationController
   include ErrorResource
+  prepend_before_action :allow_guest_access!
 
   def show
     return render_error('Hash tag not found', 404) if hash_tag.blank?

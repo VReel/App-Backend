@@ -1,4 +1,6 @@
 class V1::OtherUserFollowersController < V1::FollowersController
+  prepend_before_action :allow_guest_access!
+
   protected
 
   def user

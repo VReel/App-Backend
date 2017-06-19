@@ -3,6 +3,7 @@ class V1::CommentsController < ApplicationController
   include ErrorResource
   before_action :check_post_is_found, only: [:index, :create]
   before_action :check_comment_is_found, only: [:update, :destroy]
+  prepend_before_action :allow_guest_access!, only: :index
 
   def index
     render json: comments.to_a.first(API_PAGE_SIZE), links: comment_links, meta: meta, include: :user

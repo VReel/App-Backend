@@ -1,4 +1,6 @@
 class V1::HashTagPostsController < V1::PostsController
+  prepend_before_action :allow_guest_access!, only: :index
+
   def index
     return render_error('Hash tag not found', 404) if hash_tag_id.blank?
     # We inherit pagination and meta links from posts controller.

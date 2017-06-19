@@ -1,6 +1,7 @@
 class V1::PostsController < ApplicationController
   include ErrorResource
   include Pagination
+  prepend_before_action :allow_guest_access!, only: :show
 
   def index
     render json: posts.to_a.first(API_PAGE_SIZE),
@@ -111,6 +112,8 @@ class V1::PostsController < ApplicationController
 
   # Used to efficiently set the liked_by_me property of the post.
   def post_ids_in_window_liked_by_current_user
+    return [] if current_user.blank?
+
     @posts_in_window_liked_by_current_user ||= current_user.likes.where(post_id: posts_ids).map(&:post_id)
   end
 end

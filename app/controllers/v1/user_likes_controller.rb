@@ -1,4 +1,6 @@
 class V1::UserLikesController < V1::PostsController
+  prepend_before_action :allow_guest_access!, only: :index
+
   protected
 
   def posts
