@@ -59,6 +59,13 @@ RSpec.describe 'User search', type: :request do
     expect(data['data'].size).to eq 0
   end
 
+  it 'is accessable by guests' do
+    get '/v1/search/users/zzzyyyxxxxaafsasf', headers: client_application_header
+
+    expect(response.status).to eq 200
+    expect(data['data'].size).to eq 0
+  end
+
   it 'errors if no search term' do
     expect do
       get '/v1/search/users/', headers: auth_headers

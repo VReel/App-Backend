@@ -144,4 +144,12 @@ RSpec.describe 'Comment requests', type: :request do
       next_page_expectations(total: total_comments)
     end
   end
+
+  describe 'guest access' do
+    it 'shows comments to guests' do
+      more_than_a_page_count.times { existing_post.comments.create(user: user, text: Faker::HarryPotter.quote) }
+
+      get "/v1/posts/#{existing_post.id}/comments", headers: client_application_header
+    end
+  end
 end

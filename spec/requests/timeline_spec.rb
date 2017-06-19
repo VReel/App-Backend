@@ -19,6 +19,12 @@ RSpec.describe 'Timelines', type: :request do
     it 'paginates the posts' do
       next_page_expectations
     end
+
+    it 'allows guest access' do
+      get '/v1/public_timeline', headers: client_application_header
+
+      expect(response.status).to eq 200
+    end
   end
 
   describe 'user timeline' do

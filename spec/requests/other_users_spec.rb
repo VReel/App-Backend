@@ -188,4 +188,48 @@ RSpec.describe 'Other users', type: :request do
       end
     end
   end
+
+  describe 'guest access' do
+    it 'can view the user' do
+      get "/v1/users/#{gandalf.id}", headers: client_application_header
+
+      expect(response.status).to eq 200
+    end
+
+    it 'can view posts by the user' do
+      total_records.times { fabricate_post_for(gandalf) }
+
+      get "/v1/users/#{gandalf.id}/posts", headers: client_application_header
+
+      expect(response.status).to eq 200
+    end
+
+    it 'can view likes by the user' do
+      total_records.times do
+        gandalf.like(fabricate_post_for(Fabricate(:user)))
+      end
+
+      get "/v1/users/#{gandalf.id}/likes", headers: client_application_header
+
+      expect(response.status).to eq 200
+    end
+
+    it 'can view followers of the user' do
+      total_records.times do
+        Fabricate(:user).follow(gandalf)
+      end
+
+      get "/v1/users/#{gandalf.id}/followers", headers: client_application_header
+      expect(response.status).to eq 200
+    end
+
+    it 'can view who the user follows' do
+      total_records.times do
+        gandalf.follow(Fabricate(:user))
+      end
+
+      get "/v1/users/#{gandalf.id}/following", headers: client_application_header
+      expect(response.status).to eq 200
+    end
+  end
 end
