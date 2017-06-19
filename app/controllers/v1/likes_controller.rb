@@ -1,6 +1,7 @@
 class V1::LikesController < ApplicationController
   include Pagination
   include FollowerFilters
+  prepend_before_action :allow_guest_access!, only: :index
 
   def index
     render json: likers.to_a.first(API_PAGE_SIZE),

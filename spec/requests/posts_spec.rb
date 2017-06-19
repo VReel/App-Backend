@@ -240,6 +240,12 @@ RSpec.describe 'Post requests', type: :request do
       get "/v1/posts/#{existing_post.id}", headers: auth_headers
       expect(JSON.parse(response.body)['data']['attributes']['liked_by_me']).to be true
     end
+
+    it 'a guest is allowed to view it' do
+      get "/v1/posts/#{existing_post.id}", headers: client_application_header
+
+      expect(response.status).to eq 200
+    end
   end
 
   describe 'list posts' do

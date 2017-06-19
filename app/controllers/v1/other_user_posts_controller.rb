@@ -1,4 +1,6 @@
 class V1::OtherUserPostsController < V1::PostsController
+  prepend_before_action :allow_guest_access!, only: :index
+
   def index
     return render_error('User not found', 404) if user.blank?
     # We inherit pagination and meta links from posts controller.

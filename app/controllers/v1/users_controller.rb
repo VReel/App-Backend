@@ -1,6 +1,7 @@
 class V1::UsersController < ApplicationController
   include ErrorResource
   include FollowerFilters
+  prepend_before_action :allow_guest_access!, only: :show
 
   def index
     render json:

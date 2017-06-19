@@ -23,6 +23,19 @@ class ApplicationController < ActionController::API
     }, status: 401
   end
 
+  def authenticate_user!
+    return if @guest_access_enabled
+    super
+  end
+
+  def allow_guest_access!
+    @guest_access_enabled = true
+    # All auth headers must be blank for guest access to be enabled.
+    [:'access-token', :client, :uid].each do |auth_header|
+      @guest_access_enabled = false if request.headers[auth_header].present?
+    end
+  end
+
   def configure_permitted_parameters
     sign_up_attrs = [:handle, :email, :password, :password_confirmation, :name, :profile]
     account_update_attrs = (sign_up_attrs + [:thumbnail_key, :original_key]) - [:email]

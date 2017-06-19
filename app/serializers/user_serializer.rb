@@ -23,6 +23,7 @@ class UserSerializer < ActiveModel::Serializer
 
   def is_current_user?
     return false unless defined? current_user
+    return false if current_user.blank?
 
     object.id == current_user.id
   end

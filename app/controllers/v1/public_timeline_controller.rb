@@ -1,4 +1,6 @@
 class V1::PublicTimelineController < V1::PostsController
+  prepend_before_action :allow_guest_access!
+
   protected
 
   def posts

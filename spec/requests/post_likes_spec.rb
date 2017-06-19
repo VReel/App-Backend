@@ -55,6 +55,14 @@ RSpec.describe 'Post likes', type: :request do
     end
   end
 
+  describe 'guest access' do
+    it 'allows a guest to see who has liked a post' do
+      get "/v1/posts/#{liked_post.id}/likes", headers: client_application_header
+
+      expect(response.status).to eq 200
+    end
+  end
+
   describe 'follows flags' do
     let(:other_user) { Fabricate(:user) }
     before(:each) do

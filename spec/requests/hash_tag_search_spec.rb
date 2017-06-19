@@ -60,6 +60,13 @@ RSpec.describe 'Hash tag search', type: :request do
       expect(data['data'].size).to eq 2
     end
 
+    it 'allows guest access' do
+      get '/v1/hash_tags/%23chocolate/posts', headers: client_application_header
+
+      expect(response.status).to eq 200
+      expect(data['data'].size).to eq 2
+    end
+
     it 'includes the user details of the post' do
       get '/v1/hash_tags/%23chocolate/posts', headers: auth_headers
 
